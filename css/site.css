@@ -13,7 +13,7 @@
 #box9 {width: 320px; height: 265px; position:relative; bottom: 710px; right: -100px; z-index: 2;}
 #box10{width: 320px; height: 265px; position:relative; bottom: 550px; right: -100px; z-index: 1;}
 
-#fb {width: 50px; bottom: 180px; right: 910px; position: absolute;}
+#fb {width: 40px; bottom: 180px; right: 910px; position: absolute;}
 #in {width: 50px; bottom: 190px; right: 875px; position: absolute;}
 #yt {width: 48px; bottom: 190px; right: 827px; position: fixed;}
 #en {width: 60px; bottom: 138px; right: 923px; position: absolute;}
