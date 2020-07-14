@@ -1,3 +1,93 @@
+#box1 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/1.png");
+    position: relative;
+    bottom: 0px;
+    z-index: 10;
+}
+
+#box2 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/2.png");
+    position: relative;
+    bottom: 130px;
+    z-index: 9;
+}
+
+#box3 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/3.png");
+    position: relative;
+    bottom: 270px;
+    z-index: 8;
+}
+
+#box4 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/4.png");
+    position: relative;
+    bottom: 426px;
+    z-index: 7;
+}
+
+#box5 {
+    width: 500px;
+    height: 330px;
+    background-image: url("../img/face/5.png");
+    position: relative;
+    bottom: 565px;
+    z-index: 6;
+}
+
+#box6 {
+    width: 480px;
+    height: 266px;
+    position: relative;
+    bottom: 1100px;
+    right: -100px;
+    z-index: 5;
+}
+
+#box7 {
+    width: 480px;
+    height: 266px;
+    position: relative;
+    bottom: 980px;
+    right: -100px;
+    z-index: 4;
+}
+
+#box8 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 860px;
+    right: -100px;
+    z-index: 3;
+}
+
+#box9 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 710px;
+    right: -100px;
+    z-index: 2;
+}
+
+#box10 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 550px;
+    right: -100px;
+    z-index: 1;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -112,87 +202,6 @@
         bottom: -23px;
         right: 0;
         background: transparent url('../img/corner.svg');
-    }
-    #box1 {
-        width: 500px;
-        height: 220px;
-        background-image: url("../img/face/1.png");
-        position: relative;
-        bottom: 0px;
-        z-index: 10;
-    }
-    #box2 {
-        width: 500px;
-        height: 220px;
-        background-image: url("../img/face/2.png");
-        position: relative;
-        bottom: 130px;
-        z-index: 9;
-    }
-    #box3 {
-        width: 500px;
-        height: 220px;
-        background-image: url("../img/face/3.png");
-        position: relative;
-        bottom: 270px;
-        z-index: 8;
-    }
-    #box4 {
-        width: 500px;
-        height: 220px;
-        background-image: url("../img/face/4.png");
-        position: relative;
-        bottom: 426px;
-        z-index: 7;
-    }
-    #box5 {
-        width: 500px;
-        height: 380px;
-        background-image: url("../img/face/5.png");
-        position: relative;
-        bottom: 565px;
-        z-index: 6;
-        background-repeat: no-repeat;
-    }
-    #box6 {
-        width: 480px;
-        height: 266px;
-        position: relative;
-        bottom: 1100px;
-        right: -100px;
-        z-index: 5;
-    }
-    #box7 {
-        width: 480px;
-        height: 266px;
-        position: relative;
-        bottom: 980px;
-        right: -100px;
-        z-index: 4;
-    }
-    #box8 {
-        width: 320px;
-        height: 265px;
-        position: relative;
-        bottom: 860px;
-        right: -100px;
-        z-index: 3;
-    }
-    #box9 {
-        width: 320px;
-        height: 265px;
-        position: relative;
-        bottom: 710px;
-        right: -100px;
-        z-index: 2;
-    }
-    #box10 {
-        width: 320px;
-        height: 265px;
-        position: relative;
-        bottom: 550px;
-        right: -100px;
-        z-index: 1;
     }
     #fb {
         width: 50px;
@@ -311,6 +320,10 @@
     }
     .min1prev {
         width: 1000px;
+        padding: 0px;
+    }
+    .minprev2 {
+        width: 400px;
         padding: 0px;
     }
     .minprev {
@@ -476,5 +489,8 @@
     .rt-title {
         font-family: 'Bebas kai';
         font-size: 30px;
+    }
+    .min3 {
+        width: 90%;
     }
 }
