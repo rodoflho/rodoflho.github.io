@@ -1,3 +1,11 @@
+#blogicon {
+    width: 5x;
+    bottom: 400px;
+    right: 100px;
+    position: fixed;
+    z-index: 999;
+}
+
 #box1 {
     width: 500px;
     height: 220px;
@@ -223,32 +231,26 @@
     }
     #en {
         width: 60px;
-        bottom: 138px;
-        right: 923px;
+        bottom: 90%;
+        right: 2%;
         position: absolute;
     }
     #fr {
-        width: 57px;
-        bottom: 148px;
-        right: 875px;
+        width: 60px;
+        bottom: 95%;
+        right: 2%;
         position: absolute;
     }
     #br {
         width: 60px;
-        bottom: 139px;
-        right: 875px;
+        bottom: 138px;
+        right: 200px;
         position: absolute;
     }
     #bren {
-        width: 60px;
+        width: 200px;
         bottom: 139px;
         right: 923px;
-        position: absolute;
-    }
-    #blogicon {
-        width: 5x;
-        bottom: 400px;
-        right: 100px;
         position: absolute;
     }
     #dragzone {
