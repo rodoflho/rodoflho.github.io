@@ -5,6 +5,12 @@
     position: fixed;
     z-index: 999;
 }
+divframe, iframe {
+    width: 800px;
+    height: 400px;
+    margin: 0 auto;
+    background-color: #777;
+}
 
 #box1 {
     width: 500px;
