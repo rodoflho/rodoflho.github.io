@@ -136,6 +136,7 @@
     .game{
    align: center;
     width: 1280px;
+        padding:500px;
     vertical-align: middle;
     height: 800px;
     display: table-cell;
