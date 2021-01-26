@@ -136,6 +136,8 @@
     .game{
    width: 1100px;
         height: 625px;
+        right: 50%;
+        bottom: 50%;
 padding-top: 1px;
 padding: 0px;
         display: block
