@@ -143,15 +143,11 @@
     
     
     .rt-preloader {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-        position: fixed;
-        top: 0;
-        left: 0;
+       width: 1100px;
+        height: 625px;
+padding-top: 1px;
+padding: 0px;
+        display: block
     }
     .p-preloader {
         text-align: center;
