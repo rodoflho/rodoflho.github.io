@@ -60,8 +60,8 @@ $(document).ready(function() {
 
         $("#box6").show();
         $("#box6").animate({
-            bottom: "1100px",
-            right: "200px"
+            bottom: "1260px",
+            right: "300px"
         }, 800);
 
     }, function() {
@@ -71,7 +71,7 @@ $(document).ready(function() {
 
         $("#box6").animate({
             bottom: "1100px",
-            right: "-100px"
+            right: "10px"
         }, 800);
         $("#box6").hide();
         $('#gif1').attr('src', 'img/box1.gif');
@@ -85,7 +85,7 @@ $(document).ready(function() {
 
         $("#box7").show();
         $("#box7").animate({
-            bottom: "980px",
+            bottom: "1100px",
             right: "200px"
         }, 800);
 
@@ -95,7 +95,7 @@ $(document).ready(function() {
         }, 300);
 
         $("#box7").animate({
-            bottom: "980px",
+            bottom: "1000px",
             right: "-100px"
         }, 800);
         $("#box7").hide();
@@ -111,7 +111,7 @@ $(document).ready(function() {
 
         $("#box8").show();
         $("#box8").animate({
-            bottom: "860px",
+            bottom: "980px",
             right: "200px"
         }, 800);
 
