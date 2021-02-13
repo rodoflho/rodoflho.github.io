@@ -138,7 +138,7 @@ $(document).ready(function() {
 
         $("#box9").show();
         $("#box9").animate({
-            bottom: "710px",
+            bottom: "770px",
             right: "200px"
         }, 800);
 
@@ -164,8 +164,8 @@ $(document).ready(function() {
 
         $("#box10").show();
         $("#box10").animate({
-            bottom: "550px",
-            right: "200px"
+            bottom: "600px",
+            right: "260px"
         }, 800);
 
 
