@@ -1,16 +1,15 @@
 var btnContact = document.querySelector('.rt-btn-contact');
 
 //Page Preloader
-// window.addEventListener('load', function() {
-//     var pagePreloder = document.querySelector('.rt-preloader');
-//     pagePreloder.classList.add('rt-fade-out');
+window.addEventListener('load', function() {
+    var pagePreloder = document.querySelector('.rt-preloader');
+    pagePreloder.classList.add('rt-fade-out');
 
-//     setTimeout(function() {
-//         pagePreloder.style.display = 'none';
-//     }, 2000);
-// });
+    setTimeout(function() {
+        pagePreloder.style.display = 'none';
+    }, 2000);
+});
 
-//Abrindo e Fechando Informaçoes de contato
 
 if (window.addEventListener) window.addEventListener('DOMMouseScroll', wheel, false);
 window.onmousewheel = document.onmousewheel = wheel;
