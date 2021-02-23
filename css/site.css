@@ -124,8 +124,8 @@
         width: 100%;
         height: 100vh;
         display: table;
-        background-color: transparent;
-        border: 30px transparent;
+        background-color: white;
+        border: 30px white;
     }
     .rt-preloader {
         display: flex;
