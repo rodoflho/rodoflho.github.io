@@ -340,63 +340,14 @@
     .min40 {
         width: 45%;
     }
+    .min70 {
+        width: 75%;
+    }
     .center {
         margin: auto;
     }
     .min {
         width: relative;
-        padding: 0px;
-    }
-    .minnew {
-        width: 800px;
-        padding: 0px;
-    }
-    .img1 {
-        width: 680px;
-        padding: 0px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .img2 {
-        width: 1400px;
-        padding: 0px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .img3 {
-        width: 1200px;
-        padding: 0px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .img4 {
-        width: 1000px;
-        padding: 0px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .minafterlogo {
-        width: 400px;
-        padding: 0px;
-    }
-    .minphotoshoplogo {
-        width: 300px;
-        padding: 0px;
-    }
-    .minsketchuplogo {
-        width: 600px;
-        padding: 0px;
-    }
-    .mincinema4dlogo {
-        width: 300px;
-        padding: 0px;
-    }
-    .mingif1 {
-        width: 1000px;
         padding: 0px;
     }
     .minbottom {
@@ -412,27 +363,6 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-    }
-    .mingif2 {
-        width: 800px;
-        padding: 0px;
-        bottom: 800px;
-    }
-    .mingif3 {
-        width: 700px;
-        padding: 0px;
-    }
-    .mingif4 {
-        width: 900px;
-        padding: 0px;
-    }
-    .mingif5 {
-        width: 800px;
-        padding: 0px;
-    }
-    .mingif6 {
-        width: 600px;
-        padding: 0px;
     }
     .lbox {
         visibility: hidden;
@@ -575,6 +505,9 @@
         color: #fff;
         font-size: 23px;
         text-align: left;
+        width: 100%;
+    }
+    .div100 {
         width: 100%;
     }
 }
