@@ -1,14 +1,15 @@
 var btnContact = document.querySelector('.rt-btn-contact');
 
-Page Preloader
-window.addEventListener('load', function() {
-    var pagePreloder = document.querySelector('.rt-preloader');
-    pagePreloder.classList.add('rt-fade-out');
+//Page Preloader
+//window.addEventListener('load', function() {
+//  var pagePreloder = document.querySelector('.qd-preloader');
+//pagePreloder.classList.add('qd-fade-out');
 
-    setTimeout(function() {
-        pagePreloder.style.display = 'none';
-    }, 2000);
-});
+//setTimeout(function() {
+//    pagePreloder.style.display = 'none';
+//}, 2000);
+//});
+
 
 
 if (window.addEventListener) window.addEventListener('DOMMouseScroll', wheel, false);
