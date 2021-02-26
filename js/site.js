@@ -1,17 +1,6 @@
 var btnContact = document.querySelector('.rt-btn-contact');
 
 //Page Preloader
-<<<<<<< HEAD
-//window.addEventListener('load', function() {
-//  var pagePreloder = document.querySelector('.qd-preloader');
-//pagePreloder.classList.add('qd-fade-out');
-
-//setTimeout(function() {
-//    pagePreloder.style.display = 'none';
-//}, 2000);
-//});
-
-=======
 // window.addEventListener('load', function() {
 //     var pagePreloder = document.querySelector('.rt-preloader');
 //     pagePreloder.classList.add('rt-fade-out');
@@ -20,7 +9,6 @@ var btnContact = document.querySelector('.rt-btn-contact');
 //         pagePreloder.style.display = 'none';
 //     }, 2000);
 // });
->>>>>>> 3111946e6a2ff10e2b3d2ad5eac4bdf54972723e
 
 
 if (window.addEventListener) window.addEventListener('DOMMouseScroll', wheel, false);
