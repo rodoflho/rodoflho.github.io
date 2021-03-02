@@ -11,6 +11,8 @@ var btnContact = document.querySelector('.rt-btn-contact');
 // });
 
 
+//mouse scroll
+
 if (window.addEventListener) window.addEventListener('DOMMouseScroll', wheel, false);
 window.onmousewheel = document.onmousewheel = wheel;
 
@@ -33,7 +35,7 @@ function handle(delta) {
     }, time);
 }
 
-
+//end mouuse scroll
 
 btnContact.addEventListener('click', function() {
     var boxContact = document.querySelector('.rt-contact-info');
