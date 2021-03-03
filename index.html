@@ -24,15 +24,16 @@
 
     <div class="rt-overlay"></div>
 
-    <a href="#" id="fr" onclick="setLanguage('en')">
+    <a href="#" class="flag" id="en" onclick="setLanguage('en')">
         <img class="lazy" data-src="img/ICOEN.svg" />
     </a>
-    <a href="#" id="en" onclick="setLanguage('pt')">
-        <img class="lazy" data-src="img/ICOBR.svg" />
-    </a>
-    <a href="#" id="br" onclick="setLanguage('fr')">
+    <a href="#" class="flag" id="fr" onclick="setLanguage('fr')">
         <img class="lazy" data-src="img/ICOFR.svg" />
     </a>
+    <a href="#" class="flag" id="br" onclick="setLanguage('pt')">
+        <img class="lazy" data-src="img/ICOBR.svg" />
+    </a>
+    
 
     <div class="rt-contact-info rt-bg-black rt-text-light">
         <div class="rt-contact-info-inner">
@@ -648,6 +649,14 @@
 
                     $(document).ready(function(){
                         getLanguage()
+
+                        $(".flag").click(function() {
+                            let currentFlag = localStorage.getItem('language')
+                            currentFlag == 'en' ? $('#en').attr("disabled","disabled") : false
+                            currentFlag == 'br' ? $('#br').attr("disabled","disabled") : false
+                            currentFlag == 'fr' ? $('#fr').attr("disabled","disabled") : false
+                        });
+
                         translateDOM()
                     });
                 </script>
@@ -656,9 +665,6 @@
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
                 <script src="js/site.js"></script>
-
-
-
 </body>
 
 </html>
