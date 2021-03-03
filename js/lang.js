@@ -17,6 +17,6 @@ function getLanguage() {
 }
 function translateDOM(){
     $.each(language, function(index, element) {
-        $('#' + index).text(element);
+        $('.' + index).text(element);
     });
 }
