@@ -652,9 +652,9 @@
 
                         $(".flag").click(function() {
                             let currentFlag = localStorage.getItem('language')
-                            currentFlag == 'en' ? $('#en').attr("disabled","disabled") : false
-                            currentFlag == 'br' ? $('#br').attr("disabled","disabled") : false
-                            currentFlag == 'fr' ? $('#fr').attr("disabled","disabled") : false
+                            currentFlag == 'en' ? $('#en').hide() : false
+                            currentFlag == 'br' ? $('#br').hide() : false
+                            currentFlag == 'fr' ? $('#fr').hide() : false
                         });
 
                         translateDOM()
