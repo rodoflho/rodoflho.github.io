@@ -641,8 +641,8 @@
 
                     function setLanguage(lang) {
                         localStorage.setItem('language', lang);
-                        location.reload();
-                        return false;
+                        getLanguage()
+                        translateDOM()
                     }
 
                     var language; 
@@ -656,14 +656,17 @@
                             }
                         });
                     }
+                    function translateDOM(){
+                        $.each(language, function(index, element) {
+                            $('#' + index).text(element);
+                        });
+                    }
 
                     var lazyLoadInstance = new LazyLoad({});
 
                     $(document).ready(function(){
                         getLanguage()
-                        $.each(language, function(index, element) {
-                            $('#' + index).text(element);
-                        });
+                        translateDOM()
                     });
                 </script>
 
