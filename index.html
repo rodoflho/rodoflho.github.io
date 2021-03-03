@@ -661,9 +661,9 @@
 
                     $(document).ready(function(){
                         getLanguage()
-                        $('#desc1').text(language.desc1);
-                        $('#modal1_title').text(language.modal1_title);
-                        $('#modal1_desc').text(language.modal1_desc);
+                        $.each(language, function(index, element) {
+                            $('#' + index).text(temp[index]);
+                        });
                     });
                 </script>
 
