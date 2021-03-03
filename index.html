@@ -24,10 +24,10 @@
 
     <div class="rt-overlay"></div>
 
-    <a href="EN.html" id="fr">
+    <a href="#" id="fr" onclick="setLanguage('en')">
         <img class="lazy" data-src="img/ICOEN.svg" />
     </a>
-    <a href="BR.html" id="en">
+    <a href="#" id="en" onclick="setLanguage('pt')">
         <img class="lazy" data-src="img/ICOBR.svg" />
     </a>
 
@@ -66,7 +66,7 @@
 
                     <h1> <br /><br /><br /><br /> <br />
                         <br /> <br />Rebecca Timóteo.<br />
-                        <p class="rt-text-light">Explorez ce qu'il y a dans ma tete </h1>
+                        <p class="rt-text-light" id="desc1">Explorez ce qu'il y a dans ma tete </h1>
 
                 </div>
                 <div class="col-md-6">
@@ -636,17 +636,38 @@
                 <!-- Fim Modal 5-->
 
 
-
-
+                <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+                
                 <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js"></script>
                 <script>
-                    var lazyLoadInstance = new LazyLoad({
-                    // Your custom settings go here
+
+                    function setLanguage(lang) {
+                        localStorage.setItem('language', lang);
+                        location.reload();
+                        return false;
+                    }
+
+                    var language; 
+                    function getLanguage() {
+                        (localStorage.getItem('language') == null) ? setLanguage('fr') : false;
+                        $.ajax({ 
+                            url:  '/language/' +  localStorage.getItem('language') + '.json', 
+                            dataType: 'json', async: false, dataType: 'json', 
+                            success: function (lang) {
+                                language = lang
+                            }
+                        });
+                    }
+
+                    var lazyLoadInstance = new LazyLoad({});
+
+                    $(document).ready(function(){
+                        getLanguage()
+                        $('#desc1').text(language.desc1);
                     });
                 </script>
-                <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js">
-                </script>
+
+                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
                 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
                 <script src="js/site.js"></script>
