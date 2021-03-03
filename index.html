@@ -122,9 +122,18 @@
                         <div class="paragrafo">
                             <div class="rt-title" id="modal1_title"></div>
                             <div class="rt-paragrafo">
-                                <p> <br /> <p id="modal1_desc"></p>
-                                    <br /><br />2020 <br />Vidéo <br /><br />
-
+                                <p> 
+                                    <br />
+                                    <p id="modal1_desc"></p>
+                                    <br />
+                                    <p id="modal1_desc2"></p>
+                                    <br />
+                                    <br />
+                                    2020 
+                                    <br />
+                                    Vidéo 
+                                    <br />
+                                    <br />
                                 </p>
                             </div>
 
@@ -637,31 +646,8 @@
                 <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
                 
                 <script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@17.3.1/dist/lazyload.min.js"></script>
+                <script src="js/lang.js"></script>
                 <script>
-
-                    function setLanguage(lang) {
-                        localStorage.setItem('language', lang);
-                        getLanguage()
-                        translateDOM()
-                    }
-
-                    var language; 
-                    function getLanguage() {
-                        (localStorage.getItem('language') == null) ? setLanguage('fr') : false;
-                        $.ajax({ 
-                            url:  '/language/' +  localStorage.getItem('language') + '.json', 
-                            dataType: 'json', async: false, dataType: 'json', 
-                            success: function (lang) {
-                                language = lang
-                            }
-                        });
-                    }
-                    function translateDOM(){
-                        $.each(language, function(index, element) {
-                            $('#' + index).text(element);
-                        });
-                    }
-
                     var lazyLoadInstance = new LazyLoad({});
 
                     $(document).ready(function(){
