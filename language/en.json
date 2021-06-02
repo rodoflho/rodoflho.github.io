@@ -1,8 +1,64 @@
 {
-    "desc1": "Explore what's in my mind",
+    "desc1": "Explore what's in my mind -->>>",
+    
+    "modaloil" : "Oil on canvas",
+    "modal_ins" : "Installation",
 
-    "modal1_title": "Project 'faux semblants'",
-    "modal1_desc": "This is a video made in Toulouse as part of a project from the University Jean Jaurès", 
-    "modal1_desc2": "We are aware of the false pretenses and lies of the consumer society in which we live. Our subconscience hints at it, but we choose to neglect its feelings and return to the cave, letting ourselves be lulled to sleep by our conscience, especially by the illusion of love.",
-    "modal1_desc3": "Toulouse Weekend"
+    "modal1MDT": "Micro-Documentaire Nihilistic Dance",
+    "modal1_MD1": "Existential nihilism is a phenomenon specific to modern times. The nihilist is the one who operates a separation between values and facts, who questions the impossibility of hierarchizing values. This position implies amoralism and moral skepticism. Nihilism is based on questioning the causalities, intentionalities and norms of existence.",
+    "modal1_MD2": "It is a philosophical theory affirming the absurdity of life as well as the inexistence of morality and truth. This notion is applicable to different fields: political, literary, religious and philosophical. Video shot in Toulouse for a Jean Jaurès University project",
+    
+    "modal1_FST": "Project 'faux semblants'",
+    "modal1_FS1": "This is a video made in Toulouse as part of a project from the University Jean Jaurès",
+    "modal1_FS2": "We are aware of the false pretenses and lies of the consumer society in which we live. Our subconscience hints at it, but we choose to neglect its feelings and return to the cave, letting ourselves be lulled to sleep by our conscience, especially by the illusion of love.",
+   
+    "modal1_WTT": "Weekend à Toulouse",  
+    "modal1_WT1": "Filmed with an iPhone 5s",
+    "modal1_WT2": "Typical weekend in Toulouse, walking along the Garonne, yellow-vest protests and Saturday-night parties at Le Bikini.", 
+   
+    "modal1_FUGT": "First day of university",
+    "modal1_FUG1": "Video shooting, editing",
+    "modal1_FUG2": "Video project made for a Brazilian university to promote the start of the school year.",
+    
+    "modal1_OM1": "Motion Graphics /// Video montage",
+    "modal1_OM1": "Advertising campaign made for Omoshi Tropical Sushi intended for social networks, stories and IGTV format.",
+  
+    "modal1_STT" :"Sutileza Video Clip",
+    "modal1_ST1" :"Video shooting, editing and graphics",
+    "modal1_ST2" :"Music video for the song, Sutileza, made by the rapper Guilherme Euripedes.",
+  
+  
+  
+    "modal2_BT" : "The look of Bacchus",
+    "modal2_B1" : "Representation of the famous work, 'The Triumph of Bacchus,' by Diego Vélasquez.",
+    "modal2_B2" : "This painting juxtaposes mythology with everyday life. The canvas represents the god Bacchus as the god offering men the wine that frees them temporarily from their problems. In Baroque literature, Bacchus is considered as an allegory to the liberation of man from the slavery of daily life.",
+    
+
+    "modal2_VTT" : "Blue Girls",
+    "modal2_VT1" : "Painting for installation. University Jean Jaurès",
+    "modal2_VT2" : "Three girls in the metro, showing the sense of mouvement in the society and the hurry of day to day. ",
+
+    "modal2_CST" : "Conscience ",
+    "modal2_CS1" : "This painting represents my ponderings on human and animal consciousness. In this instance, we can contemplate whether human beings are the only creatures that can be considered as conscious entities? If not, to what extent are animals conscientious like us? ",
+
+    "modal2_BDT" : "Big data is watching you",
+    "modal2_BD1" : "''In-situ installation, along the banister and in the 'aquarium' of easels, and computer keyboards''",
+    "modal2_BD2" : "The easels as symbol of resistance, art as instrument of change. Idea of organized chaos is comparable of how connecte we are today, by the social media and also the control of the GAFAS. Big Data is overall the set of all personal information, as preferences, behavour etc, condensed in super-algorithms built to deliver the best optimised way to manipulate the behavour of people and predict trends. Our information is stealed to feed these artificial inteligences ''machine learning'' that can even track the frequency of your eyeballs when you watch an Ad. We are in the most important time of human history, and our choices in the next century will deeply change the future. Art as instrument os change, warning and making people aware about social/politics/climate. ",
+    
+
+    "modal2_DST" : "Désordre(s)",
+    "modal2_DS1" : "''Installation in the dark room of many ready mades, assemblage + painting and neon lights ''",
+    "modal2_DS2" : "Interactive. The visiters can walk around this room size installation for the last project of the contemporary art class of the university Jean Jaurès. The gathering of elements from day to day routine and building an artwork with it shows how the modern and contemporary art are important to the actual social situation of people.",
+    "modal2_DS3" : "''Once again ambitious, committed plastic proposal, fully anchored in the field of contemporary arts. Your appropriation of the subject, political, takes into account its semantic issues with rigor. The installation is convincing in its territorialization, like its formal dynamics, evoking a sort of barbaric totem, a possible emblem of our globalized and urban contemporaneity. The aesthetic reception synergy with a real work on the lighting, solicits the bodies of viewers, invited to stroll around ''",
+
+
+    "modal2_PDT" : " My early paintings",
+    "modal2_PD1" : "# 1 Representation of the painting ''Le Bouffon au Luth'' by Frans Hals. This painting shows us a young man playing the lute, Is he a simple musician? Does he play the role of a jester? Or is he a theatrical figure as his fancy costume would indicate",
+    "modal2_PD2" : "# 2 Representation and reinterpretation of the classic painting theme ''David and Goliath''. In this painting, the young man as David and so an allegory of the Brazilian people, the one who suffers, the one who fights against injustices and inequalities. The severed head he holds in his left hand is the current President of Brazil Jair Bolsonaro, who like Goliath evokes brutality, violence and contempt.",
+    "modal2_PD3" : "# 3 Portrait of an Old Man.",
+   
+    "modal2_PAT" : "Paintings, frescoes, digital painting",
+    "modal2_PA1" : "A series of works made across my learning journey over a period of 10 years",
+    "modal2_PA2" : "Multiple mediums (oil, watercolor, fresco, digital)"
+
 }

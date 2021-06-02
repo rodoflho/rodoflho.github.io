@@ -1,8 +1,11 @@
 {
     "desc1": "Explorez ce qu'il y a dans ma tete",
-
-    "modal1_title": "Projet 'faux semblants'",
-    "modal1_desc": "Vidéo tournée à Toulouse pour un projet de l'Université Jean Jaurès",
-    "modal1_desc2": "Nous avons conscience des faux semblants et des mensonges véhiculés par la société de consommation dans laquelle nous vivons. Notre consciencenous prévient mais nous choisissons de retourner dans la caverne, de nous laisser bercer par nos illusions et notamment celle de l’amour.",
-    "modal1_desc3": "Weekend à Toulouse"
+    "modal1MDT": "Micro-Documentaire Nihilistic Dance",
+    "modal1_MD1": "Le nihilisme existential propose un phénomène propre à l'époque moderne. Le nihiliste est celui qui opère uneséparation entre les valeurs et les faits, qui met en question l'impossibilité dehiérarchiser les valeurs. Cette position implique l'amoralisme et le scepticisme moral. Le nihilisme repose sur la remise en question des causalités, intentionnalités et normatives de l'existence.",
+    "modal1_MD2": "Il est une théorie philosophique affirmant l’absurdité de la vie ainsi que l’inexistence de la morale et de la vérité. Cette notion est applicable à différents domaines : politique, littéraire, religieux et philosophique. Vidéo tournée à Toulouse pour un projet de l'Université Jean Jaurès",
+    "modal1_FST": "Projet 'faaux semblants'",
+    "modal1_FS1": "Vidéo tournée à Toulouse pour un projet de l'Université Jean Jaurès",
+    "modal1_FS2": "Nous avons conscience des faux semblants et des mensonges véhiculés par la société de consommation dans laquelle nous vivons. Notre consciencenous prévient mais nous choisissons de retourner dans la caverne, de nous laisser bercer par nos illusions et notamment celle de l’amour.",
+    "modal1_WTT": "Weekend à Toulouse",    
+    "modal2_B1.1" : "Representation of the famous work, 'The Triumph of Bacchus,' by Diego Vélasquez. <br /> This painting juxtaposes mythology with everyday life. The canvas represents the god Bacchus as the god offering men the wine that frees them temporarily from their problems. In Baroque literature, Bacchus is considered as an allegory to the liberation of man from the slavery of daily life.<br /><br />2020 <br />1m x 1m <br /> Oil on canvas<br /><br />"
 }

@@ -466,6 +466,9 @@
     .paragrafo {
         width: 60%;
     }
+    .paragrafo80 {
+        width: 80%;
+    }
     .scroll-wrapper {
         width: 100vw;
         height: 100vh;
