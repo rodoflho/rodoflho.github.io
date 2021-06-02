@@ -514,6 +514,12 @@
         width: 100%;
     }
     .game{
-        width: 90%;
+       
+        display: block;       /* iframes are inline by default */
+        background: #000;
+       padding-right: 50px ;    /* Reset default border */
+        height: 100vh;        /* Viewport-relative units */
+        width: 100vw;
+        
     }
 }
