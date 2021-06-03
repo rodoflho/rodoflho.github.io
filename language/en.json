@@ -24,7 +24,7 @@
     "modal1_FUG1": "Video shooting, editing",
     "modal1_FUG2": "Video project made for a Brazilian university to promote the start of the school year.",
     
-    "modal1_OM1": "Motion Graphics /// Video montage",
+    "modal1_OMT": "Motion Graphics /// Video montage",
     "modal1_OM1": "Advertising campaign made for Omoshi Tropical Sushi intended for social networks, stories and IGTV format.",
   
     "modal1_STT" :"Sutileza Video Clip",
@@ -44,6 +44,9 @@
 
     "modal2_CST" : "Conscience ",
     "modal2_CS1" : "This painting represents my ponderings on human and animal consciousness. In this instance, we can contemplate whether human beings are the only creatures that can be considered as conscious entities? If not, to what extent are animals conscientious like us? ",
+
+    "modal2_OLD1" : "Oil paintings during the semester and art residencies.",
+  
 
     "modal2_BDT" : "Big data is watching you",
     "modal2_BD1" : "''In-situ installation, along the banister and in the 'aquarium' of easels, and computer keyboards''",
