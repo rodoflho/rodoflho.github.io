@@ -1,0 +1,525 @@
+#blogicon {
+    width: 5x;
+    bottom: 400px;
+    right: 100px;
+    position: fixed;
+    z-index: 999;
+}
+
+#box1 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/11.png");
+    position: relative;
+    bottom: 0px;
+    z-index: 10;
+}
+
+#box2 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/21.png");
+    position: relative;
+    bottom: 130px;
+    z-index: 9;
+}
+
+#box3 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/31.png");
+    position: relative;
+    bottom: 270px;
+    z-index: 8;
+}
+
+#box4 {
+    width: 500px;
+    height: 220px;
+    background-image: url("../img/face/41.png");
+    position: relative;
+    bottom: 426px;
+    z-index: 7;
+}
+
+#box5 {
+    width: 500px;
+    height: 330px;
+    background-image: url("../img/face/51.png");
+    position: relative;
+    bottom: 565px;
+    z-index: 6;
+}
+
+#box6 {
+    width: 480px;
+    height: 266px;
+    position: relative;
+    bottom: 1100px;
+    right: -100px;
+    z-index: 5;
+}
+
+#box7 {
+    width: 480px;
+    height: 266px;
+    position: relative;
+    bottom: 980px;
+    right: -100px;
+    z-index: 4;
+}
+
+#box8 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 860px;
+    right: -100px;
+    z-index: 3;
+}
+
+#box9 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 710px;
+    right: -100px;
+    z-index: 2;
+}
+
+#box10 {
+    width: 320px;
+    height: 265px;
+    position: relative;
+    bottom: 550px;
+    right: -100px;
+    z-index: 1;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.p {
+    font-family: 'Open Sans', 'sans-serif';
+}
+
+.rt-fade-out {
+    animation: fadeOut 1s forwards ease-out;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+
+@media screen and (min-width:320px) {
+    .rt-page-wrapper,
+    .rt-preloader {
+        width: 100%;
+        height: 100vh;
+        display: table;
+        background-color: white;
+        border: 30px white;
+    }
+    .rt-preloader {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+    .p-preloader {
+        text-align: center;
+        font-family: 'Open Sans';
+    }
+    .rt-preloader-inner {
+        margin-top: -45px;
+    }
+    .rt-btn-contact {
+        width: 45px;
+        height: 45px;
+        display: block;
+        background-color: #f5af1a;
+        background-image: url('../img/icon-contact-close.svg');
+        position: fixed;
+        bottom: 45px;
+        right: 45px;
+        border-radius: 50%;
+        z-index: 200;
+        transition: all 0.2s ease-out;
+        border: none;
+        cursor: pointer;
+    }
+    .rt-contact-info {
+        width: 265px;
+        height: 165px;
+        padding: 25px;
+        position: fixed;
+        bottom: 115px;
+        right: 65px;
+        z-index: 200;
+        display: none;
+    }
+    .rt-contact-info-inner {
+        display: table;
+        width: 100%;
+        float: right;
+    }
+    .rt-contact-info-inner p {
+        font-size: 17px;
+        line-height: 26px;
+        line-height: 7px;
+    }
+    .rt-social-links {
+        width: 100%;
+        height: 45px;
+        display: block;
+        float: left;
+    }
+    .rt-social {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+    }
+    .rt-social>img {
+        width: 35px;
+        height: auto;
+        display: block;
+        margin: 0px auto 0;
+    }
+    .rt-corner {
+        width: 25px;
+        height: 25px;
+        display: block;
+        float: right;
+        display: relative;
+    }
+    .rt-corner:after {
+        content: '';
+        width: 25px;
+        height: 25px;
+        display: block;
+        position: absolute;
+        bottom: -23px;
+        right: 0;
+        background: transparent url('../img/corner.svg');
+    }
+    #fb {
+        width: 50px;
+        bottom: 190px;
+        right: 930px;
+        position: absolute;
+    }
+    #in {
+        width: 50px;
+        bottom: 190px;
+        right: 875px;
+        position: absolute;
+    }
+    #yt {
+        width: 48px;
+        bottom: 190px;
+        right: 827px;
+        position: fixed;
+    }
+    #en {
+        width: 60px;
+        bottom: 90%;
+        right: 2%;
+        position: absolute;
+    }
+    #fr {
+        width: 60px;
+        bottom: 85%;
+        right: 2%;
+        position: absolute;
+    }
+    #pt {
+        width: 60px;
+        bottom: 80%;
+        right: 2%;
+        position: absolute;
+    }
+    #bren {
+        width: 200px;
+        bottom: 139px;
+        right: 923px;
+        position: absolute;
+    }
+    #dragzone {
+        -webkit-transform: scale(0.8);
+        -moz-transform: scale(0.8);
+        -ms-transform: scale(0.8);
+        transform: scale(0.8);
+    }
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300');
+    @font-face {
+        font-family: myFirstFont;
+        src: url("../fonts/BebasKai.ttf");
+    }
+    body {
+        padding: 0;
+        overflow: hidden;
+        font: 20px 'Open Sans';
+        color: rgb(0, 0, 0);
+        line-height: 40px;
+        overflow-y: hidden;
+    }
+    h1 {
+        margin: 40px 0;
+        font-size: 40px;
+        font-weight: 300;
+        text-align: left;
+        font-family: 'Abril Fatface';
+    }
+    * {
+        margin: 0;
+        padding: 0 0 0 10px;
+    }
+    .video {
+        width: 800px;
+        height: 450px;
+        padding-top: 100px;
+        width: relative;
+        padding: 0px;
+        display: block;
+    }
+    .video1 {
+        width: 1100px;
+        height: 625px;
+        padding-top: 1px;
+        width: relative;
+        padding: 0px;
+        display: block;
+        float: left;
+    }
+    .video2 {
+        width: 900px;
+        height: 480px;
+        padding-top: 1px;
+        width: relative;
+        padding: 0px;
+        display: block;
+        float: left;
+    }
+    ul {
+        width: 880px;
+        list-style: none;
+        display: flex;
+        margin: 100px auto;
+    }
+    .min1 {
+        width: relative;
+        padding: 0px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .min1prev {
+        width: 1000px;
+        padding: 0px;
+    }
+    .min10 {
+        width: 15%;
+        padding: 0px;
+    }
+    .min20 {
+        width: 18%;
+        padding: 0px;
+    }
+    .min40 {
+        width: 45%;
+    }
+    .min70 {
+        width: 75%;
+    }
+    .center {
+        margin: auto;
+    }
+    .min {
+        width: relative;
+        padding: 0px;
+    }
+    .minbottom {
+        width: 1200px;
+        padding: 0px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .minbottom2 {
+        width: 2000px;
+        padding: 0px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .lbox {
+        visibility: hidden;
+        opacity: 0;
+    }
+    .lbox:target {
+        opacity: 5;
+        visibility: visible;
+        width: 300%;
+        height: 300%;
+        top: 0;
+        left: 0;
+        background: rgba(10, 10, 10, 0.7);
+        position: fixed;
+    }
+    .box_img {
+        width: 1000px;
+        margin-left: 280px;
+        font: 14px/1 'Open Sans', sans-serif;
+        color: #fff;
+    }
+    .btn {
+        color: #fff;
+        font-family: 'Arial';
+        text-decoration: none;
+        position: fixed;
+        width: 50px;
+        height: 50px;
+        font-size: 40px;
+        text-align: center;
+    }
+    #prev {
+        left: 5%;
+        top: 45%;
+    }
+    #next {
+        right: 5%;
+        top: 45%;
+    }
+    #close {
+        right: 2%;
+        top: 0;
+    }
+    .rt-mar-bottom-15 {
+        margin-bottom: 15px;
+    }
+    .rt-text-light {
+        color: #616161;
+        font-size: 25px;
+        font-family: "Open Sans";
+    }
+    .rt-bg-black {
+        background-color: #000;
+    }
+    .rt-text-orange {
+        color: #da871b;
+    }
+    .rt-is-open {
+        display: block;
+    }
+    .rt-change-icon {
+        background-position-y: 45px;
+    }
+    .rt-title-big {
+        width: 70%;
+        background-color: rgb(255, 255, 255);
+        font-family: 'Abril Fatface';
+        font-size: 80px;
+        color: rgb(24, 24, 24);
+    }
+    .rt-title {
+        font-family: 'Bebas kai';
+        font-size: 50px;
+        color: #fff;
+    }
+    .rt-paragrafo {
+        font-family: Open Sans;
+        color: #fff;
+        font-size: 23px;
+    }
+    .min90 {
+        width: 90%;
+        height: relative;
+    }
+    .p2 {
+        font-family: Bebas Neue;
+        color: #fff;
+        font-size: 50px;
+    }
+    .p3 {
+        font-family: Open Sans;
+        color: #fff;
+        font-size: 23px;
+    }
+    .sub-title {
+        font-family: Open Sans;
+        font-style: unset;
+        color: #fff;
+        font-size: 35px;
+    }
+    .paragrafo {
+        width: 60%;
+    }
+    .paragrafo80 {
+        width: 80%;
+    }
+    .scroll-wrapper {
+        width: 100vw;
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        perspective: 1px;
+        transform-style: preserve-3d
+    }
+    .scroll-wrapper2 {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: -10px;
+        margin: 0;
+        padding: 0;
+        transform: translateZ(-1px) scale(2);
+    }
+    .container {
+        width: 95%;
+    }
+    .text-right {
+        width: 50%;
+        align-self: right;
+        margin: 0;
+        position: absolute;
+        right: 5%;
+    }
+    .p-title-left {
+        font-family: 'Bebas kai';
+        font-size: 50px;
+        color: #fff;
+        text-align: left;
+    }
+    .p-left {
+        font-family: Open Sans;
+        color: #fff;
+        font-size: 23px;
+        text-align: left;
+        width: 100%;
+    }
+    .div100 {
+        width: 100%;
+    }
+    .game{
+       
+        display: block;       /* iframes are inline by default */
+        background: #000;
+       padding-right: 50px ;    /* Reset default border */
+        height: 100vh;        /* Viewport-relative units */
+        width: 100vw;
+        
+    }
+}
