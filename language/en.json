@@ -52,14 +52,13 @@
     "modal2_BD1" : "''In-situ installation, along the banister and in the 'aquarium' of easels, and computer keyboards''",
     "modal2_BD2" : "The easels as symbol of resistance, art as instrument of change. Idea of organized chaos is comparable of how connecte we are today, by the social media and also the control of the GAFAS. Big Data is overall the set of all personal information, as preferences, behavour etc, condensed in super-algorithms built to deliver the best optimised way to manipulate the behavour of people and predict trends. Our information is stealed to feed these artificial inteligences ''machine learning'' that can even track the frequency of your eyeballs when you watch an Ad. We are in the most important time of human history, and our choices in the next century will deeply change the future. Art as instrument os change, warning and making people aware about social/politics/climate. ",
     
-
     "modal2_DST" : "Désordre(s)",
     "modal2_DS1" : "''Installation in the dark room of many ready mades, assemblage + painting and neon lights ''",
     "modal2_DS2" : "Interactive. The visiters can walk around this room size installation for the last project of the contemporary art class of the university Jean Jaurès. The gathering of elements from day to day routine and building an artwork with it shows how the modern and contemporary art are important to the actual social situation of people.",
     "modal2_DS3" : "''Once again ambitious, committed plastic proposal, fully anchored in the field of contemporary arts. Your appropriation of the subject, political, takes into account its semantic issues with rigor. The installation is convincing in its territorialization, like its formal dynamics, evoking a sort of barbaric totem, a possible emblem of our globalized and urban contemporaneity. The aesthetic reception synergy with a real work on the lighting, solicits the bodies of viewers, invited to stroll around ''",
 
-    "modal2_STT" : "Statue of a boy",
-    "modal2_ST1" : "Statue from the reduction of an block of hard plaster. Statue not finished yet.",
+    "modal2_MT" : "Michelagelo's David sculpture",
+    "modal2_M1" : "Wood craft of the famous artwork by Michelangelo, sculpture not finished yet",
 
     "modal2_PDT" : " My early paintings",
     "modal2_PD1" : "# 1 Representation of the painting ''Le Bouffon au Luth'' by Frans Hals. This painting shows us a young man playing the lute, Is he a simple musician? Does he play the role of a jester? Or is he a theatrical figure as his fancy costume would indicate",
@@ -68,6 +67,17 @@
    
     "modal2_PAT" : "Paintings, frescoes, digital painting",
     "modal2_PA1" : "A series of works made across my learning journey over a period of 10 years",
-    "modal2_PA2" : "Multiple mediums (oil, watercolor, fresco, digital)"
+    "modal2_PA2" : "Multiple mediums (oil, watercolor, fresco, digital)",
+
+
+
+    "modal3_VRT" : "Flou Révélaeur",
+    "modal3_VR1" : "The photographic project 'Flou Révélateur' that I present in the form of a virtual reality exhibition proposal staged a conception of blur. Through portraits, people i meet, I tell you about my daily life. These images appeal to each other, they create tension. The contrast between the blur of people crossing and the sharpness of our own image.",
+    "modal3_VR2" : "The choice of the virtual reality exhibition fits into the times we are living today. I wish, through this format, to show that we can continue to exhibit works, encourage creations and offer new models of expression to artists.",
+    "modal3_VR3" : "3D model, Unity"
+
+
+
+
 
 }
