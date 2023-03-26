@@ -191,24 +191,24 @@ $(document).ready(function() {
     //splitting all
     $('#dragZone').hover(function() {
             $("#box1").animate({
-                bottom: "0px",
-                right: "60px"
+                bottom: "130px",
+                right: "160px"
             }, 600);
             $("#box2").animate({
-                bottom: "70px",
-                right: "-60px"
+                bottom: "240px",
+                right: "-150px"
             }, 600);
             $("#box3").animate({
-                bottom: "150px",
+                bottom: "350px",
                 right: "60px"
             }, 600);
             $("#box4").animate({
-                bottom: "230px",
-                right: "-60px"
+                bottom: "450px",
+                right: "-140px"
             }, 600);
             $("#box5").animate({
-                bottom: "300px",
-                right: "60px"
+                bottom: "550px",
+                right: "160px"
             }, 600);
         },
         function() {
@@ -217,20 +217,20 @@ $(document).ready(function() {
                 right: "0px"
             }, 400);
             $("#box2").animate({
-                bottom: "130px",
+                bottom: "150px",
                 right: "0px"
             }, 400);
             $("#box3").animate({
-                bottom: "270px",
+                bottom: "266px",
                 right: "0px"
             }, 400);
             $("#box4").animate({
-                bottom: "426px",
+                bottom: "422px",
                 right: "0px"
             }, 400);
             $("#box5").animate({
-                bottom: "565px",
-                right: "0px"
+                bottom: "593px",
+                right: "-11px"
             }, 400);
         });
 
