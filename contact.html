@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contact Form</title>
+  <style>
+    body {
+        padding: 5%;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+.hello{
+    width: 50vw;
+}
+    .form {
+      width: 400px;
+      padding: 20px;
+      background: black;
+      text-align: center;
+    }
+
+    .form label {
+      display: block;
+      margin-bottom: 10px;
+      text-align: left;
+    }
+
+    .form input,
+    .form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      background: black;
+      color: white;
+      border: none;
+      border-bottom: 1px solid white;
+    }
+
+    .form textarea {
+      height: 100px;
+    }
+
+    .form button {
+      width: 100%;
+      padding: 10px;
+      background: black;
+      color: white;
+      border: none;
+      border-radius: 0;
+      font-family: "Bebas", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+<div class="hello" style="margin-right:10%;">
+ <h1 style=" text-align-last: left; font-size: 3,5vh;"> Hello, you can send me a message here</h1> <h2 style="font-weight: lighter; font-size: 2vh;">or send a whatsapp message on +393275571101</h2>
+</div>
+   
+
+    <form class="form" action="submit_form.php" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="message">Message:</label>
+      <textarea id="message" name="message" required></textarea>
+      
+      <button type="submit">Submit</button>
+      
+    </form>
+  </div>
+</body>
+</html>
