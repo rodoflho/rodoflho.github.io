@@ -54,7 +54,7 @@
         display: grid;
         grid-template-columns: 8fr 1fr 8fr;
     }
-    @media screen and (min-width: 768px) {
+    @media screen and (min-device-width: 768px) {
       /* Desktop Styles */
 
       .containerrow {
@@ -77,12 +77,14 @@
       .column {
         width: 80%;
       }
-      h1  {
+      h1  {      font-family: 'Bebas Neue', sans-serif;
+
         font-size: 5vh;
         margin: 1%;
 padding: 1%;
       }
       h2.title{
+        font-family: 'Bebas Neue', sans-serif;
 
 margin: 1%;
 padding: 1%;
@@ -99,7 +101,7 @@ background-color: aqua;
     }
     
    
-    @media screen and (min-width: 300px) and (max-width: 767px) {
+    @media screen and (min-device-width: 300px) and (max-device-width: 767px) {
       /* Mobile Styles */
       .hidegame {
         display:none
@@ -851,7 +853,7 @@ Firenze  - Italia</p>
 
 <div class="gallery">
     <img src="img/g/5.1.jpg" alt="Image 1">
-    <img src="img/g/7.png" alt="Image 2">
+    <img src="img/g/7.jpg" alt="Image 2">
     <img src="img/g/43.jpg" alt="Image 3">
     <img src="img/g/45.jpg" alt="Image 4">
     <img src="img/g/50.jpg" alt="Image 5">
