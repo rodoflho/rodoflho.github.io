@@ -1,277 +1,281 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>Rebecca Timoteo Artist Website</title>
-  <link rel="icon" type="image/x-icon" href="img/fleur.ico">
+    <title>Rebecca Timoteo Artist Website</title>
+    <link rel="icon" type="image/x-icon" href="img/fleur.ico">
 
-  <style>
-    @font-face {
-      font-family: 'Bebas Neue';
-      src: url('path-to-bebas-neue/BebasNeue-Regular.ttf') format('truetype');
-      font-weight: normal;
-      font-style: normal;
-    }
-    body {
-        background-color: rgb(255, 255, 255);
-      }
-
-      h1 {
-        font-size: 11px;
-      }
-      .verticalLine {
-  border-left: thick solid #000000;
-}
-.gallery {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-gap: 0px;}
-      .gallery img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-
-    }
-.cinzabg{
-    background-color: #1B1C1C;
-        height: fit-content;
-        padding: 2%;
-}
-      .backnoir{
-
-        background-color: #000000;
-        height: fit-content;
-        padding: 2%;
-      }
-      .container12 {
-        display: grid;
-        grid-template-columns: 4fr 2fr ;
-      }
-      .container23 {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-      }
-      .container22 {
-        display: grid;
-        grid-template-columns: 2fr 2fr;
-      }
-      .container23 {
-        display: grid;
-        grid-template-columns: 3fr 1fr;
-      }
-      .column3 {
-        display: grid;
-        grid-template-columns: 2fr 2fr 2fr;
-    }
-    .columntres {
-        display: grid;
-        grid-template-columns: 8fr 1fr 8fr;
-    }
-    @media screen and (min-device-width: 768px) {
-      /* Desktop Styles */
-
-      .containerrow {
-      padding: 0;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 20px;
-    } 
-
-      
-      .container {
-      padding: 0;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 20px;
-    }
-      
-      .column {
-        width: 80%;
-      }
-      h1  {      font-family: 'Bebas Neue', sans-serif;
-        font-size: 5vh;
-        margin: 1%;
-padding: 1%;
-      }
-      h2.title{
-        font-family: 'Bebas Neue', sans-serif;
-
-margin: 1%;
-padding: 1%;
-font-size: 41px;
-}
-p{
-    margin: 1%;
-padding: 5%;
-font-size: 25px;
-}
-      body {
-background-color: aqua;
-      }
-    }
-    
-   
-    @media screen and (min-device-width: 300px) and (max-device-width: 767px) {
-      /* Mobile Styles */
-      .hidegame {
-        display:none
-      }
-      
-
-      .container22 {
-        display: grid;
-        grid-template-columns: 1fr ;
-      }
-
-      .video-container {
-        height: 400px; /* Subtract header height from viewport height */
-      }
-      h2 .columnrow {        font-weight: 100;
-
-        align-self: center;
-      }
-      .column img {
-        width: 80vw;
-      }
-      h1 {margin: 1%;
-        padding: 5%;
-        padding-right: 1%;
-        font-size: 30px;
-        font-weight: 100;
-
-      }
-      h2{
-        font-weight: 100;
-        margin: 1%;
-        padding: 5%;
-        font-size: 31px;
-      }
-      h2.title{
-        font-weight: 100;
-      }
-
-      p{
-        margin: 1%;
-        padding: 5%;
-        font-size: 22px;
-
-      }
-      
-      .container {
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin: 20px;
-    }
-    .containerrow {
-      padding: 0;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 0;
-    }
-    .columnrow {
-        flex: 1;
-      padding: 10px;
-      max-width: 1000px;
-      font-family: 'Bebas Neue', sans-serif;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin: 0;
-    }
-
-    }
-    
-    
-    
-    body {
-      background-color: rgb(255, 255, 255);
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    
-    header {
-      color: #000000;
-      padding: 20px;
-      align-items: top;
-      z-index: 2;
-      font-family: 'Bebas Neue', sans-serif;
-      width: 100vw;
-      height: 5vh;
-    }
-    
-   
-    
-    .column {
-      flex: 1;
-      padding: 10px;
-      font-family: 'Bebas Neue', sans-serif;
-    }
-    
-    .space35 {
-      height: 7vh;
-      width: 100%;
-    }
-    
-    .paragraph {
-      font-size: 16px;
-      line-height: 1.5;
-    }
-    
-    .video-container video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .video-container {
-  position: relative;
-  height: 85vh;
-}
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 0;
-}
-
-.video-text {
-  font-size: 200%;
-  font-weight: 10;
-  letter-spacing: 1px;
-  word-spacing: 5px;
-  font-family: 'Bebas Neue', sans-serif;
-  position: relative;
-  line-height: 1.0;
-  top: -35%;
-  left: 3%;
-  width: 60vw;
-  height: 50vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: left;
-  align-items: left;
-  color: #fff;
-  text-align: left;
-  z-index: 1;
-}
-
-  </style>
+    <style>
+        @font-face {
+            font-family: 'Bebas Neue';
+            src: url('path-to-bebas-neue/BebasNeue-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
+        body {
+            background-color: rgb(255, 255, 255);
+        }
+        
+        h1 {
+            font-size: 11px;
+        }
+        
+        .verticalLine {
+            border-left: thick solid #000000;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 0px;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cinzabg {
+            background-color: #1B1C1C;
+            height: fit-content;
+            padding: 2%;
+        }
+        
+        .backnoir {
+            background-color: #000000;
+            height: fit-content;
+            padding: 2%;
+        }
+        
+        .container233 {
+            display: grid;
+            grid-template-columns: 2fr 3fr;
+        }
+        
+        .container12 {
+            display: grid;
+            grid-template-columns: 4fr 2fr;
+        }
+        
+        .container23 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+        }
+        
+        .container22 {
+            display: grid;
+            grid-template-columns: 2fr 2fr;
+        }
+        
+        .container23 {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+        }
+        
+        .column3 {
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr;
+        }
+        
+        .columntres {
+            display: grid;
+            grid-template-columns: 8fr 1fr 8fr;
+        }
+        
+        @media screen and (min-device-width: 768px) {
+            /* Desktop Styles */
+            .containerrow {
+                padding: 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: 20px;
+            }
+            .container {
+                padding: 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: 20px;
+            }
+            .column {
+                width: 80%;
+            }
+            h1 {
+                font-family: 'Bebas Neue', sans-serif;
+                font-size: 5vh;
+                margin: 1%;
+                padding: 1%;
+            }
+            h2.title {
+                font-family: 'Bebas Neue', sans-serif;
+                margin: 1%;
+                padding: 1%;
+                font-size: 41px;
+            }
+            p {
+                margin: 1%;
+                padding: 5%;
+                font-size: 25px;
+            }
+            body {
+                background-color: aqua;
+            }
+        }
+        
+        @media screen and (min-device-width: 300px) and (max-device-width: 767px) {
+            /* Mobile Styles */
+            .hidegame {
+                display: none
+            }
+            .container22 {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+            .video-container {
+                height: 400px;
+                /* Subtract header height from viewport height */
+            }
+            h2 .columnrow {
+                font-weight: 100;
+                align-self: center;
+            }
+            .column img {
+                width: 80vw;
+            }
+            h1 {
+                margin: 1%;
+                padding: 5%;
+                padding-right: 1%;
+                font-size: 30px;
+                font-weight: 100;
+            }
+            h2 {
+                font-weight: 100;
+                margin: 1%;
+                padding: 5%;
+                font-size: 31px;
+            }
+            h2.title {
+                font-weight: 100;
+            }
+            p {
+                margin: 1%;
+                padding: 5%;
+                font-size: 22px;
+            }
+            .container {
+                padding: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin: 20px;
+            }
+            .containerrow {
+                padding: 0;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: 0;
+            }
+            .columnrow {
+                flex: 1;
+                padding: 10px;
+                max-width: 1000px;
+                font-family: 'Bebas Neue', sans-serif;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                margin: 0;
+            }
+        }
+        
+        body {
+            background-color: rgb(255, 255, 255);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        header {
+            color: #000000;
+            padding: 20px;
+            align-items: top;
+            z-index: 2;
+            font-family: 'Bebas Neue', sans-serif;
+            width: 100vw;
+            height: 5vh;
+        }
+        
+        .column {
+            flex: 1;
+            padding: 10px;
+            font-family: 'Bebas Neue', sans-serif;
+        }
+        
+        .space35 {
+            height: 7vh;
+            width: 100%;
+        }
+        
+        .paragraph {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .video-container {
+            position: relative;
+            height: 85vh;
+        }
+        
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+        }
+        
+        .video-text {
+            font-size: 200%;
+            font-weight: 10;
+            letter-spacing: 1px;
+            word-spacing: 5px;
+            font-family: 'Bebas Neue', sans-serif;
+            position: relative;
+            line-height: 1.0;
+            top: -35%;
+            left: 3%;
+            width: 60vw;
+            height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: left;
+            align-items: left;
+            color: #fff;
+            text-align: left;
+            z-index: 1;
+        }
+    </style>
 </head>
+
 <body>
-  <header style="display: flex; justify-content: space-between; align-items: center;">
-  <h1 style=" font-weight: 100vw; font-size: 3vh; padding: 5px; margin: 0; top: 2; letter-spacing: 8px;"><img src="img/fleur.ico" style="width: 3vh;top: 2vh;">&nbsp;rebecca timoteo artist  </h1> 
+    <!--<header style="display: flex; justify-content: space-between; align-items: center;">
+        <h1 style=" font-weight: 100vw; font-size: 3vh; padding: 5px; margin: 0; top: 2; letter-spacing: 8px;"><img src="img/fleur.ico" style="width: 3vh;top: 2vh;">&nbsp;rebecca timoteo artist </h1>
 
-  </header>
+    </header>
 
-<!--<div class="video-container">
+   <div class="video-container">
     <video autoplay muted loop style="z-index: -2;">
       <source src="img/haha.mp4" type="video/mp4">
     </video>
@@ -282,770 +286,745 @@ background-color: aqua;
   </div>
   
 -->
-  <div class="space35"></div>
+    <div class="backnoir">
+        <div class="space35"></div>
 
-<div class="container12">
-  <div style="z-index: 1;" class="column "><h1 style="font-size: 4vw; margin-top: 5%; margin-left: 10%;" >I came from far away to Carrara-Italy, sculpting dreams into marble stories. Join me in this soulful adventure. </h1>>
-</div> 
+        <div class="container233">
+            <div style="z-index: 1;" class="column ">
+                <h1 style=" color: floralwhite; font-size: 2vw; margin-top: 20%; margin-left: 15%;">Hello, I’m Rebecca Timoteo — artist & multimedia creator. </h1>>
 
-<div  class="column">
-      
-    <img style="margin-top: 50%; margin-left: -20%; width: 100%; z-index: -1;" src="img/profile1.jpg" alt="Image">
-  </div>
- 
-  <div  class="column">
-      
-  </div>
-  </div> 
 
-<div class="space35"></div>
-<div class="space35"></div>
-<div class="space35"></div>
-<div class="space35"></div>
+                <div class="space35"></div>
+                <div class="space35"></div>
 
-
- 
-
-
-</div>
-
-  <div class="container">
-    <div class="column">
-      <h1 style="color: rgb(0, 0, 0); " class="titlebig">oil on canvas</h1>
-      <h1 style="color: rgb(0, 0, 0)" class="title">The look of Bacchus</h1>
-      
-      <p style="color: rgb(0, 0, 0)" >Representation of the famous work, 'The Triumph of Bacchus,' by Diego Vélasquez.<br> <br> This painting juxtaposes mythology with everyday life. The canvas represents the god Bacchus as the god offering men the wine that frees them temporarily from their problems. In Baroque literature, Bacchus is considered as an allegory for the liberation of man from the slavery of daily life.<br> <br> 2020&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x10  cm </p>
-    </div>
-    
-    <div class="column">
-      
-      <img style="margin: 2%; width: 100%;" src="img/baccomockup.jpg" alt="Image">
-    </div>
-  </div>
-
-
-
-
-  
-  <div class="container"> <div class="column">
-          <img style="margin: 2%; width: 100%;" src="img/consciencemockup.jpg" alt="Image">
-</div>
-    <div class="column">
-    
-
-
-      <h1 style="color: rgb(0, 0, 0)" class="title">Consciousness</h1>
-      <p style="color: rgb(0, 0, 0)" >This painting represents my ponderings on human and animal consciousness. In this instance, we can contemplate whether human beings are the only creatures that can be considered as conscious entities? If not, to what extent are animals conscientious like us? <br>
-    <br>2019&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x120  cm </p>
-   </div>
-    
-</div>
-
-
-
-
-
-
-<div class="containerrow"> 
-        
-        <div class="column">
-        <h2 style="color: rgb(0, 0, 0)" class="title">The light </h2>
-        <p style="color: rgb(0, 0, 0)" > 
-      2022&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas</p>
-      <img style="margin: 2%; width: 100%;" src="img/nova.jpg" alt="Image">
-      </div>
-
-
-      
-
-
-      <div class="column">
-        
-        
-        <h2 style="color: rgb(0, 0, 0)" class="title">Old Man</h2>
-        <p style="color: rgb(0, 0, 0)" > 
-            2022&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas </p>
-      <img style="margin: 2%; width: 100%;" src="img/old.jpg" alt="Image">
-       
-      </div>  
-    
-    </div>
-    <div class="containerrow"> 
-        
-      <div class="column">
-      <h2 style="color: rgb(0, 0, 0)" class="title">Saturn </h2>
-      <p style="color: rgb(0, 0, 0)" > 
-    2023&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas</p>
-    <img style="margin: 2%; width: 100%;" src="img/Saturn.jpg" alt="Image">
-    </div>
-
-
-    
-
-
-    <div class="column">
-      
-      
-      <h2 style="color: rgb(0, 0, 0)" class="title">Venus</h2>
-      <p style="color: rgb(0, 0, 0)" > 
-          2023&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas </p>
-    <img style="margin: 2%; width: 100%;" src="img/venus.jpg" alt="Image">
-     
-    </div>  
-  
-  </div>
-  <div class="container">
-    <div class="column">
-      <h2 style="color: rgb(0, 0, 0); " class="title">oil on canvas</h1>
-      <h1 style="color: rgb(0, 0, 0)" class="titlebig">Old King</h2>
-      
-      <p style="color: rgb(0, 0, 0)" > An oil painting in the Caravagian style portrays an elderly king before a single candle. The soft candlelight highlights his aged features and conveys a sense of contemplation and wisdom.<br> <br> 2023&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 60x40  cm </p>
-    </div>
-    
-    <div class="column">
-      
-      <img style="margin: 2%; width: 100%;" src="img/old king.jpg" alt="Image">
-    </div>
-  </div>
-
-  <div class="backnoir">
-    
-  <div class="container">
-    
-    <div class="column">
-      <h1 style="color: rgb(255, 255, 255)" class="titlebig">The Orphan Girl</h2>
-      
-      <p style="color: rgb(255, 255, 255)" > Copy of the famous painting by the French artist Eugène Delacroix. <br> <br> 2023&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 40x70  cm </p>
-    </div>
-    
-    
-    <div class="column">
-      
-      <img style="margin: 17%; width: 70%;" src="img/pittura.jpg" alt="Image">
-    </div>
-    
-  </div>
-    
-</div>
-  <div class="container">
-    <div  class="column">
-      <h2 style="color: rgb(0, 0, 0)" class="title">blue girls</h2>
-      
-      <p style="color: rgb(0, 0, 0)" >Three girls in the metro, showing the sense of mouvement in the society and the hurry of day to day.<br> <br> 2021&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x120  cm </p>
-    </div>
-    
-    <div  class="column">
-      
-      <img style="margin: 2%; width: 100%;" src="img/bluegirlsmockup.jpg" alt="Image">
-    </div>
-  </div>
-
-
-
-  <div class="backnoir"><div class="columnrow">
-    <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;" > sculpture </h1>
-
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="space35"></div>
-
-
-<div class="container22">
-
-
-
-
-<div class="column">
-<h1 style="color: white">
-ritratto di andrea
-</h1>
-<p style="color: white; font-size: 22px;">marmo bianco di carrara  - 2023 <br>
-work in progress<br>Andrea Longinotti Buitoni<br>
-20 x 28 x 20</p>
-
-</div>
-
-
-
-
-<div class="column">
-
-<img style="margin: 2%; width: 100%;" src="img/dfvdxvxdcv.jpg" alt="Image">
-
-</div>
-
-
-
-</div>
-
-
-
-
-<div class="container22">
-
-
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/666.jpg" alt="Image">
-
-</div>
-
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/3.jpg" alt="Image">
-
-</div>
-
-
-
-
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/A1.jpeg" alt="Image">
-
-</div>
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/A2.jpeg" alt="Image">
-
-</div>
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/A3.jpeg" alt="Image">
-
-</div>
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/A4.jpeg" alt="Image">
-
-</div> 
-
-
-
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/A8.jpg" alt="Image">
-
-</div> 
-<div class="column">        <img style="margin: 2%; width: 100%;" src="img/profile2.jpg" alt="Image">
-
-</div> 
- 
-   <div class="column">        <img style="margin: 2%; width: 100%;" src="img/andrealast2.jpg" alt="Image">
-
-</div>
-  <div class="column">        <img style="margin: 2%; width: 100%;" src="img/andreaprofile.png" alt="Image">
-
-</div>
-  <div class="column">        <img style="margin: 2%; width: 100%;" src="img/andreaelasculttura.png" alt="Image">
-
-</div>
-  <div class="column">        <img style="margin: 2%; width: 100%;" src="img/andreaerebecca.png" alt="Image">
-
-</div>
-
-<h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;" > Work in progress... </h1>
-</div>
-
-
-
-
-
-
-<div class="space35"></div>
-<div class="space35"></div>
-
-
-
-
-
-
-<div class="columnrow">      <div style="width: 20%;" class="space35"></div>
-
-<h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;" > la sirène </h1>
-<p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;">polystirene  - 2019<br>
-work in progress - brasil<br>
-120 x 300 x 100</p>
-</div>
-
-
-<div class="column3">
-<div class="column">
-    <img style="margin: 2%; width: 100%;" src="img/esc1.jpg" alt="Image">
-
-</div>
-<div class="column">
-    <img style="padding: 0px; margin: 2%; width: 100%;" src="img/esc2.jpg" alt="Image">
-
-</div>
-<div class="column">
-    <img style="margin: 2%; width: 100%;" src="img/esc3.jpg" alt="Image">
-
-</div>
-
-
-
-
-      </div>
-
-
-
-      <div class="container22">
-
-
-
-        <div  class="column">
-            <img style="margin: 2%; width: 100%;" src="img/esc4.jpg" alt="Image">
-        </div>
-        
-        <div  class="column">
-          
-          <img style="margin: 2%; width: 100%;" src="img/esc5.jpg" alt="Image">
-        </div>
-
-        <div class="columnrow">      <div style="width: 20%;" class="space35"></div>
-
-<h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;" > Accademy of fine arts - 
-Carrara </h1>
-<p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;">Sculpture degree - AA 2023/2024<br>
-Work in progress - Clay<br>
-100 x 40 x 40</p>
-</div>
-
-
-
-      
-
-        <div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/minervalast.png" alt="Image">
-
-</div>
-<div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/argila3.png" alt="Image">
-
-</div>
-<div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/argila34.png" alt="Image">
-
-</div>
-<div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/minegesso.png" alt="Image">
-
-</div>
-        <div style="width: 20%;" class="space35"></div>
-        <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;" > Works in progress (2024) - 
-Carrara </h1>
-<p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
-;            align-content: center;">Studio Ponte di Ferro <br>
-Marmo bianco di Carrara<br>
-   <div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/workinp1.png" alt="Image">
-
-</div>
-          <div class="column">
-  <img style="margin: 2%; width: 100%;" src="img/workinp2.png" alt="Image">
-
-</div>
-
-</div>
-
-      </div>
-
-    </div>
-  
-
-            <div class="container">
-                <div class="column"><h2 style="font-size: 35px;"> zones shortfilm</h2>
-            <p>Shortfilm created for the final project of the first year in art school.<br><br>
-            
-                Zones talk about the first signs of appropriation in the early years of civilization. The music and rhythm act as a conductor between the scenes inviting those who watch to emerge in a dance.
-                
-                <br<<br>
-                2021<br>
-                Video</p></div>
-            
             </div>
-            <div class="container">
-                    <iframe width="100%" height="950vh" src="https://www.youtube.com/embed/rvCaqioAcPM" title="Zones" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
-            
 
-  <div class="space35"></div>
-  
+            <div class="column">
 
-<div class="container">
-    
-    <div class="column">
-
-    <h1 style="color: rgb(0, 0, 0);   font-size: 35px;   font-family: 'Bebas Neue';
-;            align-content: center;" > installations </h1>
-  
-
-</div>
-</div>
-<div class="container">
-
-
-
-
-
-    <div class="column">
-      <h2 style="color: rgb(0, 0, 0)" class="title">Big Data is Watching you</h2>
-      
-      <p style="color: rgb(0, 0, 0)" > 
-        
-        ''In-situ installation, along the banister and in the 'aquarium' of easels, and computer keyboards''
-<br> <br>
-        The easels as symbol of resistance, art as instrument of change. Idea of organized chaos is comparable of how connecte we are today, by the social media and also the control of the GAFAS. Big Data is overall the set of all personal information, as preferences, behavour etc, condensed in super-algorithms built to deliver the best optimised way to manipulate the behavour of people and predict trends. Our information is stealed to feed these artificial inteligences ''machine learning'' that can even track the frequency of your eyeballs when you watch an Ad. We are in the most important time of human history, and our choices in the next century will deeply change the future. Art as instrument os change, warning and making people aware about social/politics/climate.
-        <br> <br>
-
-        2021<br>
-        7 X 4 X 3 M</p>
-
-
-   
-
-
-</div>
-</div>
- <div class="containerrow">
-        
-        
-
-        <div  class="column">
-            <img style="margin: 2%; width: 100%;" src="img/3data.jpg" alt="Image">
+                <img style="margin-top: 5%; margin-left: 0%; width: 100%; z-index: -1;" src="img/venus.png" alt="Image">
+            </div>
         </div>
-        
-        <div  class="column">
-          
-          <img style="margin: 2%; width: 100%;" src="img/4.jpg" alt="Image">
+        <h1 style=" width: 35%vw; color: floralwhite; font-size: 2vw; margin-top: 20%; margin-left: 15%;">I sculpt in cement, paint on canvas, and create digital content. </h1>>
+
+        <div class="container">
+            <div class="column">
+                <img style="margin-top: 5%; margin-left: 0%; width: 100%; z-index: -1;" src="img/venus2.png" alt="Image">
+            </div>
+            <div class="column">
+                <img style="margin-top: 50%; margin-right: 80%; width: 60vw; z-index: -1;" src="img/venus3.png" alt="Image">
+            </div>
+
+
+
+
         </div>
-      </div>
-              <div class="containerrow">
-        
-        
 
-                <div  class="column">
-                    <img style="margin: 2%; width: 100%;" src="img/2.jpg" alt="Image">
-                </div>
-                
-                <div  class="column">
-                  
-                  <img style="margin: 2%; width: 100%;" src="img/6.jpg" alt="Image">
-                </div>
-              </div>
-        
+        <div class="space35"></div>
+        <div class="space35"></div>
 
-  </div>
+        <div class="space35"></div>
+        <div class="space35"></div>
+    </div>
 
 
-  <div class="container">
+    <div class="space35"></div>
+    <div class="space35"></div>
+    <div class="space35"></div>
+    <div class="space35"></div>
 
 
 
 
 
-    <div class="column">
-      <h2 style="color: rgb(0, 0, 0)" class="title">desordres</h2>
-      
-      <p style="color: rgb(0, 0, 0)" >300 x 300 x 200   -  instalation <br> <br>''Installation in the dark room of many ready mades, assemblage + painting and neon lights ''<br> <br> Interactive. The visiters can walk around this room size installation for the last project of the contemporary art class of the university Jean Jaurès. The gathering of elements from day to day routine and building an artwork with it shows how the modern and contemporary art are important to the actual social situation of people.</p>
-    </div>    </div>
+    </div>
+
+    <div class="container">
+        <div class="column">
+            <h1 style="color: rgb(0, 0, 0); " class="titlebig">oil on canvas</h1>
+            <h1 style="color: rgb(0, 0, 0)" class="title">The look of Bacchus</h1>
+
+            <p style="color: rgb(0, 0, 0)">Representation of the famous work, 'The Triumph of Bacchus,' by Diego Vélasquez.<br> <br> This painting juxtaposes mythology with everyday life. The canvas represents the god Bacchus as the god offering men the wine that frees them temporarily
+                from their problems. In Baroque literature, Bacchus is considered as an allegory for the liberation of man from the slavery of daily life.<br> <br> 2020&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x10 cm </p>
+        </div>
+
+        <div class="column">
+
+            <img style="margin: 2%; width: 100%;" src="img/baccomockup.jpg" alt="Image">
+        </div>
+    </div>
+
+
+
+
+
+    <div class="container">
+        <div class="column">
+            <img style="margin: 2%; width: 100%;" src="img/consciencemockup.jpg" alt="Image">
+        </div>
+        <div class="column">
+
+
+
+            <h1 style="color: rgb(0, 0, 0)" class="title">Consciousness</h1>
+            <p style="color: rgb(0, 0, 0)">This painting represents my ponderings on human and animal consciousness. In this instance, we can contemplate whether human beings are the only creatures that can be considered as conscious entities? If not, to what extent are animals conscientious
+                like us? <br>
+                <br>2019&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x120 cm </p>
+        </div>
+
+    </div>
+
+
+
 
 
 
     <div class="containerrow">
-        
-        
 
-        <div  class="column">
-            <img style="margin: 2%; width: 100%;" src="img/S1.jpg" alt="Image">
-           
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0)" class="title">The light </h2>
+            <p style="color: rgb(0, 0, 0)">
+                2022&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas</p>
+            <img style="margin: 2%; width: 100%;" src="img/nova.jpg" alt="Image">
+        </div>
+
+
+
+
+
+        <div class="column">
+
+
+            <h2 style="color: rgb(0, 0, 0)" class="title">Old Man</h2>
+            <p style="color: rgb(0, 0, 0)">
+                2022&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas </p>
+            <img style="margin: 2%; width: 100%;" src="img/old.jpg" alt="Image">
 
         </div>
-        
-       
-      </div>
 
-      <div class="containerrow">
+    </div>
+    <div class="containerrow">
 
- <div  class="column">
-             <img style= "width: 48%; align-items: center;" src="img/S3.jpg" alt="Image">
-          <img style="width: 50%;" src="img/S4.jpg" alt="Image">
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0)" class="title">Saturn </h2>
+            <p style="color: rgb(0, 0, 0)">
+                2023&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas</p>
+            <img style="margin: 2%; width: 100%;" src="img/Saturn.jpg" alt="Image">
         </div>
-      </div>
- 
-<div  class="cinzabg">
+
+
+
+
+
+        <div class="column">
+
+
+            <h2 style="color: rgb(0, 0, 0)" class="title">Venus</h2>
+            <p style="color: rgb(0, 0, 0)">
+                2023&nbsp; &nbsp; &nbsp;- &nbsp; &nbsp; &nbsp; oil on canvas </p>
+            <img style="margin: 2%; width: 100%;" src="img/venus.jpg" alt="Image">
+
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0); " class="title">oil on canvas</h1>
+                <h1 style="color: rgb(0, 0, 0)" class="titlebig">Old King</h2>
+
+            <p style="color: rgb(0, 0, 0)"> An oil painting in the Caravagian style portrays an elderly king before a single candle. The soft candlelight highlights his aged features and conveys a sense of contemplation and wisdom.<br> <br> 2023&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 60x40
+                cm </p>
+        </div>
+
+        <div class="column">
+
+            <img style="margin: 2%; width: 100%;" src="img/old king.jpg" alt="Image">
+        </div>
+    </div>
+
+    <div class="backnoir">
+
+        <div class="container">
+
+            <div class="column">
+                <h1 style="color: rgb(255, 255, 255)" class="titlebig">The Orphan Girl</h2>
+
+                    <p style="color: rgb(255, 255, 255)"> Copy of the famous painting by the French artist Eugène Delacroix. <br> <br> 2023&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 40x70 cm </p>
+            </div>
+
+
+            <div class="column">
+
+                <img style="margin: 17%; width: 70%;" src="img/pittura.jpg" alt="Image">
+            </div>
+
+        </div>
+
+    </div>
+    <div class="container">
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0)" class="title">blue girls</h2>
+
+            <p style="color: rgb(0, 0, 0)">Three girls in the metro, showing the sense of mouvement in the society and the hurry of day to day.<br> <br> 2021&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100x120 cm </p>
+        </div>
+
+        <div class="column">
+
+            <img style="margin: 2%; width: 100%;" src="img/bluegirlsmockup.jpg" alt="Image">
+        </div>
+    </div>
+
+
+
+    <div class="backnoir">
+        <div class="columnrow">
+            <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;"> sculpture </h1>
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="space35"></div>
+
+
+        <div class="container22">
+
+
+
+
+            <div class="column">
+                <h1 style="color: white">
+                    ritratto di andrea
+                </h1>
+                <p style="color: white; font-size: 22px;">marmo bianco di carrara - 2023 <br> work in progress<br>Andrea Longinotti Buitoni<br> 20 x 28 x 20</p>
+
+            </div>
+
+
+
+
+            <div class="column">
+
+                <img style="margin: 2%; width: 100%;" src="img/dfvdxvxdcv.jpg" alt="Image">
+
+            </div>
+
+
+
+        </div>
+
+
+
+
+        <div class="container22">
+
+
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/666.jpg" alt="Image">
+
+            </div>
+
+
+
+
+
+
+
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/A2.jpeg" alt="Image">
+
+            </div>
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/A3.jpeg" alt="Image">
+
+            </div>
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/A4.jpeg" alt="Image">
+
+            </div>
+
+
+
+
+
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/andrealast2.jpg" alt="Image">
+
+            </div>
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/andreaprofile.png" alt="Image">
+
+            </div>
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/andreaelasculttura.png" alt="Image">
+
+            </div>
+            <div class="column"> <img style="margin: 2%; width: 100%;" src="img/andreaerebecca.png" alt="Image">
+
+            </div>
+
+
+        </div>
+
+
+
+
+
+
+        <div class="space35"></div>
+        <div class="space35"></div>
+
+
+
+
+
+
+        <div class="columnrow">
+            <div style="width: 20%;" class="space35"></div>
+
+            <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;"> la sirène </h1>
+            <p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;">polystirene - 2019<br> work in progress - brasil<br> 120 x 300 x 100</p>
+        </div>
+
+
+        <div class="column3">
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/esc1.jpg" alt="Image">
+
+            </div>
+
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/esc3.jpg" alt="Image">
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+        <div class="container22">
+
+
+
+
+
+            <div class="column">
+
+                <img style="margin: 2%; width: 100%;" src="img/esc5.jpg" alt="Image">
+            </div>
+
+            <div class="columnrow">
+                <div style="width: 20%;" class="space35"></div>
+
+                <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;"> Accademy of fine arts - Carrara </h1>
+                <p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;">Sculpture degree - AA 2023/2024<br> Work in progress - Clay<br> 100 x 40 x 40</p>
+            </div>
+
+
+
+
+
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/minervalast.png" alt="Image">
+
+            </div>
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/argila3.png" alt="Image">
+
+            </div>
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/argila34.png" alt="Image">
+
+            </div>
+            <div class="column">
+                <img style="margin: 2%; width: 100%;" src="img/minegesso.png" alt="Image">
+
+            </div>
+            <div style="width: 20%;" class="space35"></div>
+            <h1 style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;"> Works in progress (2024) - Carrara </h1>
+            <p style="color: rgb(255, 255, 255);      font-family: 'Bebas Neue';
+;            align-content: center;">Studio Ponte di Ferro <br> Marmo bianco di Carrara<br>
+                <div class="column">
+                    <img style="margin: 2%; width: 100%;" src="img/workinp1.png" alt="Image">
+
+                </div>
+                <div class="column">
+                    <img style="margin: 2%; width: 100%;" src="img/workinp2.png" alt="Image">
+
+                </div>
+
+        </div>
+
+    </div>
+
+    </div>
+
 
     <div class="container">
         <div class="column">
-          <h2 style="color: rgb(255, 255, 255)" class="title">ethix</h2>
-          
-          <p style="color: rgb(255, 255, 255)" >Branding Project - 2021<br> <br> My freelance work as a brand designer for Ethix/Metrika in 2021 allowed me to leverage my skills and creativity to help this remarkable savings advisory company stand out in their industry. With a focus on collaboration and innovation, I developed a brand identity that captured the essence of Ethix's mission.</p>
+            <h2 style="font-size: 35px;"> zones shortfilm</h2>
+            <p>Shortfilm created for the final project of the first year in art school.<br><br> Zones talk about the first signs of appropriation in the early years of civilization. The music and rhythm act as a conductor between the scenes inviting those
+                who watch to emerge in a dance.
+
+                <br<<br>
+                    2021<br> Video
+            </p>
         </div>
-        
-        
-      
+
+    </div>
+    <div class="container">
+        <iframe width="100%" height="950vh" src="https://www.youtube.com/embed/rvCaqioAcPM" title="Zones" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>
+
+
+    <div class="space35"></div>
+
+
+    <div class="container">
+
+        <div class="column">
+
+            <h1 style="color: rgb(0, 0, 0);   font-size: 35px;   font-family: 'Bebas Neue';
+;            align-content: center;"> installations </h1>
+
+
+        </div>
+    </div>
+    <div class="container">
+
+
+
+
+
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0)" class="title">Big Data is Watching you</h2>
+
+            <p style="color: rgb(0, 0, 0)">
+
+                ''In-situ installation, along the banister and in the 'aquarium' of easels, and computer keyboards''
+                <br> <br> The easels as symbol of resistance, art as instrument of change. Idea of organized chaos is comparable of how connecte we are today, by the social media and also the control of the GAFAS. Big Data is overall the set of all personal
+                information, as preferences, behavour etc, condensed in super-algorithms built to deliver the best optimised way to manipulate the behavour of people and predict trends. Our information is stealed to feed these artificial inteligences
+                ''machine learning'' that can even track the frequency of your eyeballs when you watch an Ad. We are in the most important time of human history, and our choices in the next century will deeply change the future. Art as instrument os change,
+                warning and making people aware about social/politics/climate.
+                <br> <br> 2021
+
+                <br> 7 X 4 X 3 M</p>
+
+
+
+
+
+        </div>
+    </div>
+    <div class="containerrow">
+
+
+
+        <div class="column">
+            <img style="margin: 2%; width: 100%;" src="img/3data.jpg" alt="Image">
+        </div>
+
+        <div class="column">
+
+            <img style="margin: 2%; width: 100%;" src="img/4.jpg" alt="Image">
+        </div>
+    </div>
+    <div class="containerrow">
+
+
+
+        <div class="column">
+            <img style="margin: 2%; width: 100%;" src="img/2.jpg" alt="Image">
+        </div>
+
+        <div class="column">
+
+            <img style="margin: 2%; width: 100%;" src="img/6.jpg" alt="Image">
+        </div>
+    </div>
+
+
+    </div>
+
+
+    <div class="container">
+
+
+
+
+
+        <div class="column">
+            <h2 style="color: rgb(0, 0, 0)" class="title">desordres</h2>
+
+            <p style="color: rgb(0, 0, 0)">300 x 300 x 200 - instalation <br> <br>''Installation in the dark room of many ready mades, assemblage + painting and neon lights ''<br> <br> Interactive. The visiters can walk around this room size installation for the last project of the
+                contemporary art class of the university Jean Jaurès. The gathering of elements from day to day routine and building an artwork with it shows how the modern and contemporary art are important to the actual social situation of people.</p>
+        </div>
+    </div>
+
+
+
+    <div class="containerrow">
+
+
+
+        <div class="column">
+            <img style="margin: 2%; width: 100%;" src="img/S1.jpg" alt="Image">
+
+
+        </div>
+
+
+    </div>
+
+    <div class="containerrow">
+
+        <div class="column">
+            <img style="width: 48%; align-items: center;" src="img/S3.jpg" alt="Image">
+            <img style="width: 50%;" src="img/S4.jpg" alt="Image">
+        </div>
+    </div>
+
+    <div class="cinzabg">
+
+        <div class="container">
+            <div class="column">
+                <h2 style="color: rgb(255, 255, 255)" class="title">ethix</h2>
+
+                <p style="color: rgb(255, 255, 255)">Branding Project - 2021<br> <br> My freelance work as a brand designer for Ethix/Metrika in 2021 allowed me to leverage my skills and creativity to help this remarkable savings advisory company stand out in their industry. With a focus
+                    on collaboration and innovation, I developed a brand identity that captured the essence of Ethix's mission.</p>
+            </div>
+
+
+
         </div>
 
         <div class="container23">
 
 
 
-                        <div class="column"> <img style="width: 120%;" src="img/manual.jpg" alt="Image"> 
-                        </div>    
-                            <div class="column">
-                                <img style="width: 100%;" src="img/webdesign.jpg" alt="Image">
-                                <img style="width: 100%;" src="img/mockupethix.jpg" alt="Image">
+            <div class="column"> <img style="width: 120%;" src="img/manual.jpg" alt="Image">
+            </div>
+            <div class="column">
+                <img style="width: 100%;" src="img/webdesign.jpg" alt="Image">
+                <img style="width: 100%;" src="img/mockupethix.jpg" alt="Image">
 
-                            </div>
-            
-                            
-                        </div>     
+            </div>
 
-<div class="container">
-    <div class="column">
-        <img style="width: 80%;" src="img/treslogos.jpg" alt="Image">
 
-    </div>
+        </div>
+
+        <div class="container">
+            <div class="column">
+                <img style="width: 80%;" src="img/treslogos.jpg" alt="Image">
+
+            </div>
             <div class="column">
                 <img style="width: 80%;" src="img/cores.jpg" alt="Image">
 
             </div>
         </div>
-            
-            
+
+
         <div class="container">
             <div class="column">
-              <h2 style="color: rgb(255, 255, 255);text-align-last: center" class="title">omoshi tropical sushi<br></h2>
-              <h3 style="color: rgb(255, 255, 255); text-align-last : center" class="title">Branding/Project Management and Execution /  2019-2020.</h3>
+                <h2 style="color: rgb(255, 255, 255);text-align-last: center" class="title">omoshi tropical sushi<br></h2>
+                <h3 style="color: rgb(255, 255, 255); text-align-last : center" class="title">Branding/Project Management and Execution / 2019-2020.</h3>
 
-              <p style="color: rgb(255, 255, 255)" ><br> <br> Creating the Omoshi Tropical Sushi brand was a challenging but rewarding endeavor that pushed me to explore new creative and culinary horizons. From developing the brand identity and packaging to learning the art of sushi-making and preparing the food myself, I was deeply involved in every aspect of the brand's development. By leveraging digital platforms like UberEats, I was able to share my love of sushi with a wider audience and establish a successful and unique brand that combined my passion for design and food.
-<br><br>
-                Through hard work, dedication, and a passion for creativity, I undertook the development of this project as a means of funding my lifelong dream of studying art in Europe.</p>
+                <p style="color: rgb(255, 255, 255)"><br> <br> Creating the Omoshi Tropical Sushi brand was a challenging but rewarding endeavor that pushed me to explore new creative and culinary horizons. From developing the brand identity and packaging to learning the art of sushi-making
+                    and preparing the food myself, I was deeply involved in every aspect of the brand's development. By leveraging digital platforms like UberEats, I was able to share my love of sushi with a wider audience and establish a successful and
+                    unique brand that combined my passion for design and food.
+                    <br><br> Through hard work, dedication, and a passion for creativity, I undertook the development of this project as a means of funding my lifelong dream of studying art in Europe.</p>
             </div>
-            
-            
-          
+
+
+
+        </div>
+
+        <div class="container23">
+
+
+
+            <div class="column"> <img style="width: 100%;" src="img/mockomoshi.jpg" alt="Image">
             </div>
-    
-            <div class="container23">
-    
-    
-    
-                            <div class="column"> <img style="width: 100%;" src="img/mockomoshi.jpg" alt="Image"> 
-                            </div>    
-                                <div class="column">
-                                    <img style="width: 100%;" src="img/shop.jpg" alt="Image">
-                                    <img style="width: 100%;" src="img/window.jpg" alt="Image">
-    
-                                </div>
-                
-                                
-                            </div>  
-                            
-                                        <div class="container22">
-            <div class="column">         
-              
+            <div class="column">
+                <img style="width: 100%;" src="img/shop.jpg" alt="Image">
+                <img style="width: 100%;" src="img/window.jpg" alt="Image">
+
+            </div>
+
+
+        </div>
+
+        <div class="container22">
+            <div class="column">
+
                 <img style="width: 100%;" src="img/omoshilogo.jpg" alt="Image">
 
             </div>
 
 
-            <div class="column">                               
-                     <img style="width: 80%;" src="img/packaging.jpg" alt="Image">
+            <div class="column">
+                <img style="width: 80%;" src="img/packaging.jpg" alt="Image">
             </div>
 
 
-                                        </div>
-                
-
-       
-
-                
-                
-            
-</div>
-
-<div style="width: 100vw; height: 15%; background-color: white;">
-
-<h1 style=" font-family: 'Bebas Neue'; width: fit-content; text-align-last: center; padding-top: 10%; padding: 9%; margin-left: 35%;">
-rebecca's trajectory 
-</h1>
-</div>
-
-<div class="container22" >
-
-<div class="columntres">
-
-    <div class="column">
-<p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
-        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>Città Creativa Unesco</b>  <br> "Participated to the event doing live marble sculpture" <br> <br>
-        
-        <br><br>
-      <p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
-        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>ACADEMY OF FINE ARTS - CARRARA</b>  <br> "Enrolled in Carrara's Fine Arts Academy, pursuing Sculpture Program for the 2023/24 academic year." <br> <br>
-        
-        <br><br>
-        <p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
-        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>ANDREA BOCELLI FOUNDATION- TALENTS4WORK PROGRAM</b> <br> Admitted and participated to reorientation project, strengthening of cross-functional and socio-emotional skills. <br> <br><br><br> <br><br> <br><b> 2021</b><br><br><br> <br><br> <br><br> <br> 
-        
-        <br><br>
-        <b>ETHIX PROJECT </b> <br>
-Developed branding identity.<br>
-Freelance.<br>
-France.
-
-<br><br><br><br><br><br><br><br>
+        </div>
 
 
-<b>PLASTIC ARTS PROGRAM</b> <br>
-Painting, sculpture, video, art history, art analysis, philosophy contemporary art.<br>
-Université Jean Jaurès<br>
-France .
 
-<br><br><br><br><br><br><br><br>
-<b>SEP - DEC
+
+
+
+
+    </div>
+
+    <div style="width: 100vw; height: 15%; background-color: white;">
+
+        <h1 style=" font-family: 'Bebas Neue'; width: fit-content; text-align-last: center; padding-top: 10%; padding: 9%; margin-left: 35%;">
+            rebecca's trajectory
+        </h1>
+    </div>
+
+    <div class="container22">
+
+        <div class="columntres">
+
+            <div class="column">
+                <p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
+        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>Città Creativa Unesco</b> <br> "Participated to the event doing live marble sculpture" <br> <br>
+
+                    <br><br>
+                    <p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
+        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>ACADEMY OF FINE ARTS - CARRARA</b> <br> "Enrolled in Carrara's Fine Arts Academy, pursuing Sculpture Program for the 2023/24 academic year." <br> <br>
+
+                        <br><br>
+                        <p style="color: rgb(0, 0, 0); text-align: right;  line-height: normal;
+        font-family: Arial, Helvetica, sans-serif;" class="paragraph"> <b>ANDREA BOCELLI FOUNDATION- TALENTS4WORK PROGRAM</b> <br> Admitted and participated to reorientation project, strengthening of cross-functional and socio-emotional skills. <br> <br><br><br> <br><br> <br><b> 2021</b><br><br><br>                            <br><br> <br><br> <br>
+
+                            <br><br>
+                            <b>ETHIX PROJECT </b> <br> Developed branding identity.<br> Freelance.
+                            <br> France.
+
+                            <br><br><br><br><br><br><br><br>
+
+
+                            <b>PLASTIC ARTS PROGRAM</b> <br> Painting, sculpture, video, art history, art analysis, philosophy contemporary art.<br> Université Jean Jaurès<br> France .
+
+                            <br><br><br><br><br><br><br><br>
+                            <b>SEP - DEC
 2019</b>
-<br><br><br><br><br><br><br><br><br><br><br><br>
+                            <br><br><br><br><br><br><br><br><br><br><br><br>
 
-<b>ALLIANCE FRANSCAISE GOIANIA</b><br> Full time job <br>
-"Progressed steadly  at Alliance Française, learning graphic design while also learning French and gaining valuable experience."
+                            <b>ALLIANCE FRANSCAISE GOIANIA</b><br> Full time job <br> "Progressed steadly at Alliance Française, learning graphic design while also learning French and gaining valuable experience."
 
 
-</p>
+                        </p>
 
-    </div>
+            </div>
 
-    <div style="width: fit-content; margin: 0.5%;" class="column">
-    <hr width="3" size="1400px" style=" background-color: rgb(0, 0, 0);" />
-    </div>
+            <div style="width: fit-content; margin: 0.5%;" class="column">
+                <hr width="3" size="1400px" style=" background-color: rgb(0, 0, 0);" />
+            </div>
 
-    <div class="column">
-        <p style="  color: rgb(0, 0, 0);   text-align-last: left;
+            <div class="column">
+                <p style="  color: rgb(0, 0, 0);   text-align-last: left;
         line-height: normal;
         font-family: Arial, Helvetica, sans-serif;" class="paragraph"><b>2024</b> <br><br><br><br><br> <br><br> <br><br> <br><b>2023/2024</b> <br><br><br><br><br> <br><br> <br><br> <br> <b>2023</b> <br><br><br><br><br><br><br><br><br><br><br><br>
-        
-        
-        
-       <b>ERASMUS EXPERIENCE /</b> <br> 
-Marble sculpture, Oil Painting, extra lass laboratories<br>
-Accademia di Belli Arti di Firenze - Italia.
-<br><br><br><br><br><br><br>
-<b>FEB - MAY
+
+
+
+                    <b>ERASMUS EXPERIENCE /</b> <br> Marble sculpture, Oil Painting, extra lass laboratories<br> Accademia di Belli Arti di Firenze - Italia.
+                    <br><br><br><br><br><br><br>
+                    <b>FEB - MAY
 2020 </b>
-<br><br><br><br><br><br><br><br> <br><br><br>
-<br>
-<b>
+                    <br><br><br><br><br><br><br><br> <br><br><br>
+                    <br>
+                    <b>
     2020 </b>
 
 
-    <br><br><br><br><br><br><br> <br><br><br><br><br>
+                    <br><br><br><br><br><br><br> <br><br><br><br><br>
 
-    <b>LEGACY DESIGN</b> <br>  Collaborate with design for social media, video and branding. <br> Full-time job / Brazil
-    
-    
-    <br><br><br><br><br><br><br><br><br>
-    <b>  2017 - MAY 2019</b>
-   
-    </p>
+                    <b>LEGACY DESIGN</b> <br> Collaborate with design for social media, video and branding. <br> Full-time job / Brazil
+
+
+                    <br><br><br><br><br><br><br><br><br>
+                    <b>  2017 - MAY 2019</b>
+
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+
+        <div class="column">
+            <img style="width: 40%;margin-left: 24%; " src="img/Capture2.PNG" alt="Image">
+            <p style=" text-align-last: center; line-height: normal;
+font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
+                Hello, my name is Rebecca Timoteo, a passionate 25 years old Brazilian artist with a deep love for marble. I am constantly inspired by its beauty and mystery.
+                <br><br> My journey as an artist began many years ago in the Brazilian countryside, where I was raised in a family that holds values of love. My strongest inspiration came from my mother, whose words and wisdom invited me into new worlds
+                of thought and feeling. She once said, "art is a portrait of a time," and that statement sparked my curiosity about the people and emotions that surrounded me. It also instilled in me a deep desire to express myself through art.
+                <br><br> Since then, I have honed my skills and techniques, learning from the great artists who came before me and finding my own voice in the process. One of my dreams as an artist is to create works of marble that will inspire and delight
+                audiences around the world. To achieve this dream, I know that I will need the guidance and support of an experienced mentor - someone who can help me develop my skills and techniques and guide me on my journey as an artist. I am always
+                eager to learn and grow as an artist, and I believe that we learn so much and grow by sharing your knowledge for other people.
+            </p>
+            <img style="width: 60%; margin-left: 40%;" src="img/sig.jpg" alt="Image">
+
+            <p style=" text-align-last: right; line-height: normal;
+font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
+                www.rebeccatimoteo.com <br> rebecatimoteojb@gmail.com
+                <br> + 39 389 155 7618<br> Carrara - Italia</p>
+            <img style="width: 40%; margin-left: 55%;" src="img/Capture.PNG" alt="Image">
+        </div>
 
     </div>
- 
-
-</div>
 
 
 
-<div class="column">
-    <img style="width: 40%;margin-left: 24%; " src="img/Capture2.PNG" alt="Image">
-<p style=" text-align-last: center; line-height: normal;
-font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
-    Hello, my name is Rebecca Timoteo, a passionate 25 years old Brazilian artist with a deep love for marble. I am constantly inspired by its beauty and mystery.
-<br><br>
-My journey as an artist began many years ago in the Brazilian countryside, where I was raised in a family that holds values of love. My strongest inspiration came from my mother, whose words and wisdom invited me into new worlds of thought and feeling. She once said, "art is a portrait of a time," and that statement sparked my curiosity about the people and emotions that surrounded me. It also instilled in me a deep desire to express myself through art.
-<br><br>
- Since then, I have honed my skills and techniques, learning from the great artists who came before me and finding my own voice in the process.
-One of my dreams as an artist is to create works of marble that will inspire and delight audiences around the world. To achieve this dream, I know that I will need the guidance and support of an experienced mentor - someone who can help me develop my skills and techniques and guide me on my journey as an artist.
-I am always eager to learn and grow as an artist, and I believe that we learn so much and grow by sharing your knowledge for other people. 
-</p>
-<img style="width: 60%; margin-left: 40%;" src="img/sig.jpg" alt="Image">
-
-<p style=" text-align-last: right; line-height: normal;
-font-family: Arial, Helvetica, sans-serif; font-size: 18px;">
-www.rebeccatimoteo.com <br>
-rebecatimoteojb@gmail.com<br>
-+ 39 389 155 7618<br>
-Carrara  - Italia</p>
-<img style="width: 40%; margin-left: 55%;" src="img/Capture.PNG" alt="Image">
-</div>
-
-</div>
+    </div>
 
 
 
-</div>
+    <div class="space35"></div>
+    <div class="space35"></div>
+    <div class="container">
+        <div class="column">
 
-
-
- <div class="space35"></div>
-<div class="space35"></div>
-<div class="container">
-<div class="column">
-
-<div class="hidegame" style="      font-family: 'Bebas Neue', sans-serif;
+            <div class="hidegame" style="      font-family: 'Bebas Neue', sans-serif;
 ; width: 100%; height: 80%;">
-    <h2 style="font-size: 35px; padding-right: 10px;">Virtual Reality esposition</h2>
+                <h2 style="font-size: 35px; padding-right: 10px;">Virtual Reality esposition</h2>
 
-    <p>The photographic project 'Flou Révélateur' that I present in the form of a virtual reality exhibition proposal staged a conception of blur. Through portraits, people i meet, I tell you about my daily life. These images appeal to each other, they create tension. The contrast between the blur of people crossing and the sharpness of our own image.
+                <p>The photographic project 'Flou Révélateur' that I present in the form of a virtual reality exhibition proposal staged a conception of blur. Through portraits, people i meet, I tell you about my daily life. These images appeal to each other,
+                    they create tension. The contrast between the blur of people crossing and the sharpness of our own image. The choice of the virtual reality exhibition fits into the times we are living today. I wish, through this format, to show that
+                    we can continue to exhibit works, encourage creations and offer new models of expression to artists.
+                    <br> <br> 3D model, Unity</p>
+                <p> <b>Select the screen</b> use the <b>mouse</b> and <b>arrow keys</b> to navigate. <br><br><br><br>esc to exit
 
-        The choice of the virtual reality exhibition fits into the times we are living today. I wish, through this format, to show that we can continue to exhibit works, encourage creations and offer new models of expression to artists.
-        <br> <br>
-        3D model, Unity</p>
-    <p> <b>Select the screen</b> use the <b>mouse</b> and <b>arrow keys</b> to navigate. <br><br><br><br>esc to exit
-
-    </p>
-    <iframe style="width: 100%; height: 70vh;" src="https://i.simmer.io/@Rebeccawn/flou-r-v-lateur-workshop"></iframe>
-    
-
-
- </div>
-</div>
-</div>
+                </p>
+                <iframe style="width: 100%; height: 70vh;" src="https://i.simmer.io/@Rebeccawn/flou-r-v-lateur-workshop"></iframe>
 
 
 
-<div style="width: 100%; height: 30%;">
-<div class="container">
-    <h1 style=" font-family: 'Bebas Neue', sans-serif;text-align-last: center;">
-        other works
-    </h1>
-</div>
-</div>
-
-
-<div class="gallery">
-    <img src="img/g/5.1.jpg" alt="Image 1">
-    <img src="img/g/43.jpg" alt="Image 3">
-    <img src="img/g/45.jpg" alt="Image 4">
-    <img src="img/g/50.jpg" alt="Image 5">
-    <img src="img/g/65.jpg" alt="Image 6">
-    <img src="img/g/20200330_184414.jpg" alt="Image 7">
-    <img src="img/g/capture 4.png" alt="Image 8">
-    <img src="img/g/Capture.PNG" alt="Image 9">
-    <img src="img/g/Capture2.PNG" alt="Image 10">
-    <img src="img/g/Capture3.PNG" alt="Image 11">
-    <img src="img/g/DSC01751.jpg" alt="Image 14">
-    <img src="img/g/paysage.jpg" alt="Image 15">
-    <img src="img/g/sculpture.jpg" alt="Image 16">
-  </div>
-
+            </div>
+        </div>
+    </div>
 
 
 </body>
+
 </html>
