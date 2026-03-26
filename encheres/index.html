@@ -514,6 +514,8 @@
       .qfbar-toggle { display: flex; top: 0; }
       .qfbar { display: none !important; position: static; }
       .qfbar.mobile-open { display: flex !important; position: sticky; top: 0; }
+      .marche-section-hdr .burger-btn { display: flex; }
+      #marcheResetBtn { display: none; }
       .pagination { padding: 20px 10px; gap: 8px; }
       .pg-btn { padding: 10px 16px; font-size: 15px; min-width: 44px; }
     }
@@ -644,7 +646,10 @@
 <div class="marche-section-hdr">
   <span class="marche-section-title">🏠 Annonces Marché</span>
   <span class="count-badge-m" id="cntBadgeM">… annonces</span>
-  <button class="btn-ghost-sm" onclick="clearAllM()">✕ Réinit. filtres</button>
+  <button class="burger-btn" id="burgerBtnM" onclick="toggleFiltersM()" aria-label="Filtres marché" style="display:none;margin-left:auto">
+    <span style="background:#fff"></span><span style="background:#fff"></span><span style="background:#fff"></span>
+  </button>
+  <button class="btn-ghost-sm" id="marcheResetBtn" onclick="clearAllM()">✕ Réinit. filtres</button>
 </div>
 <div class="qfbar" id="qfbarMarche" style="top:56px">
   <input class="qfbar-ctrl" type="text" id="qM" placeholder="🔍 Recherche ville…" style="width:190px">
@@ -671,10 +676,10 @@
   <div class="qfbar-sep"></div>
   <span class="qfbar-lbl">Prix&nbsp;:</span>
   <button class="chip active" id="pc-allM" onclick="setPriceChipM(this,'')">Tous</button>
+  <button class="chip" id="pc-100M" onclick="setPriceChipM(this,'100000')">&lt;100k</button>
   <button class="chip" id="pc-150M" onclick="setPriceChipM(this,'150000')">&lt;150k</button>
+  <button class="chip" id="pc-175M" onclick="setPriceChipM(this,'175000')">&lt;175k</button>
   <button class="chip" id="pc-200M" onclick="setPriceChipM(this,'200000')">&lt;200k</button>
-  <button class="chip" id="pc-300M" onclick="setPriceChipM(this,'300000')">&lt;300k</button>
-  <button class="chip" id="pc-400M" onclick="setPriceChipM(this,'400000')">&lt;400k</button>
   <div class="qfbar-sep"></div>
   <span class="qfbar-lbl">IA&nbsp;:</span>
   <button class="chip active" id="ai-allM" onclick="setAIChipM(this,'')">Tous</button>
@@ -1153,6 +1158,7 @@ function clearAllM(){
   g('ai-allM').classList.add('active');
   applyFiltersM();
 }
+const MARCHE_DEPTS=new Set(['09','11','31','32','81','82']);
 function applyFiltersM(){
   const q=(g('qM').value||'').toLowerCase();
   const sT=g('selTypeM').value,sD=g('selDeptM').value;
@@ -1164,6 +1170,8 @@ function applyFiltersM(){
   const BASE=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
   filteredM=[...BASE,...USER_BIENS].filter(r=>{
     if(r.listing_type!=='marche')return false;
+    // Restrict bienici listings to target departments only
+    if(r.source_journal==='bienici'&&!MARCHE_DEPTS.has(r.department||''))return false;
     if(q&&!JSON.stringify(r).toLowerCase().includes(q))return false;
     if(sT&&(r.property_type||'')!==sT)return false;
     if(sD&&(r.department||'')!==sD)return false;
@@ -1534,9 +1542,14 @@ function openMarcheModal(key){
 function closeMarcheModal(evt){if(!evt||evt.target===document.getElementById('marcheModal'))document.getElementById('marcheModal').style.display='none';}
 
 function toggleFilters(){
-
   const bar=document.querySelector('.qfbar');
   const btn=document.getElementById('burgerBtn');
+  const open=bar.classList.toggle('mobile-open');
+  btn.classList.toggle('open', open);
+}
+function toggleFiltersM(){
+  const bar=document.getElementById('qfbarMarche');
+  const btn=document.getElementById('burgerBtnM');
   const open=bar.classList.toggle('mobile-open');
   btn.classList.toggle('open', open);
 }
