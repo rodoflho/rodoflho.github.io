@@ -1258,39 +1258,43 @@ function openEmailModal(){
   window._pe=emails;
   g('emailList').innerHTML=emails.map((e,i)=>{
     const wasSent=!!SENT[e.r.url||String(e.r._i)];
-    return`<div class="email-item">
+    const mh=e.to?`mailto:${encodeURIComponent(e.to)}?subject=${encodeURIComponent(e.subj)}&body=${encodeURIComponent(e.body)}`:'#';
+    return`<div class="email-item" id="ei-${i}">
   <div class="email-item-hdr">
-    <span class="to">À : ${e.to?`<a href="mailto:${e.to}">${e.to}</a>`:`<span class="no-email">⚠ Pas d’email — ${esc(e.r.avocat_nom||'?')}</span>`}</span>
+    <span class="to">À : ${e.to?`<a href="mailto:${e.to}">${e.to}</a>`:`<span class="no-email">⚠ Pas d'email — ${esc(e.r.avocat_nom||'?')}</span>`}</span>
     <span class="subj">${esc(e.subj)}</span>
-    <span class="sent-modal sent-badge" style="${wasSent?'':'display:none'}">✓ Déjà envoyé</span>
-    <button class="btn btn-ghost" style="font-size:11px;padding:3px 8px" onclick="openOne(${i})">Ouvrir ›</button>
+    <span class="sent-modal sent-badge" id="sb-${i}" style="${wasSent?'':'display:none'}">✓ Envoyé</span>
+    ${e.to?`<a class="btn btn-ghost" style="font-size:11px;padding:3px 8px;text-decoration:none;" href="${mh}" target="_blank" onclick="markSentFromLink(${i})">Ouvrir ›</a>`:`<span style="font-size:11px;color:#94a3b8;">Pas d'email</span>`}
   </div>
   <div class="email-item-body">${esc(e.body)}</div>
 </div>`;
   }).join('');
   g('emailModal').classList.add('open');
 }
-function openOne(i){
+function markSentFromLink(i){
   const e=window._pe[i];
-  if(!e.to){alert('Pas d\'adresse email.');return;}
-  markSent(e.r.url||String(e.r._i));
+  const key=e.r.url||String(e.r._i);
+  markSent(key);
+  const sb=document.getElementById('sb-'+i);
+  if(sb)sb.style.display='inline';
   render();
-  // Update sent status in modal list
-  const badge=document.querySelector(`#emailList .email-item:nth-child(${i+1}) .sent-modal`);
-  if(badge)badge.style.display='inline';
-  window.open(`mailto:${encodeURIComponent(e.to)}?subject=${encodeURIComponent(e.subj)}&body=${encodeURIComponent(e.body)}`,'_blank');
 }
 function openAllEmails(){
-  const w=window._pe.filter(e=>e.to),no=window._pe.filter(e=>!e.to);
+  const w=window._pe.filter(e=>e.to);
+  const no=window._pe.filter(e=>!e.to);
   if(!w.length){alert('Aucun email disponible.');return;}
   w.forEach((e,i)=>{
-    setTimeout(()=>{
-      markSent(e.r.url||String(e.r._i));
-      window.open(`mailto:${encodeURIComponent(e.to)}?subject=${encodeURIComponent(e.subj)}&body=${encodeURIComponent(e.body)}`,'_blank');
-    },i*1200);
+    markSentFromLink(i);
   });
-  setTimeout(()=>render(),w.length*1200+400);
-  if(no.length)setTimeout(()=>alert(`⚠ ${no.length} bien(s) sans email ignorés.`),w.length*1200+200);
+  if(no.length)alert('⚠ '+no.length+' bien(s) sans email ignorés.');
+  // Scroll list to top so user can click each link
+  const el=document.getElementById('emailList');
+  if(el)el.scrollTop=0;
+  // Flash a notice
+  const n=document.createElement('div');
+  n.style.cssText='background:#dbeafe;color:#1d4ed8;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:700;margin-bottom:10px;';
+  n.textContent='ℹ️ Cliquez sur chaque “Ouvrir ›” pour ouvrir l’email dans votre client mail.';
+  if(el&&!document.getElementById('openAllNotice')){n.id='openAllNotice';el.prepend(n);}
 }
 function copyAllEmails(){
   const txt=window._pe.map(e=>`À : ${e.to||'(pas d\'email)'}
