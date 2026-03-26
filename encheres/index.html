@@ -293,6 +293,17 @@
       background: #dcfce7; padding: 2px 8px; border-radius: 9999px;
       white-space: nowrap;
     }
+    /* ── Email response button ── */
+    .sent-btn {
+      padding: 5px 11px; border-radius: 7px; font-size: 11px; font-weight: 700;
+      border: none; cursor: pointer; white-space: nowrap;
+    }
+    .sent-btn.rep-none    { background: #dcfce7; color: #15803d; }
+    .sent-btn.rep-attente { background: #fef9c3; color: #854d0e; }
+    .sent-btn.rep-repondu { background: #dbeafe; color: #1d4ed8; }
+    .sent-btn.rep-docs    { background: #ede9fe; color: #6d28d9; }
+    .sent-btn.rep-refus   { background: #fee2e2; color: #991b1b; }
+    .sent-btn:hover { filter: brightness(.95); }
 
     /* ── AI detail modal ── */
     .ai-modal-body { line-height: 1.8; font-size: 13px; }
@@ -774,15 +785,62 @@ function closeAI(evt){if(!evt||evt.target===g('aiModal'))g('aiModal').classList.
 const SK='michaelis_sent';
 let SENT={};
 try{SENT=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
+let EMAIL_RESP={};  // url → {sent_at, response}
+
 function markSent(key){
   SENT[key]=new Date().toISOString();
   try{localStorage.setItem(SK,JSON.stringify(SENT));}catch(e){}
+  // Also write to Supabase
+  SB.from('biens').update({email_sent_at: SENT[key]}).eq('url', key).then(()=>{});
 }
-function sentBadge(key){
-  if(!SENT[key])return'';
+
+const REP_LABELS={
+  'attente':  '⏳ En attente',
+  'repondu':  '✉ Répondu',
+  'docs':     '📄 Docs reçus',
+  'pas_rep':  '🔇 Pas de réponse',
+  'refuse':   '✗ Refusé',
+};
+
+function sentBtn(key){
+  if(!SENT[key] && !EMAIL_RESP[key])return'';
+  const rep=EMAIL_RESP[key];
+  const repCode=rep||'none';
+  const lbl=REP_LABELS[rep]||'✓ Envoyé';
+  const cls=`sent-btn rep-${repCode}`;
+  return`<button class="${cls}" onclick="openRepModal('${escA(key)}')">${lbl} ▾</button>`;
+}
+
+function openRepModal(key){
+  g('repModalUrl').value=key;
+  const cur=EMAIL_RESP[key]||'';
+  document.querySelectorAll('.rep-choice').forEach(b=>{
+    b.classList.toggle('active', b.dataset.rep===cur);
+  });
   const d=new Date(SENT[key]);
-  const fmt=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'});
-  return`<span class="sent-badge">✓ Email ${fmt}</span>`;
+  g('repSentDate').textContent=SENT[key]?'Envoyé le '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'';
+  g('repModal').style.display='flex';
+}
+function closeRepModal(evt){if(!evt||evt.target===g('repModal'))g('repModal').style.display='none';}
+
+async function selectRep(code){
+  const key=g('repModalUrl').value;
+  EMAIL_RESP[key]=code;
+  document.querySelectorAll('.rep-choice').forEach(b=>b.classList.toggle('active',b.dataset.rep===code));
+  await SB.from('biens').update({email_response: code}).eq('url', key);
+  g('repModal').style.display='none';
+  render();
+}
+
+async function loadEmailResponses(){
+  const {data}=await SB.from('biens').select('url,email_sent_at,email_response').not('email_sent_at','is',null);
+  if(!data)return;
+  data.forEach(r=>{
+    if(r.url){
+      if(r.email_sent_at && !SENT[r.url]) SENT[r.url]=r.email_sent_at;
+      if(r.email_response) EMAIL_RESP[r.url]=r.email_response;
+    }
+  });
 }
 
 /* ──────────── UTILS ──────────── */
@@ -1039,7 +1097,7 @@ function renderCard(r){
     ${aiBtn(key,r)}
     ${rvBtn(key,rv)}
     ${lienBtn}
-    ${sentBadge(key)}
+    ${sentBtn(key)}
   </div>
   ${rvCmt}
 </div>`;
@@ -1181,6 +1239,7 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
   el.addEventListener('change',applyFilters);
 });
 function toggleFilters(){
+
   const bar=document.querySelector('.qfbar');
   const btn=document.getElementById('burgerBtn');
   const open=bar.classList.toggle('mobile-open');
@@ -1190,6 +1249,7 @@ function toggleFilters(){
 initTemplates();
 applyFilters();
 loadUserBiens();
+loadEmailResponses();
 
 /* ──────────── ADD BIEN FORM ──────────── */
 function openAddModal(){
@@ -1295,6 +1355,28 @@ async function submitBien(e){
   btn.disabled=false;btn.textContent='Ajouter';
 }
 </script>
+
+<!-- EMAIL RESPONSE MODAL -->
+<div id="repModal" onclick="closeRepModal(event)" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:950;padding:20px;">
+<div style="background:#fff;width:100%;max-width:340px;border-radius:14px;padding:22px;position:relative;" onclick="event.stopPropagation()">
+  <button onclick="closeRepModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:18px;cursor:pointer;color:#64748b;">✕</button>
+  <h3 style="margin:0 0 4px;font-size:1rem;">Réponse à l'email</h3>
+  <p id="repSentDate" style="font-size:12px;color:#64748b;margin:0 0 16px;"></p>
+  <input type="hidden" id="repModalUrl">
+  <div style="display:grid;gap:8px;">
+    <button class="rep-choice" data-rep="attente" onclick="selectRep('attente')"
+      style="padding:10px 14px;border-radius:9px;border:2px solid #fef9c3;background:#fef9c3;color:#854d0e;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">⏳ En attente de réponse</button>
+    <button class="rep-choice" data-rep="repondu" onclick="selectRep('repondu')"
+      style="padding:10px 14px;border-radius:9px;border:2px solid #dbeafe;background:#dbeafe;color:#1d4ed8;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">✉ Répondu</button>
+    <button class="rep-choice" data-rep="docs" onclick="selectRep('docs')"
+      style="padding:10px 14px;border-radius:9px;border:2px solid #ede9fe;background:#ede9fe;color:#6d28d9;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">📄 Documents reçus (CCV/PVD)</button>
+    <button class="rep-choice" data-rep="pas_rep" onclick="selectRep('pas_rep')"
+      style="padding:10px 14px;border-radius:9px;border:2px solid #f1f5f9;background:#f1f5f9;color:#475569;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">🔇 Pas de réponse</button>
+    <button class="rep-choice" data-rep="refuse" onclick="selectRep('refuse')"
+      style="padding:10px 14px;border-radius:9px;border:2px solid #fee2e2;background:#fee2e2;color:#991b1b;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">✗ Refusé</button>
+  </div>
+</div>
+</div>
 
 <!-- ADD BIEN MODAL -->
 <div id="addModal" onclick="closeAddModal(event)" style="display:none;align-items:flex-start;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;overflow-y:auto;padding:20px;">
