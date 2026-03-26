@@ -633,25 +633,34 @@ const SB = window.supabase.createClient(
   'sb_publishable_uAHTnReNn6Dn1wbcla4pIg_A299SxCT'
 );
 let USER_BIENS = [];
+let SCRAPED_FROM_SB = [];
+
+function _mapRow(r, i){
+  return {
+    _i: (r.scraped ? 's' : 'u') + r.id,
+    _source: r.scraped ? 'scraped' : 'user',
+    url: r.url||'', title: r.title||'',
+    published_at: r.published_at||new Date().toISOString().slice(0,10),
+    summary: r.summary||'',
+    source_journal: r.source_journal||'Manuel',
+    department: r.department||'',
+    property_type: r.property_type||'',
+    mise_a_prix: r.mise_a_prix||null,
+    surface_m2: r.surface_m2||null,
+    adresse: r.adresse||'',
+    ville: r.ville||'',
+    audience_date: r.audience_date||null,
+    avocat_nom: r.avocat_nom||'',
+    avocat_contact: r.avocat_contact||''
+  };
+}
+
 async function loadUserBiens(){
   const {data,error} = await SB.from('biens').select('*').order('created_at',{ascending:false});
   if(error){console.error('Supabase load error:',error);return;}
-  USER_BIENS = (data||[]).map((r,i)=>({
-    _i:'u'+r.id, _source:'user',
-    url:r.url||'', title:r.title||'',
-    published_at:r.published_at||new Date().toISOString().slice(0,10),
-    summary:r.summary||'',
-    source_journal:r.source_journal||'Manuel',
-    department:r.department||'',
-    property_type:r.property_type||'',
-    mise_a_prix:r.mise_a_prix||null,
-    surface_m2:r.surface_m2||null,
-    adresse:r.adresse||'',
-    ville:r.ville||'',
-    audience_date:r.audience_date||null,
-    avocat_nom:r.avocat_nom||'',
-    avocat_contact:r.avocat_contact||''
-  }));
+  const rows = data||[];
+  SCRAPED_FROM_SB = rows.filter(r=>r.scraped).map(_mapRow);
+  USER_BIENS     = rows.filter(r=>!r.scraped).map(_mapRow);
   applyFilters();
 }
 const PAGE_SIZE = 12;
@@ -830,7 +839,8 @@ function applyFilters(){
   const sAI=g('selAI').value,sRv=g('selReview').value;
   SC=g('sortField').value;
 
-  filtered=[...DATA,...USER_BIENS].filter(r=>{
+  const BASE = SCRAPED_FROM_SB.length > 0 ? SCRAPED_FROM_SB : DATA;
+  filtered=[...BASE,...USER_BIENS].filter(r=>{
     if(q&&!JSON.stringify(r).toLowerCase().includes(q))return false;
     if(sT&&(r.property_type||'')!==sT)return false;
     if(sD&&(r.department||'')!==sD)return false;
