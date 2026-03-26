@@ -1108,21 +1108,25 @@ function renderCard(r){
 
 /* ──────────── RENDER ──────────── */
 function render(){
-  const total=filtered.length;
-  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  // Split filtered into judicial (paginated) and marché (always shown at bottom)
+  const judicial=filtered.filter(r=>r.listing_type!=='marche');
+  const marche=filtered.filter(r=>r.listing_type==='marche');
+
+  const totalJudicial=judicial.length;
+  const totalPages=Math.max(1,Math.ceil(totalJudicial/PAGE_SIZE));
   if(currentPage>totalPages)currentPage=totalPages;
+
   const base=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
-  g('cntBadge').textContent=`${total} / ${base.length+USER_BIENS.length} annonces`;
+  g('cntBadge').textContent=`${filtered.length} / ${base.length+USER_BIENS.length} annonces`;
+
   const start=(currentPage-1)*PAGE_SIZE;
-  const end=Math.min(start+PAGE_SIZE,total);
+  const end=Math.min(start+PAGE_SIZE,totalJudicial);
   const grid=g('cardsGrid');
-  if(!total){
+
+  if(!filtered.length){
     grid.innerHTML='<div class="empty-state">Aucune annonce ne correspond aux filtres.</div>';
   }else{
-    const page=filtered.slice(start,end);
-    const judicial=page.filter(r=>r.listing_type!=='marche');
-    const marche=page.filter(r=>r.listing_type==='marche');
-    let html=judicial.map(r=>renderCard(r)).join('');
+    let html=judicial.slice(start,end).map(r=>renderCard(r)).join('');
     if(marche.length){
       html+=`<div style="grid-column:1/-1;margin:12px 0 4px;padding:10px 4px 6px;border-top:2px solid var(--border);display:flex;align-items:center;gap:10px;">
         <span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Annonces marché</span>
@@ -1132,7 +1136,7 @@ function render(){
     }
     grid.innerHTML=html;
   }
-  renderPagination(totalPages,total,start,end);
+  renderPagination(totalPages,totalJudicial,start,end);
   updateSelInfo();
 }
 
