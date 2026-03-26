@@ -810,11 +810,11 @@ function closeAI(evt){if(!evt||evt.target===g('aiModal'))g('aiModal').classList.
 
 /* ──────────── EMAIL SENT STORE ──────────── */
 const SK='michaelis_sent';
-const RK='michaelis_resp';
+const RESP_KEY='michaelis_resp';
 let SENT={};
 let EMAIL_RESP={};
 try{SENT=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
-try{EMAIL_RESP=JSON.parse(localStorage.getItem(RK)||'{}');}catch(e){}
+try{EMAIL_RESP=JSON.parse(localStorage.getItem(RESP_KEY)||'{}');}catch(e){}
 
 function markSent(key){
   SENT[key]=new Date().toISOString();
@@ -823,7 +823,7 @@ function markSent(key){
 }
 function saveResp(key,code){
   EMAIL_RESP[key]=code;
-  try{localStorage.setItem(RK,JSON.stringify(EMAIL_RESP));}catch(e){}
+  try{localStorage.setItem(RESP_KEY,JSON.stringify(EMAIL_RESP));}catch(e){}
 }
 
 const REP_LABELS={
@@ -1539,6 +1539,33 @@ async function submitBien(e){
 }
 </script>
 
+<!-- PASSWORD SCREEN -->
+<div id="pwScreen" style="position:fixed;inset:0;background:#F54927;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;">
+  <div style="color:#fff;font-size:2.5rem;">♥</div>
+  <p style="color:rgba(255,255,255,.8);margin:0;font-size:.95rem;">Projet Michaëlis — accès privé</p>
+  <input id="pwInput" type="password" placeholder="Mot de passe"
+    style="padding:12px 18px;border-radius:10px;border:none;font-size:1rem;width:220px;text-align:center;outline:none;"
+    onkeydown="if(event.key==='Enter')checkPw()">
+  <button onclick="checkPw()" style="background:#fff;color:#F54927;border:none;padding:11px 32px;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;">Entrer</button>
+  <span id="pwErr" style="color:#ffd6cc;font-size:.85rem;"></span>
+</div>
+<script>
+(function(){
+  function checkPw(){
+    const v=document.getElementById('pwInput').value.trim().toLowerCase();
+    if(v==='pamonha'){
+      sessionStorage.setItem('pm_auth','1');
+      document.getElementById('pwScreen').style.display='none';
+    } else {
+      document.getElementById('pwErr').textContent='Mot de passe incorrect.';
+      document.getElementById('pwInput').value='';
+    }
+  }
+  window.checkPw=checkPw;
+  if(sessionStorage.getItem('pm_auth')==='1')
+    document.getElementById('pwScreen').style.display='none';
+})();
+</script>
 
 <!-- MARCHÉ DETAIL MODAL -->
 <div id="marcheModal" onclick="closeMarcheModal(event)" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;padding:20px;overflow-y:auto;">
