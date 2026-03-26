@@ -691,7 +691,8 @@ function _mapRow(r, i){
     audience_date: r.audience_date||null,
     avocat_nom: r.avocat_nom||'',
     avocat_contact: r.avocat_contact||'',
-    dvf_analysis: r.dvf_analysis||null
+    dvf_analysis: r.dvf_analysis||null,
+    docs: r.docs||null
   };
 }
 
@@ -991,10 +992,10 @@ function rvBtn(key,rv){
 function aiBtn(key,r){
   const a=r.dvf_analysis;
   if(!a||(!a.verdict&&!a.dvf_median_pm2))
-    return`<button class="ai-foot-btn ai-na" onclick="openAI('${escA(key)}')">📊 IA</button>`;
+    return`<button class="ai-foot-btn ai-na" onclick="openAI('${escA(key)}')">Analyse IA</button>`;
   const cls=a.verdict?`ai-${a.verdict}`:'ai-na';
-  const lbl=VL[a.verdict]||'IA';
-  return`<button class="ai-foot-btn ${cls}" onclick="openAI('${escA(key)}')">📊 ${lbl}</button>`;
+  const lbl=VL[a.verdict]||'—';
+  return`<button class="ai-foot-btn ${cls}" onclick="openAI('${escA(key)}')">Analyse IA · ${lbl}</button>`;
 }
 
 function aiVerdictLine(r){
