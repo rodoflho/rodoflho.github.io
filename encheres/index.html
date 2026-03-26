@@ -728,7 +728,9 @@ function _mapRow(r, i){
     avocat_contact: r.avocat_contact||'',
     dvf_analysis: r.dvf_analysis||null,
     docs: r.docs||null,
-    listing_type: r.listing_type||(r.scraped?'judiciaire':'marche')
+    listing_type: r.listing_type||(r.scraped?'judiciaire':'marche'),
+    nb_pieces: r.nb_pieces||null,
+    dpe: r.dpe||null
   };
 }
 
@@ -1307,9 +1309,11 @@ function openMarcheModal(key){
     </div>
     <h3 style="margin:0 0 6px;font-size:1rem;color:#0f172a;">${esc(r.title||r.ville||'Annonce')}</h3>
     ${g2(r.adresse?`📍 ${esc(r.adresse)}, ${esc(r.ville||'')}`:r.ville?`📍 ${esc(r.ville)}`:'') }
-    <div style="display:flex;gap:16px;margin:10px 0;flex-wrap:wrap;">
+    <div style="display:flex;gap:16px;margin:10px 0;flex-wrap:wrap;align-items:center;">
       ${r.mise_a_prix?`<span style="font-size:1.1rem;font-weight:700;color:var(--primary);">${fPrice(r.mise_a_prix)}</span>`:''}
       ${r.surface_m2?`<span style="font-size:.95rem;color:#475569;">${fSurf(r.surface_m2)}</span>`:''}
+      ${r.nb_pieces?`<span style="font-size:.85rem;background:#f1f5f9;padding:2px 8px;border-radius:6px;">${r.nb_pieces} pièce${r.nb_pieces>1?'s':''}</span>`:''}
+      ${r.dpe?`<span style="font-size:.85rem;background:#f1f5f9;padding:2px 8px;border-radius:6px;">DPE ${esc(r.dpe)}</span>`:''}
       ${r.department?`<span style="font-size:.85rem;background:#f1f5f9;padding:2px 8px;border-radius:6px;">Dép. ${esc(r.department)}</span>`:''}
     </div>
     ${r.summary?`<div style="font-size:13px;line-height:1.6;color:#334155;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:4px;white-space:pre-wrap;">${esc(r.summary)}</div>`:''}
@@ -1351,24 +1355,44 @@ function setListingType(type){
   judicial.forEach(el=>el.style.display=(type==='judiciaire'?'':'none'));
 }
 
+// French dept code by city slug (common ones)
+const CITY_DEPT={'toulouse':31,'bordeaux':33,'montpellier':34,'marseille':13,'lyon':69,'nantes':44,
+  'paris':75,'nice':6,'strasbourg':67,'lille':59,'rennes':35,'reims':51,'saint-etienne':42,
+  'toulon':83,'grenoble':38,'dijon':21,'nimes':30,'aix-en-provence':13,'brest':29,
+  'portet-sur-garonne':31,'colomiers':31,'blagnac':31,'muret':31,'saint-gaudens':31,
+  'albi':81,'castres':81,'montauban':82,'auch':32,'foix':9,'pamiers':9,'carcassonne':11,
+  'pau':64,'bayonne':64,'biarritz':64,'tarbes':65,'perpignan':66};
+
+function slugToTitle(s){return s.split('-').map(w=>w?w[0].toUpperCase()+w.slice(1):'').join(' ');}
+
 function extractFromUrl(url){
   const d={};
   try{
     const u=new URL(url.startsWith('http')?url:'https://'+url);
     d.source=u.hostname.replace('www.','');
     const path=u.pathname.toLowerCase();
-    // bienici: /annonce/vente/portet-sur-garonne/maison/4pieces/...
-    const bi=path.match(/\/annonce\/(?:vente|location)\/([^/]+)\/([^/]+)/);
+
+    // bienici: /annonce/vente/ville/type/Npièces/...
+    const bi=path.match(/\/annonce\/(?:vente|location)\/([^/]+)\/([^/]+)(?:\/(\d+)pi[eè]ces?)?/);
     if(bi){
-      d.ville=bi[1].split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('-');
-      const t=bi[2];
-      d.property_type=t.charAt(0).toUpperCase()+t.slice(1).replace(/-/g,' ');
+      const citySlug=bi[1];
+      d.ville=slugToTitle(citySlug);
+      d.department=String(CITY_DEPT[citySlug]||'').padStart(2,'0')||null;
+      d.property_type=slugToTitle(bi[2]);
+      if(bi[3])d.nb_pieces=parseInt(bi[3]);
     }
-    // leboncoin: /ad/ventes_immobilieres/titre-du-bien/123456789/
+    // seloger / logicimmo: /annonces/vente/ville-dept/...
+    const sl=path.match(/\/annonces?\/(?:vente|location)\/([^/]+)-(\d{2,3})\//);
+    if(sl){d.ville=slugToTitle(sl[1]);d.department=sl[2].slice(0,2);}
+    // PAP: /annonce/vente-maison-... or /annonce/vente-appartement-...
+    const pap=path.match(/\/annonce\/vente-(maison|appartement|terrain|studio|immeuble)/);
+    if(pap)d.property_type=slugToTitle(pap[1]);
+    // leboncoin: /ad/ventes_immobilieres/slug/id
     const lbc=path.match(/\/ad\/ventes_immobilieres\/([^/]+)/);
-    if(lbc){d.title=lbc[1].replace(/-/g,' ');}
-    // surface from path e.g. "75m2", "4pieces"
+    if(lbc)d.title=lbc[1].replace(/-/g,' ');
+    // surface from path
     const surf=path.match(/(\d+)m2/);if(surf)d.surface_m2=parseInt(surf[1]);
+    const pieces=path.match(/(\d+)pi[eè]ces?/);if(pieces&&!d.nb_pieces)d.nb_pieces=parseInt(pieces[1]);
   }catch(e){}
   return d;
 }
@@ -1383,10 +1407,12 @@ async function fetchAnnonce(){
   const fromUrl=extractFromUrl(url);
   const f=document.getElementById('addBienForm');
   if(fromUrl.ville)f.ville.value=fromUrl.ville;
+  if(fromUrl.department)f.department.value=fromUrl.department;
   if(fromUrl.property_type)f.property_type.value=fromUrl.property_type;
   if(fromUrl.source)f.source_journal.value=fromUrl.source;
   if(fromUrl.title)f.title.value=fromUrl.title;
   if(fromUrl.surface_m2)f.surface_m2.value=fromUrl.surface_m2;
+  if(fromUrl.nb_pieces)f.nb_pieces.value=fromUrl.nb_pieces;
 
   // Try CORS proxy for richer data
   try{
@@ -1403,6 +1429,8 @@ async function fetchAnnonce(){
     if(d.department)f.department.value=d.department;
     if(d.mise_a_prix)f.mise_a_prix.value=d.mise_a_prix;
     if(d.surface_m2)f.surface_m2.value=d.surface_m2;
+    if(d.nb_pieces)f.nb_pieces.value=d.nb_pieces;
+    if(d.dpe)f.dpe.value=d.dpe;
     if(d.summary)f.summary.value=d.summary;
     if(d.source)f.source_journal.value=d.source;
   }catch(e){ /* show form anyway */ }
@@ -1414,38 +1442,77 @@ async function fetchAnnonce(){
 function extractFields(doc,html,url){
   const d={};
   try{d.source=new URL(url.startsWith('http')?url:'https://'+url).hostname.replace('www.','');}catch(e){}
-  // JSON-LD
+
+  // ── JSON-LD (schema.org RealEstateListing / Product / Place) ──
   doc.querySelectorAll('script[type="application/ld+json"]').forEach(s=>{try{
     const j=JSON.parse(s.textContent);
     if(j.name&&!d.title)d.title=j.name;
-    if(j.description&&!d.summary)d.summary=j.description.slice(0,500);
+    if(j.description&&!d.summary)d.summary=j.description.slice(0,800);
     if(j.offers?.price)d.mise_a_prix=parseFloat(String(j.offers.price).replace(/[^\d.]/g,''))||null;
     if(j.floorSize?.value)d.surface_m2=parseFloat(j.floorSize.value)||null;
-    if(j.address){d.adresse=j.address.streetAddress||'';d.ville=j.address.addressLocality||'';d.department=(j.address.postalCode||'').slice(0,2);}
+    if(j.numberOfRooms)d.nb_pieces=parseInt(j.numberOfRooms)||null;
+    if(j.address){
+      d.adresse=j.address.streetAddress||'';
+      d.ville=j.address.addressLocality||'';
+      const cp=j.address.postalCode||'';
+      d.department=cp.slice(0,2);
+      if(!d.adresse&&cp)d.adresse=cp+' '+d.ville;
+    }
   }catch(e){}});
-  // leboncoin __NEXT_DATA__
+
+  // ── leboncoin __NEXT_DATA__ ──
   const nd=doc.querySelector('#__NEXT_DATA__');
   if(nd){try{
     const j=JSON.parse(nd.textContent);
     const ad=j?.props?.pageProps?.ad||j?.props?.pageProps?.adView?.ad||{};
     if(ad.subject)d.title=ad.subject;
-    if(ad.body)d.summary=ad.body.slice(0,500);
-    if(ad.price)d.mise_a_prix=ad.price[0];
+    if(ad.body)d.summary=ad.body.slice(0,800);
+    if(ad.price?.[0])d.mise_a_prix=ad.price[0];
+    if(ad.location?.city)d.ville=ad.location.city;
+    if(ad.location?.zipcode)d.department=ad.location.zipcode.slice(0,2);
+    if(ad.location?.address)d.adresse=ad.location.address;
     (ad.attributes||[]).forEach(a=>{
-      if(['square','rooms_surface_area'].includes(a.key))d.surface_m2=parseFloat(a.value)||null;
-      if(a.key==='city')d.ville=a.value;
-      if(a.key==='department_id')d.department=a.value;
-      if(['real_estate_type','ad_type'].includes(a.key))d.property_type=a.value_label||'';
+      if(['square','rooms_surface_area','square_land'].includes(a.key))d.surface_m2=parseFloat(a.value)||null;
+      if(a.key==='rooms')d.nb_pieces=parseInt(a.value)||null;
+      if(a.key==='city'&&!d.ville)d.ville=a.value;
+      if(a.key==='department_id'&&!d.department)d.department=a.value;
+      if(['real_estate_type','property_type'].includes(a.key))d.property_type=a.value_label||a.value||'';
+      if(a.key==='energy_rate')d.dpe=a.value||null;
     });
   }catch(e){}}
-  // OG/meta fallback
+
+  // ── SeLoger / Logic-Immo (window.__REDUXSTORE__ or window.__INITIAL_STATE__) ──
+  const scripts=Array.from(doc.querySelectorAll('script:not([src])'));
+  for(const s of scripts){try{
+    const t=s.textContent;
+    if(t.includes('"price"')&&t.includes('"surface"')){
+      const pm=t.match(/"price"\s*:\s*(\d+)/);if(pm&&!d.mise_a_prix)d.mise_a_prix=parseInt(pm[1]);
+      const sm=t.match(/"surface"\s*:\s*([\d.]+)/);if(sm&&!d.surface_m2)d.surface_m2=parseFloat(sm[1]);
+      const rm=t.match(/"roomsQuantity"\s*:\s*(\d+)/);if(rm&&!d.nb_pieces)d.nb_pieces=parseInt(rm[1]);
+      const vm=t.match(/"cityLabel"\s*:\s*"([^"]+)"/);if(vm&&!d.ville)d.ville=vm[1];
+      const zm=t.match(/"zipCode"\s*:\s*"(\d{5})"/);if(zm&&!d.department)d.department=zm[1].slice(0,2);
+      const am=t.match(/"address"\s*:\s*"([^"]+)"/);if(am&&!d.adresse)d.adresse=am[1];
+      const em=t.match(/"energyClassification"\s*:\s*"([A-G])"/);if(em&&!d.dpe)d.dpe=em[1];
+    }
+  }catch(e){}}
+
+  // ── OG / meta fallback ──
   if(!d.title){const m=doc.querySelector('meta[property="og:title"]');if(m)d.title=m.content;}
-  if(!d.summary){const m=doc.querySelector('meta[property="og:description"]')||doc.querySelector('meta[name="description"]');if(m)d.summary=m.content?.slice(0,500);}
-  if(!d.title)d.title=doc.title||'';
-  // Regex
-  if(!d.mise_a_prix){const m=html.match(/(\d[\d\u00a0\s]{2,8})\s*€/);if(m)d.mise_a_prix=parseFloat(m[1].replace(/[\u00a0\s]/g,''))||null;}
-  if(!d.surface_m2){const m=html.match(/(\d+(?:[.,]\d+)?)\s*m²/i);if(m)d.surface_m2=parseFloat(m[1].replace(',','.'))||null;}
-  if(!d.ville){const m=html.match(/\b([A-ZÀÂÉÈÊ][a-zàâéèêîôûù\-]+(?:\s[A-ZÀÂÉÈÊ][a-zàâéèêîôûù\-]+)*)\s*\((\d{2})\)/);if(m){d.ville=m[1];d.department=m[2];}}
+  if(!d.summary){const m=doc.querySelector('meta[property="og:description"]')||doc.querySelector('meta[name="description"]');if(m)d.summary=m.content?.slice(0,800);}
+  if(!d.title)d.title=doc.title?.split('|')[0].trim()||'';
+
+  // ── Regex fallbacks on raw HTML ──
+  if(!d.mise_a_prix){const m=html.match(/(\d[\d\u00a0\s]{3,8})\s*€/);if(m)d.mise_a_prix=parseFloat(m[1].replace(/[\u00a0\s]/g,''))||null;}
+  if(!d.surface_m2){const m=html.match(/(\d+(?:[.,]\d+)?)\s*m[²2]/i);if(m)d.surface_m2=parseFloat(m[1].replace(',','.'))||null;}
+  if(!d.nb_pieces){const m=html.match(/(\d)\s*pi[eè]ces?/i);if(m)d.nb_pieces=parseInt(m[1]);}
+  if(!d.dpe){const m=html.match(/classe\s+[eé]nerg[eé]tique[^A-G]*([A-G])\b/i);if(m)d.dpe=m[1].toUpperCase();}
+  if(!d.ville){
+    const m=html.match(/\b([A-ZÀÂÉÈÊ][A-Za-zàâéèêîôûùÀÂÉÈÊÎÔÛÙ\-]+(?:\s[A-ZÀÂÉÈÊ][A-Za-zàâéèêîôûùÀÂÉÈÊÎÔÛÙ\-]+)*)\s*\((\d{2})\)/);
+    if(m){d.ville=m[1];if(!d.department)d.department=m[2];}
+  }
+  // Clean up
+  if(d.title)d.title=d.title.replace(/\s+/g,' ').trim();
+  if(d.summary)d.summary=d.summary.replace(/\s+/g,' ').trim();
   return d;
 }
 
@@ -1469,7 +1536,9 @@ async function submitBien(e){
     avocat_contact:(ltype==='judiciaire'&&f.avocat_contact?.value.trim())||null,
     summary:f.summary.value.trim()||null,
     source_journal:f.source_journal.value.trim()||'Manuel',
-    listing_type:ltype
+    listing_type:ltype,
+    nb_pieces:f.nb_pieces.value?parseInt(f.nb_pieces.value):null,
+    dpe:f.dpe.value.trim().toUpperCase()||null
   };
   const {error}=await SB.from('biens').insert([payload]);
   if(error){alert('Erreur: '+error.message);btn.disabled=false;btn.textContent='Ajouter';return;}
@@ -1564,6 +1633,12 @@ async function submitBien(e){
         <input name="mise_a_prix" type="number" placeholder="85000" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;"></div>
       <div><label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Surface (m²)</label>
         <input name="surface_m2" type="number" placeholder="75" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;"></div>
+      <div><label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Pièces</label>
+        <input name="nb_pieces" type="number" min="1" max="20" placeholder="3" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div><label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">DPE (A–G)</label>
+        <input name="dpe" maxlength="1" placeholder="C" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;text-transform:uppercase;"></div>
       <div class="field-judicial" style="display:none;"><label style="font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:3px;">Date audience</label>
         <input name="audience_date" type="date" style="width:100%;padding:7px 10px;border:1.5px solid #e2e8f0;border-radius:7px;font-size:13px;"></div>
     </div>
