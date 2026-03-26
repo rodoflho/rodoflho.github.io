@@ -425,16 +425,22 @@
     .qfbar-toggle {
       display: none;
       background: var(--surface); border-bottom: 2px solid var(--border);
-      padding: 8px 14px; position: sticky; z-index: 349;
-      align-items: center; justify-content: space-between;
+      padding: 7px 12px; position: sticky; z-index: 349;
+      align-items: center; gap: 10px;
     }
-    .qfbar-toggle-btn {
-      background: var(--bg); border: 1.5px solid var(--border);
-      border-radius: 8px; padding: 6px 14px; font-size: 13px;
-      font-weight: 600; color: var(--text); cursor: pointer;
-      display: flex; align-items: center; gap: 6px;
+    .burger-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 4px 6px; border-radius: 6px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 5px; justify-content: center;
     }
-    .qfbar-toggle-btn.has-filters { border-color: var(--primary); color: var(--primary); }
+    .burger-btn span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform .2s, opacity .2s;
+    }
+    .burger-btn.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger-btn.open span:nth-child(2) { opacity: 0; }
+    .burger-btn.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
     @media (max-width: 640px) {
       .app-header { flex-wrap: wrap; height: auto; padding: 10px 14px; gap: 6px; }
@@ -476,8 +482,10 @@
 
 <!-- ===== QUICK FILTER BAR ===== -->
 <div class="qfbar-toggle">
-  <button class="qfbar-toggle-btn" id="qfbarToggleBtn" onclick="toggleFilters()">Filtres ▼</button>
-  <input class="qfbar-ctrl" type="text" id="q-mobile" placeholder="🔍 Recherche…" oninput="document.getElementById('q').value=this.value;applyFilters()" style="flex:1;margin-left:10px;max-width:200px;">
+  <button class="burger-btn" id="burgerBtn" onclick="toggleFilters()" aria-label="Filtres">
+    <span></span><span></span><span></span>
+  </button>
+  <input class="qfbar-ctrl" type="text" id="q-mobile" placeholder="🔍 Recherche…" oninput="document.getElementById('q').value=this.value;applyFilters()" style="flex:1;">
 </div>
 <div class="qfbar">
   <input class="qfbar-ctrl" type="text" id="q" placeholder="🔍 Recherche ville, avocat…" style="width:190px">
@@ -1168,9 +1176,9 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
 });
 function toggleFilters(){
   const bar=document.querySelector('.qfbar');
-  const btn=document.getElementById('qfbarToggleBtn');
+  const btn=document.getElementById('burgerBtn');
   const open=bar.classList.toggle('mobile-open');
-  btn.textContent=open?'Filtres ▲':'Filtres ▼';
+  btn.classList.toggle('open', open);
 }
 
 initTemplates();
