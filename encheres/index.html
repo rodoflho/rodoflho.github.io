@@ -1287,23 +1287,6 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
   el.addEventListener('input',applyFilters);
   el.addEventListener('change',applyFilters);
 });
-/* ──────────── PASSWORD ──────────── */
-document.addEventListener('DOMContentLoaded',function(){
-  if(sessionStorage.getItem('pm_auth')==='1'){
-    const el=document.getElementById('pwScreen');
-    if(el) el.style.display='none';
-  }
-});
-function checkPw(){
-  const v=document.getElementById('pwInput').value.trim().toLowerCase();
-  if(v==='pamonha'){
-    sessionStorage.setItem('pm_auth','1');
-    document.getElementById('pwScreen').style.display='none';
-  } else {
-    document.getElementById('pwErr').textContent='Mot de passe incorrect.';
-    document.getElementById('pwInput').value='';
-  }
-}
 
 /* ──────────── MARCHÉ DETAIL ──────────── */
 function openMarcheModal(key){
@@ -1556,14 +1539,6 @@ async function submitBien(e){
 }
 </script>
 
-<!-- PASSWORD SCREEN -->
-<div id="pwScreen">
-  <h1>♥</h1>
-  <p>Projet Michaëlis — accès privé</p>
-  <input id="pwInput" type="password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkPw()">
-  <button id="pwBtn" onclick="checkPw()">Entrer</button>
-  <span id="pwErr"></span>
-</div>
 
 <!-- MARCHÉ DETAIL MODAL -->
 <div id="marcheModal" onclick="closeMarcheModal(event)" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;padding:20px;overflow-y:auto;">
