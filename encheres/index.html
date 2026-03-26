@@ -421,6 +421,21 @@
     .modal-body { padding: 20px 22px; }
 
     /* ── Responsive ── */
+    /* ── Mobile filter toggle ── */
+    .qfbar-toggle {
+      display: none;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+      padding: 8px 14px; position: sticky; z-index: 349;
+      align-items: center; justify-content: space-between;
+    }
+    .qfbar-toggle-btn {
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 8px; padding: 6px 14px; font-size: 13px;
+      font-weight: 600; color: var(--text); cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .qfbar-toggle-btn.has-filters { border-color: var(--primary); color: var(--primary); }
+
     @media (max-width: 640px) {
       .app-header { flex-wrap: wrap; height: auto; padding: 10px 14px; gap: 6px; }
       .hdr-left { width: 100%; }
@@ -430,6 +445,9 @@
       .cards-grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
       .action-bar select { flex: 1; min-width: 0; }
       .docs-popup { left: auto; right: 0; }
+      .qfbar-toggle { display: flex; top: 0; }
+      .qfbar { display: none !important; position: static; }
+      .qfbar.mobile-open { display: flex !important; position: sticky; top: 0; }
     }
     @media (min-width: 641px) {
       .hdr-sub-mobile { display: none; }
@@ -457,6 +475,10 @@
 </header>
 
 <!-- ===== QUICK FILTER BAR ===== -->
+<div class="qfbar-toggle">
+  <button class="qfbar-toggle-btn" id="qfbarToggleBtn" onclick="toggleFilters()">Filtres ▼</button>
+  <input class="qfbar-ctrl" type="text" id="q-mobile" placeholder="🔍 Recherche…" oninput="document.getElementById('q').value=this.value;applyFilters()" style="flex:1;margin-left:10px;max-width:200px;">
+</div>
 <div class="qfbar">
   <input class="qfbar-ctrl" type="text" id="q" placeholder="🔍 Recherche ville, avocat…" style="width:190px">
   <select class="qfbar-ctrl" id="selType">
@@ -1144,6 +1166,13 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
   el.addEventListener('input',applyFilters);
   el.addEventListener('change',applyFilters);
 });
+function toggleFilters(){
+  const bar=document.querySelector('.qfbar');
+  const btn=document.getElementById('qfbarToggleBtn');
+  const open=bar.classList.toggle('mobile-open');
+  btn.textContent=open?'Filtres ▲':'Filtres ▼';
+}
+
 initTemplates();
 applyFilters();
 loadUserBiens();
