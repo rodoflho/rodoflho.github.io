@@ -68,12 +68,18 @@
     }
     .chip:hover { border-color: #94a3b8; }
     .chip.active { background: #1e293b; color: #fff; border-color: #1e293b; }
-    #ai-ti.active { background: #14532d; border-color: #14532d; color: #fff; }
-    #ai-i.active  { background: #16a34a; border-color: #16a34a; color: #fff; }
-    #ai-c.active  { background: #ca8a04; border-color: #ca8a04; color: #fff; }
-    #ai-a.active  { background: #dc2626; border-color: #dc2626; color: #fff; }
-    #ai-s.active  { background: #7f1d1d; border-color: #7f1d1d; color: #fff; }
-    #ai-na.active { background: #64748b; border-color: #64748b; color: #fff; }
+    #ai-ti.active  { background: #14532d; border-color: #14532d; color: #fff; }
+    #ai-i.active   { background: #16a34a; border-color: #16a34a; color: #fff; }
+    #ai-c.active   { background: #ca8a04; border-color: #ca8a04; color: #fff; }
+    #ai-a.active   { background: #dc2626; border-color: #dc2626; color: #fff; }
+    #ai-s.active   { background: #7f1d1d; border-color: #7f1d1d; color: #fff; }
+    #ai-na.active  { background: #64748b; border-color: #64748b; color: #fff; }
+    #ai-tiM.active { background: #14532d; border-color: #14532d; color: #fff; }
+    #ai-iM.active  { background: #16a34a; border-color: #16a34a; color: #fff; }
+    #ai-cM.active  { background: #ca8a04; border-color: #ca8a04; color: #fff; }
+    #ai-aM.active  { background: #dc2626; border-color: #dc2626; color: #fff; }
+    #ai-sM.active  { background: #7f1d1d; border-color: #7f1d1d; color: #fff; }
+    #ai-naM.active { background: #64748b; border-color: #64748b; color: #fff; }
     .qfbar-ctrl {
       padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 7px;
       font-size: 12px; background: var(--bg); outline: none; color: var(--text);
@@ -343,6 +349,25 @@
       grid-column: 1/-1; text-align: center; padding: 60px 20px;
       color: var(--muted); font-style: italic; font-size: 15px;
     }
+
+    /* ── Marché section header ── */
+    .marche-section-hdr {
+      background: #1e293b; color: #fff;
+      padding: 11px 16px; display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 56px; z-index: 340;
+      box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+    .marche-section-title { font-size: .95rem; font-weight: 800; letter-spacing: .01em; }
+    .count-badge-m {
+      background: rgba(255,255,255,.15); padding: 3px 11px;
+      border-radius: 9999px; font-size: 12px; font-weight: 700;
+    }
+    .marche-section-hdr .btn-ghost-sm {
+      margin-left: auto; background: rgba(255,255,255,.1); color: #fff;
+      border: 1px solid rgba(255,255,255,.25); padding: 5px 12px;
+      border-radius: 7px; font-size: 12px; font-weight: 600;
+    }
+    .marche-section-hdr .btn-ghost-sm:hover { background: rgba(255,255,255,.2); }
 
     /* ── Pagination ── */
     .pagination {
@@ -615,6 +640,65 @@
 <!-- ===== PAGINATION ===== -->
 <div class="pagination" id="pagination"></div>
 
+<!-- ===== MARCHÉ SECTION ===== -->
+<div class="marche-section-hdr">
+  <span class="marche-section-title">🏠 Annonces Marché</span>
+  <span class="count-badge-m" id="cntBadgeM">… annonces</span>
+  <button class="btn-ghost-sm" onclick="clearAllM()">✕ Réinit. filtres</button>
+</div>
+<div class="qfbar" id="qfbarMarche" style="top:56px">
+  <input class="qfbar-ctrl" type="text" id="qM" placeholder="🔍 Recherche ville…" style="width:190px">
+  <select class="qfbar-ctrl" id="selTypeM">
+    <option value="">Tous types</option>
+    <option value="Appartement">Appartement</option>
+    <option value="Bien immobilier">Bien immobilier</option>
+    <option value="Immeuble">Immeuble</option>
+    <option value="Local commercial">Local commercial</option>
+    <option value="Maison">Maison</option>
+    <option value="Studio">Studio</option>
+    <option value="Terrain">Terrain</option>
+  </select>
+  <select class="qfbar-ctrl" id="selDeptM">
+    <option value="">Tous dép.</option>
+    <option value="09">Dép. 09</option>
+    <option value="11">Dép. 11</option>
+    <option value="31">Dép. 31</option>
+    <option value="32">Dép. 32</option>
+    <option value="81">Dép. 81</option>
+    <option value="82">Dép. 82</option>
+  </select>
+  <input class="qfbar-ctrl" type="number" id="fsM" placeholder="Surf. min m²" style="width:110px">
+  <div class="qfbar-sep"></div>
+  <span class="qfbar-lbl">Prix&nbsp;:</span>
+  <button class="chip active" id="pc-allM" onclick="setPriceChipM(this,'')">Tous</button>
+  <button class="chip" id="pc-150M" onclick="setPriceChipM(this,'150000')">&lt;150k</button>
+  <button class="chip" id="pc-200M" onclick="setPriceChipM(this,'200000')">&lt;200k</button>
+  <button class="chip" id="pc-300M" onclick="setPriceChipM(this,'300000')">&lt;300k</button>
+  <button class="chip" id="pc-400M" onclick="setPriceChipM(this,'400000')">&lt;400k</button>
+  <div class="qfbar-sep"></div>
+  <span class="qfbar-lbl">IA&nbsp;:</span>
+  <button class="chip active" id="ai-allM" onclick="setAIChipM(this,'')">Tous</button>
+  <button class="chip" id="ai-tiM" onclick="setAIChipM(this,'tres_interessant')" title="Très intéressant">★★ TI</button>
+  <button class="chip" id="ai-iM" onclick="setAIChipM(this,'interessant')" title="Intéressant">★ Int.</button>
+  <button class="chip" id="ai-cM" onclick="setAIChipM(this,'correct')" title="Correct">↔ Correct</button>
+  <button class="chip" id="ai-aM" onclick="setAIChipM(this,'attention')" title="Attention">⚠ Att.</button>
+  <button class="chip" id="ai-sM" onclick="setAIChipM(this,'survevalue')" title="Surévalué">✗ Surév.</button>
+  <button class="chip" id="ai-naM" onclick="setAIChipM(this,'na')" title="Sans analyse">— N/A</button>
+  <div style="flex:1 1 0"></div>
+  <select class="qfbar-ctrl" id="sortFieldM" onchange="applyFiltersM()">
+    <option value="mise_a_prix">↕ Prix</option>
+    <option value="ville">↕ Ville</option>
+    <option value="department">↕ Dép.</option>
+    <option value="surface_m2">↕ Surface</option>
+    <option value="published_at">↕ Date</option>
+  </select>
+  <button class="qfbar-ctrl" id="sortDirBtnM" onclick="toggleSortDirM()" style="cursor:pointer;font-size:14px;white-space:nowrap">↑ Asc.</button>
+  <input type="hidden" id="fpM" value="">
+  <input type="hidden" id="selAIM" value="">
+</div>
+<div class="cards-grid" id="cardsGridM"></div>
+<div class="pagination" id="paginationM"></div>
+
 <!-- ===== TEMPLATE EDITOR ===== -->
 <div class="tpl-section" id="tplSection">
   <div class="tpl-hdr" onclick="toggleTemplates()">
@@ -741,6 +825,7 @@ async function loadUserBiens(){
   SCRAPED_FROM_SB = rows.filter(r=>r.scraped).map(_mapRow);
   USER_BIENS     = rows.filter(r=>!r.scraped).map(_mapRow);
   applyFilters();
+  applyFiltersM();
 }
 const PAGE_SIZE = 12;
 
@@ -942,6 +1027,7 @@ function saveEI(key){
 
 /* ──────────── STATE ──────────── */
 let SC='audience_date',SD=1,filtered=[],currentPage=1,selectedUrls=new Set();
+let SCM='mise_a_prix',SDM=1,filteredM=[],currentPageM=1;
 
 /* ──────────── TEMPLATES ──────────── */
 const DB1="Bonjour,\\n\\nJe me pr\u00e9sente, je suis Rebecca CARVALHO et je suis vivement int\u00e9ress\u00e9e par le bien suivant actuellement mis en vente aux ench\u00e8res judiciaires :\\n\\n\u2022 Type de bien : {bien}\\n\u2022 Adresse : {adresse}\\n\u2022 Mise \u00e0 prix : {mise_a_prix}\\n\u2022 Date d'audience : {audience_date}\\n\\nJe vous serais tr\u00e8s reconnaissante de bien vouloir me faire parvenir le Cahier des Conditions de Vente (CCV) ainsi que le Proc\u00e8s-Verbal de D\u00e9signation (PVD) afin que je puisse appr\u00e9cier le bien et \u00e9tudier ce dossier en d\u00e9tail.\\n\\nDans l'attente de votre retour, je vous adresse mes cordiales salutations.\\n\\nRebecca CARVALHO\\nrebecatimoteojb@gmail.com";
@@ -995,6 +1081,7 @@ function applyFilters(){
 
   const BASE = SCRAPED_FROM_SB.length > 0 ? SCRAPED_FROM_SB : DATA;
   filtered=[...BASE,...USER_BIENS].filter(r=>{
+    if((r.listing_type||'judiciaire')==='marche')return false;
     if(q&&!JSON.stringify(r).toLowerCase().includes(q))return false;
     if(sT&&(r.property_type||'')!==sT)return false;
     if(sD&&(r.department||'')!==sD)return false;
@@ -1032,11 +1119,75 @@ function doSort(){
 function clearAll(){
   ['q','fp','fs','dFrom','dTo','selAI'].forEach(id=>g(id).value='');
   ['selType','selDept','selReview'].forEach(id=>g(id).selectedIndex=0);
-  document.querySelectorAll('[id^="pc-"]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('[id^="pc-"]:not([id$="M"])').forEach(b=>b.classList.remove('active'));
   g('pc-all').classList.add('active');
-  document.querySelectorAll('[id^="ai-"]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('[id^="ai-"]:not([id$="M"])').forEach(b=>b.classList.remove('active'));
   g('ai-all').classList.add('active');
   applyFilters();
+}
+
+/* ── Marché filters ── */
+function setPriceChipM(btn,val){
+  document.querySelectorAll('[id$="M"][id^="pc-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  g('fpM').value=val;
+  applyFiltersM();
+}
+function setAIChipM(btn,val){
+  document.querySelectorAll('[id$="M"][id^="ai-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  g('selAIM').value=val;
+  applyFiltersM();
+}
+function toggleSortDirM(){
+  SDM*=-1;
+  g('sortDirBtnM').textContent=SDM===1?'↑ Asc.':'↓ Desc.';
+  doSortM();
+}
+function clearAllM(){
+  ['qM','fpM','fsM','selAIM'].forEach(id=>g(id).value='');
+  ['selTypeM','selDeptM'].forEach(id=>{const e=g(id);if(e)e.selectedIndex=0;});
+  document.querySelectorAll('[id$="M"][id^="pc-"]').forEach(b=>b.classList.remove('active'));
+  g('pc-allM').classList.add('active');
+  document.querySelectorAll('[id$="M"][id^="ai-"]').forEach(b=>b.classList.remove('active'));
+  g('ai-allM').classList.add('active');
+  applyFiltersM();
+}
+function applyFiltersM(){
+  const q=(g('qM').value||'').toLowerCase();
+  const sT=g('selTypeM').value,sD=g('selDeptM').value;
+  const fp=parseFloat(g('fpM').value)||null;
+  const fs=parseFloat(g('fsM').value)||null;
+  const sAI=g('selAIM').value;
+  SCM=g('sortFieldM').value;
+
+  const BASE=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
+  filteredM=[...BASE,...USER_BIENS].filter(r=>{
+    if(r.listing_type!=='marche')return false;
+    if(q&&!JSON.stringify(r).toLowerCase().includes(q))return false;
+    if(sT&&(r.property_type||'')!==sT)return false;
+    if(sD&&(r.department||'')!==sD)return false;
+    if(fp!=null&&r.mise_a_prix!=null&&r.mise_a_prix>fp)return false;
+    if(fs!=null&&r.surface_m2!=null&&r.surface_m2<fs)return false;
+    if(sAI){
+      const v=(r.dvf_analysis&&r.dvf_analysis.verdict)||null;
+      if(sAI==='na'&&v)return false;
+      if(sAI!=='na'&&v!==sAI)return false;
+    }
+    return true;
+  });
+  currentPageM=1;
+  doSortM();
+}
+function doSortM(){
+  filteredM.sort((a,b)=>{
+    let av=a[SCM]??'',bv=b[SCM]??'';
+    if(av===''&&bv==='')return 0;
+    if(av==='')return 1;if(bv==='')return -1;
+    if(typeof av==='number'&&typeof bv==='number')return(av-bv)*SDM;
+    return String(av).localeCompare(String(bv),'fr')*SDM;
+  });
+  renderMarche();
 }
 
 /* ──────────── CARD BUILDERS ──────────── */
@@ -1161,36 +1312,47 @@ function renderCard(r){
 
 /* ──────────── RENDER ──────────── */
 function render(){
-  // Split filtered into judicial (paginated) and marché (always shown at bottom)
-  const judicial=filtered.filter(r=>r.listing_type!=='marche');
-  const marche=filtered.filter(r=>r.listing_type==='marche');
-
-  const totalJudicial=judicial.length;
-  const totalPages=Math.max(1,Math.ceil(totalJudicial/PAGE_SIZE));
+  const total=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
   if(currentPage>totalPages)currentPage=totalPages;
 
   const base=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
-  g('cntBadge').textContent=`${filtered.length} / ${base.length+USER_BIENS.length} annonces`;
+  const totalJ=[...base,...USER_BIENS].filter(r=>(r.listing_type||'judiciaire')!=='marche').length;
+  g('cntBadge').textContent=`${total} / ${totalJ} enchères`;
 
   const start=(currentPage-1)*PAGE_SIZE;
-  const end=Math.min(start+PAGE_SIZE,totalJudicial);
+  const end=Math.min(start+PAGE_SIZE,total);
   const grid=g('cardsGrid');
 
-  if(!filtered.length){
+  if(!total){
     grid.innerHTML='<div class="empty-state">Aucune annonce ne correspond aux filtres.</div>';
   }else{
-    let html=judicial.slice(start,end).map(r=>renderCard(r)).join('');
-    if(marche.length && currentPage===1){
-      html+=`<div style="grid-column:1/-1;margin:12px 0 4px;padding:10px 4px 6px;border-top:2px solid var(--border);display:flex;align-items:center;gap:10px;">
-        <span style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;">Annonces marché</span>
-        <span style="font-size:11px;color:var(--muted);">${marche.length} bien${marche.length>1?'s':''} ajouté${marche.length>1?'s':''}</span>
-      </div>`;
-      html+=marche.map(r=>renderCard(r)).join('');
-    }
-    grid.innerHTML=html;
+    grid.innerHTML=filtered.slice(start,end).map(r=>renderCard(r)).join('');
   }
-  renderPagination(totalPages,totalJudicial,start,end);
+  renderPagination(totalPages,total,start,end);
   updateSelInfo();
+}
+
+function renderMarche(){
+  const total=filteredM.length;
+  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  if(currentPageM>totalPages)currentPageM=totalPages;
+
+  const base=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
+  const totalM=[...base,...USER_BIENS].filter(r=>r.listing_type==='marche').length;
+  const el=g('cntBadgeM');if(el)el.textContent=`${total} / ${totalM} annonces`;
+
+  const start=(currentPageM-1)*PAGE_SIZE;
+  const end=Math.min(start+PAGE_SIZE,total);
+  const grid=g('cardsGridM');
+  if(!grid)return;
+
+  if(!total){
+    grid.innerHTML='<div class="empty-state">Aucune annonce marché ne correspond aux filtres.</div>';
+  }else{
+    grid.innerHTML=filteredM.slice(start,end).map(r=>renderCard(r)).join('');
+  }
+  renderPaginationM(totalPages,total,start,end);
 }
 
 /* ──────────── PAGINATION ──────────── */
@@ -1214,10 +1376,36 @@ function renderPagination(totalPages,total,start,end){
     <button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&#8250;</button>
   `;
 }
+function renderPaginationM(totalPages,total,start,end){
+  const el=g('paginationM');if(!el)return;
+  if(totalPages<=1){el.innerHTML=`<span class="page-info">${total} annonce${total!==1?'s':''}</span>`;return;}
+  let pages=[];
+  if(totalPages<=7)pages=Array.from({length:totalPages},(_,i)=>i+1);
+  else{
+    pages=[1];
+    const lo=Math.max(2,currentPageM-2),hi=Math.min(totalPages-1,currentPageM+2);
+    if(lo>2)pages.push('...');
+    for(let i=lo;i<=hi;i++)pages.push(i);
+    if(hi<totalPages-1)pages.push('...');
+    pages.push(totalPages);
+  }
+  el.innerHTML=`
+    <span class="page-info">${start+1}–${Math.min(end,total)} sur ${total}</span>
+    <button class="pg-btn" onclick="goPageM(${currentPageM-1})" ${currentPageM===1?'disabled':''}>&#8249;</button>
+    ${pages.map(p=>p==='...'?`<span class="pg-dots">…</span>`:`<button class="pg-btn ${p===currentPageM?'active':''}" onclick="goPageM(${p})">${p}</button>`).join('')}
+    <button class="pg-btn" onclick="goPageM(${currentPageM+1})" ${currentPageM===totalPages?'disabled':''}>&#8250;</button>
+  `;
+}
 function goPage(p){
   const tp=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
   if(p<1||p>tp)return;
   currentPage=p;render();window.scrollTo({top:0,behavior:'smooth'});
+}
+function goPageM(p){
+  const tp=Math.max(1,Math.ceil(filteredM.length/PAGE_SIZE));
+  if(p<1||p>tp)return;
+  currentPageM=p;renderMarche();
+  const sec=g('cardsGridM');if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 /* ──────────── SELECTION ──────────── */
@@ -1313,6 +1501,11 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
   el.addEventListener('input',applyFilters);
   el.addEventListener('change',applyFilters);
 });
+['qM','selTypeM','selDeptM','fsM'].forEach(id=>{
+  const el=g(id);if(!el)return;
+  el.addEventListener('input',applyFiltersM);
+  el.addEventListener('change',applyFiltersM);
+});
 
 /* ──────────── MARCHÉ DETAIL ──────────── */
 function openMarcheModal(key){
@@ -1350,6 +1543,7 @@ function toggleFilters(){
 
 initTemplates();
 applyFilters();
+applyFiltersM();
 loadUserBiens();
 loadEmailResponses();
 
