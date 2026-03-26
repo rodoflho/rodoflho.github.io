@@ -307,6 +307,28 @@
     .sent-btn:hover { filter: brightness(.95); }
     .ltype-btn.active { border-color: var(--primary) !important; background: #fff3f0 !important; color: var(--primary); }
 
+    /* ── Password screen ── */
+    #pwScreen {
+      position: fixed; inset: 0; background: var(--primary);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 9999; gap: 16px;
+    }
+    #pwScreen h1 { color: #fff; font-size: 2rem; margin: 0; }
+    #pwScreen p  { color: rgba(255,255,255,.75); margin: 0; font-size: .9rem; }
+    #pwInput {
+      padding: 12px 18px; border-radius: 10px; border: none; font-size: 1rem;
+      width: 220px; text-align: center; outline: none;
+    }
+    #pwBtn {
+      background: #fff; color: var(--primary); border: none; padding: 11px 28px;
+      border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer;
+    }
+    #pwErr { color: #fecaca; font-size: .85rem; min-height: 18px; }
+
+    /* ── Marché card clickable ── */
+    .card-marche { cursor: pointer; }
+    .card-marche:hover .card-inner { background: #fafafa; }
+
     /* ── AI detail modal ── */
     .ai-modal-body { line-height: 1.8; font-size: 13px; }
     .ai-modal-body .ai-stat { margin-bottom: 8px; }
@@ -1077,7 +1099,8 @@ function renderCard(r){
   const ppm2=r.mise_a_prix&&r.surface_m2?Math.round(r.mise_a_prix/r.surface_m2):null;
   const lienBtn=r.url?`<a class="btn-lien" href="${r.url}" target="_blank">Lien annonce ↗</a>`:'';
   const rvCmt=rv.comment?`<div style="font-size:11px;color:var(--muted);font-style:italic;padding:0 4px 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%" title="${escA(rv.comment)}">${esc(rv.comment)}</div>`:'';
-  return`<div class="card ${isSel?'selected':''} ${rvCls}">
+  const isMar=r.listing_type==='marche';
+  return`<div class="card ${isSel?'selected':''} ${rvCls}${isMar?' card-marche':''}" ${isMar?`onclick="openMarcheModal('${escA(key)}')"`:''}>
   <div class="card-inner">
     <div class="c-top">
       ${badge(r.property_type)}
@@ -1256,6 +1279,46 @@ function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').c
   el.addEventListener('input',applyFilters);
   el.addEventListener('change',applyFilters);
 });
+/* ──────────── PASSWORD ──────────── */
+(function(){
+  if(sessionStorage.getItem('pm_auth')==='1')
+    document.getElementById('pwScreen').style.display='none';
+})();
+function checkPw(){
+  const v=document.getElementById('pwInput').value.trim().toLowerCase();
+  if(v==='pamonha'){
+    sessionStorage.setItem('pm_auth','1');
+    document.getElementById('pwScreen').style.display='none';
+  } else {
+    document.getElementById('pwErr').textContent='Mot de passe incorrect.';
+    document.getElementById('pwInput').value='';
+  }
+}
+
+/* ──────────── MARCHÉ DETAIL ──────────── */
+function openMarcheModal(key){
+  const r=([...DATA,...USER_BIENS,...SCRAPED_FROM_SB]).find(x=>(x.url||String(x._i))===key);
+  if(!r)return;
+  const g2=s=>s?`<div style="font-size:13px;color:#475569;margin-bottom:6px;">${s}</div>`:'';
+  document.getElementById('marcheModalContent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      ${badge(r.property_type)}
+      <span style="font-size:12px;color:var(--muted);">${r.source_journal||''}</span>
+    </div>
+    <h3 style="margin:0 0 6px;font-size:1rem;color:#0f172a;">${esc(r.title||r.ville||'Annonce')}</h3>
+    ${g2(r.adresse?`📍 ${esc(r.adresse)}, ${esc(r.ville||'')}`:r.ville?`📍 ${esc(r.ville)}`:'') }
+    <div style="display:flex;gap:16px;margin:10px 0;flex-wrap:wrap;">
+      ${r.mise_a_prix?`<span style="font-size:1.1rem;font-weight:700;color:var(--primary);">${fPrice(r.mise_a_prix)}</span>`:''}
+      ${r.surface_m2?`<span style="font-size:.95rem;color:#475569;">${fSurf(r.surface_m2)}</span>`:''}
+      ${r.department?`<span style="font-size:.85rem;background:#f1f5f9;padding:2px 8px;border-radius:6px;">Dép. ${esc(r.department)}</span>`:''}
+    </div>
+    ${r.summary?`<div style="font-size:13px;line-height:1.6;color:#334155;border-top:1px solid #e2e8f0;padding-top:12px;margin-top:4px;white-space:pre-wrap;">${esc(r.summary)}</div>`:''}
+    ${r.url?`<a href="${r.url}" target="_blank" style="display:inline-block;margin-top:14px;background:var(--primary);color:#fff;padding:9px 18px;border-radius:8px;font-weight:700;font-size:13px;text-decoration:none;">Voir l'annonce ↗</a>`:''}
+  `;
+  document.getElementById('marcheModal').style.display='flex';
+}
+function closeMarcheModal(evt){if(!evt||evt.target===document.getElementById('marcheModal'))document.getElementById('marcheModal').style.display='none';}
+
 function toggleFilters(){
 
   const bar=document.querySelector('.qfbar');
@@ -1415,6 +1478,23 @@ async function submitBien(e){
   btn.disabled=false;btn.textContent='Ajouter';
 }
 </script>
+
+<!-- PASSWORD SCREEN -->
+<div id="pwScreen">
+  <h1>♥</h1>
+  <p>Projet Michaëlis — accès privé</p>
+  <input id="pwInput" type="password" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')checkPw()">
+  <button id="pwBtn" onclick="checkPw()">Entrer</button>
+  <span id="pwErr"></span>
+</div>
+
+<!-- MARCHÉ DETAIL MODAL -->
+<div id="marcheModal" onclick="closeMarcheModal(event)" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;padding:20px;overflow-y:auto;">
+<div style="background:#fff;width:100%;max-width:520px;margin:auto;border-radius:14px;padding:24px;position:relative;" onclick="event.stopPropagation()">
+  <button onclick="closeMarcheModal()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#64748b;">✕</button>
+  <div id="marcheModalContent"></div>
+</div>
+</div>
 
 <!-- EMAIL RESPONSE MODAL -->
 <div id="repModal" onclick="closeRepModal(event)" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:950;padding:20px;">
