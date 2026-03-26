@@ -316,7 +316,7 @@
     }
     .pg-btn {
       padding: 7px 13px; border: 1.5px solid var(--border); border-radius: 7px;
-      background: #fff; font-size: 13px; font-weight: 600; color: var(--text);
+      background: #fff; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer;
     }
     .pg-btn:hover:not(:disabled) { background: var(--primary); color: #fff; border-color: var(--primary); }
     .pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -485,7 +485,6 @@
   <button class="burger-btn" id="burgerBtn" onclick="toggleFilters()" aria-label="Filtres">
     <span></span><span></span><span></span>
   </button>
-  <input class="qfbar-ctrl" type="text" id="q-mobile" placeholder="🔍 Recherche…" oninput="document.getElementById('q').value=this.value;applyFilters()" style="flex:1;">
 </div>
 <div class="qfbar">
   <input class="qfbar-ctrl" type="text" id="q" placeholder="🔍 Recherche ville, avocat…" style="width:190px">
@@ -513,7 +512,9 @@
       <option value="66">Dép. 66</option>
       <option value="82">Dép. 82</option>
   </select>
+  <span class="qfbar-lbl">Audience du</span>
   <input class="qfbar-ctrl" type="date" id="dFrom" title="Audience à partir du" style="width:138px">
+  <span class="qfbar-lbl">au</span>
   <input class="qfbar-ctrl" type="date" id="dTo" title="Audience jusqu'au" style="width:138px">
   <input class="qfbar-ctrl" type="number" id="fs" placeholder="Surf. min m²" style="width:110px">
   <select class="qfbar-ctrl" id="selReview">
@@ -1045,7 +1046,8 @@ function render(){
   const total=filtered.length;
   const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
   if(currentPage>totalPages)currentPage=totalPages;
-  g('cntBadge').textContent=`${total} / ${DATA.length} annonces`;
+  const base=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
+  g('cntBadge').textContent=`${total} / ${base.length+USER_BIENS.length} annonces`;
   const start=(currentPage-1)*PAGE_SIZE;
   const end=Math.min(start+PAGE_SIZE,total);
   const grid=g('cardsGrid');
