@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projet Michaëlis – Enchères judiciaires Sud-Ouest</title>
+  <style>
+    :root {
+      --primary: #F54927; --primary-dk: #d43d1f;
+      --bg: #f1f5f9; --surface: #fff;
+      --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+      --green: #16a34a; --red: #dc2626;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ── Header ── */
+    .app-header {
+      background: var(--primary); color: #fff; padding: 0 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 400;
+      box-shadow: 0 2px 10px rgba(0,0,0,.25);
+    }
+    .hdr-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .hdr-logo {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(255,255,255,.2); display: flex; align-items: center;
+      justify-content: center; font-weight: 800; font-size: 16px;
+    }
+    .hdr-title { font-size: .95rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .hdr-sub { font-size: .68rem; opacity: .7; white-space: nowrap; }
+    .hdr-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .count-badge {
+      background: rgba(255,255,255,.2); padding: 4px 12px;
+      border-radius: 9999px; font-size: 13px; font-weight: 700; white-space: nowrap;
+    }
+    .filter-toggle {
+      background: rgba(255,255,255,.15); border: none; color: #fff;
+      padding: 7px 13px; border-radius: 7px; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 5px; white-space: nowrap;
+    }
+    .filter-toggle:hover { background: rgba(255,255,255,.28); }
+    .filter-toggle .fc {
+      background: #fff; color: var(--primary); border-radius: 9999px;
+      font-size: 10px; font-weight: 800; padding: 0 5px; min-width: 17px;
+      text-align: center; display: none;
+    }
+    .filter-toggle.active .fc { display: inline; }
+
+    /* ── Quick filter bar (always visible) ── */
+    .qfbar {
+      background: var(--surface); border-bottom: 2px solid var(--border);
+      padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 7px 10px;
+      align-items: center; position: sticky; top: 56px; z-index: 350;
+    }
+    .qfbar-sep { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
+    .qfbar-lbl { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; }
+    .chip {
+      padding: 4px 11px; border-radius: 9999px; font-size: 11px; font-weight: 700;
+      border: 1.5px solid var(--border); background: var(--bg); color: var(--text);
+      cursor: pointer; white-space: nowrap; transition: background .1s, color .1s, border-color .1s;
+    }
+    .chip:hover { border-color: #94a3b8; }
+    .chip.active { background: #1e293b; color: #fff; border-color: #1e293b; }
+    #ai-ti.active { background: #14532d; border-color: #14532d; color: #fff; }
+    #ai-i.active  { background: #16a34a; border-color: #16a34a; color: #fff; }
+    #ai-c.active  { background: #ca8a04; border-color: #ca8a04; color: #fff; }
+    #ai-a.active  { background: #dc2626; border-color: #dc2626; color: #fff; }
+    #ai-s.active  { background: #7f1d1d; border-color: #7f1d1d; color: #fff; }
+    #ai-na.active { background: #64748b; border-color: #64748b; color: #fff; }
+    .qfbar-ctrl {
+      padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 7px;
+      font-size: 12px; background: var(--bg); outline: none; color: var(--text);
+    }
+    .qfbar-ctrl:focus { border-color: var(--primary); background: #fff; }
+    /* legacy ctrl class (kept for action bar) */
+    .ctrl {
+      padding: 7px 10px; border: 1.5px solid var(--border); border-radius: 7px;
+      font-size: 13px; background: var(--bg); outline: none; color: var(--text);
+    }
+    .ctrl:focus { border-color: var(--primary); background: #fff; }
+    .btn {
+      padding: 7px 15px; border-radius: 7px; font-size: 13px; font-weight: 600; border: none;
+    }
+    .btn-ghost { background: #fff; color: var(--muted); border: 1.5px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dk); }
+    .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; color: #94a3b8; }
+    .btn-dark { background: #1e293b; color: #fff; }
+    .btn-dark:hover { background: #334155; }
+
+    /* ── Action bar ── */
+    .action-bar {
+      background: #fff8f6; border-bottom: 1px solid #fdd5c8;
+      padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    }
+    .sel-info { font-size: 13px; color: var(--primary); font-weight: 700; }
+
+    /* ── Cards grid ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 14px; padding: 16px;
+      max-width: 1600px; margin: 0 auto;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface); border-radius: 14px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04);
+      display: flex; flex-direction: column; gap: 0;
+      transition: box-shadow .15s, transform .12s;
+      overflow: hidden;
+    }
+    .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.1), 0 0 0 1px rgba(0,0,0,.05); transform: translateY(-2px); }
+    .card.selected { box-shadow: 0 0 0 2.5px var(--primary), 0 4px 16px rgba(245,73,39,.15); }
+    .card.rv-oui-card { border-top: 3px solid var(--green); }
+    .card.rv-non-card { border-top: 3px solid var(--red); opacity: .8; }
+
+    .card-inner { padding: 14px; display: flex; flex-direction: column; gap: 11px; flex: 1; }
+
+    /* Card: top row */
+    .c-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .c-meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .c-dept {
+      background: #1e293b; color: #fff; border-radius: 5px;
+      font-size: 11px; font-weight: 700; padding: 2px 7px;
+    }
+    .c-date { font-size: 11px; color: var(--muted); white-space: nowrap; font-weight: 600; }
+
+    /* Badge */
+    .badge {
+      display: inline-block; padding: 3px 9px; border-radius: 9999px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .b-Appartement { background: #dbeafe; color: #1d4ed8; }
+    .b-Studio      { background: #e0e7ff; color: #4338ca; }
+    .b-Maison      { background: #dcfce7; color: #15803d; }
+    .b-Immeuble    { background: #fef9c3; color: #854d0e; }
+    .b-Terrain     { background: #d1fae5; color: #065f46; }
+    .b-Local       { background: #ffedd5; color: #9a3412; }
+    .b-default     { background: #e2e8f0; color: #475569; }
+
+    /* Card: location */
+    .c-city { font-size: 1.15rem; font-weight: 800; line-height: 1.2; }
+    .c-addr {
+      font-size: 11px; color: var(--muted); margin-top: 2px;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+    }
+
+    /* Card: price row */
+    .c-price-row { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+    .c-price { font-size: 1.3rem; font-weight: 800; color: var(--green); white-space: nowrap; }
+    .c-surface { font-size: .9rem; color: var(--muted); }
+    .c-ppm2 { font-size: .78rem; color: #94a3b8; }
+
+    /* ── AI section (accordion) ── */
+    .ai-section {
+      border-radius: 9px; overflow: hidden; border: 1.5px solid var(--border);
+      cursor: pointer; user-select: none;
+    }
+    .ai-header {
+      display: flex; align-items: center; gap: 7px; padding: 8px 11px;
+      background: #f8fafc;
+    }
+    .ai-header:hover { background: #f1f5f9; }
+    .ai-verdict {
+      display: inline-block; padding: 2px 9px; border-radius: 9999px;
+      font-size: 11px; font-weight: 700; white-space: nowrap;
+    }
+    .ai-tres_interessant { background: #14532d; color: #fff; }
+    .ai-interessant      { background: #16a34a; color: #fff; }
+    .ai-correct          { background: #ca8a04; color: #fff; }
+    .ai-attention        { background: #dc2626; color: #fff; }
+    .ai-survevalue       { background: #7f1d1d; color: #fff; }
+    .ai-na               { background: #e2e8f0; color: #64748b; }
+    .ai-pct  { font-size: 11px; color: var(--muted); }
+    .ai-chev { margin-left: auto; color: var(--muted); font-size: 11px; transition: transform .2s; }
+    .ai-body {
+      display: none; padding: 10px 12px; font-size: 12px; line-height: 1.75;
+      background: #fff; border-top: 1px solid var(--border);
+    }
+    .ai-section.open .ai-body  { display: block; }
+    .ai-section.open .ai-chev  { transform: rotate(180deg); }
+    .ai-max  { font-weight: 700; font-size: 13px; color: var(--text); }
+
+    /* ── Card: AI verdict inline ── */
+    .c-ai-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .c-ai-pct  { font-size: 10px; color: var(--muted); }
+
+    /* ── Avocat ── */
+    .c-avocat { font-size: 12px; }
+    .c-avo-name { font-weight: 600; }
+    .c-avo-email { color: #2563eb; font-size: 11px; display: block; margin-top: 1px; }
+    .c-avo-email:hover { text-decoration: underline; }
+    .c-avo-add { font-size: 11px; color: var(--muted); cursor: pointer; opacity: .7; }
+    .c-avo-add:hover { opacity: 1; color: var(--primary); }
+    .email-input-wrap { display: flex; gap: 4px; margin-top: 3px; }
+    .email-input {
+      flex: 1; padding: 4px 7px; border: 1.5px solid var(--primary); border-radius: 5px;
+      font-size: 12px; outline: none; min-width: 0;
+    }
+    .email-save   { padding: 4px 8px; background: var(--primary); color: #fff; border: none; border-radius: 5px; font-size: 11px; }
+    .email-cancel { padding: 4px 8px; background: var(--bg); border: 1px solid var(--border); border-radius: 5px; font-size: 11px; }
+
+    /* ── Card footer ── */
+    .c-footer {
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      padding: 10px 14px 12px; border-top: 1px solid var(--border);
+      background: #fafafa;
+    }
+    .c-check { display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; color: var(--muted); }
+    .c-check input { accent-color: var(--primary); width: 15px; height: 15px; }
+    .c-src {
+      margin-left: auto; font-size: 17px; color: #94a3b8; line-height: 1;
+    }
+    .c-src:hover { color: var(--primary); text-decoration: none; }
+
+    /* Docs popup */
+    .docs-wrap { position: relative; }
+    .docs-btn {
+      padding: 5px 10px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;
+    }
+    .docs-btn:hover { background: #dbeafe; }
+    .docs-popup {
+      position: absolute; bottom: calc(100% + 8px); left: 0;
+      background: #fff; border: 1.5px solid var(--border); border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.14); z-index: 200;
+      min-width: 240px; max-width: 320px; padding: 8px;
+      display: none; flex-direction: column; gap: 3px;
+    }
+    .docs-popup.open { display: flex; }
+    .docs-popup-title {
+      font-size: 11px; color: var(--muted); font-weight: 700; padding: 2px 6px 6px;
+      border-bottom: 1px solid var(--border); margin-bottom: 3px;
+    }
+    .doc-item {
+      display: flex; align-items: center; gap: 7px; padding: 6px 8px;
+      border-radius: 7px; font-size: 12px; color: var(--text);
+    }
+    .doc-item:hover { background: var(--bg); }
+    .doc-tag {
+      font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 4px; flex-shrink: 0;
+    }
+    .tag-CCV     { background: #dbeafe; color: #1d4ed8; }
+    .tag-PVD     { background: #dcfce7; color: #15803d; }
+    .tag-Affiche { background: #fef9c3; color: #854d0e; }
+    .tag-Document{ background: #f1f5f9; color: #475569; }
+    .doc-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+
+    /* Robert review button */
+    .rv-btn {
+      padding: 5px 11px; border-radius: 7px; font-size: 12px; font-weight: 600; border: none;
+    }
+    .rv-pending { background: #f1f5f9; color: var(--muted); }
+    .rv-pending:hover { background: #e2e8f0; }
+    .rv-oui { background: #dcfce7; color: #15803d; }
+    .rv-oui:hover { background: #bbf7d0; }
+    .rv-non { background: #fee2e2; color: #991b1b; }
+    .rv-non:hover { background: #fecaca; }
+
+    /* ── AI footer button ── */
+    .ai-foot-btn {
+      padding: 5px 11px; border-radius: 7px; font-size: 11px; font-weight: 700;
+      border: none; cursor: pointer; white-space: nowrap;
+    }
+    .ai-foot-btn.ai-tres_interessant { background: #14532d; color: #fff; }
+    .ai-foot-btn.ai-interessant      { background: #16a34a; color: #fff; }
+    .ai-foot-btn.ai-correct          { background: #ca8a04; color: #fff; }
+    .ai-foot-btn.ai-attention        { background: #dc2626; color: #fff; }
+    .ai-foot-btn.ai-survevalue       { background: #7f1d1d; color: #fff; }
+    .ai-foot-btn.ai-na               { background: #e2e8f0; color: #64748b; }
+    .ai-foot-btn:hover { filter: brightness(1.12); }
+
+    /* ── Lien annonce button ── */
+    .btn-lien {
+      padding: 5px 11px; border-radius: 7px; font-size: 12px; font-weight: 600;
+      background: #f1f5f9; color: #475569; border: 1px solid var(--border);
+      text-decoration: none; white-space: nowrap;
+    }
+    .btn-lien:hover { background: #e2e8f0; text-decoration: none; color: var(--text); }
+
+    /* ── Email sent badge ── */
+    .sent-badge {
+      font-size: 11px; color: var(--green); font-weight: 700;
+      background: #dcfce7; padding: 2px 8px; border-radius: 9999px;
+      white-space: nowrap;
+    }
+
+    /* ── AI detail modal ── */
+    .ai-modal-body { line-height: 1.8; font-size: 13px; }
+    .ai-modal-body .ai-stat { margin-bottom: 8px; }
+    .ai-modal-body .ai-max-offer {
+      font-size: 1.2rem; font-weight: 800; color: var(--primary);
+      padding: 10px 14px; background: #fff8f6; border-radius: 8px;
+      border-left: 3px solid var(--primary); margin: 12px 0;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      grid-column: 1/-1; text-align: center; padding: 60px 20px;
+      color: var(--muted); font-style: italic; font-size: 15px;
+    }
+
+    /* ── Pagination ── */
+    .pagination {
+      display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+      gap: 6px; padding: 16px;
+    }
+    .pg-btn {
+      padding: 7px 13px; border: 1.5px solid var(--border); border-radius: 7px;
+      background: #fff; font-size: 13px; font-weight: 600; color: var(--text);
+    }
+    .pg-btn:hover:not(:disabled) { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pg-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .pg-btn:disabled { opacity: .4; cursor: default; }
+    .pg-dots { padding: 4px; color: var(--muted); }
+    .page-info { font-size: 12px; color: var(--muted); padding: 0 8px; }
+
+    /* ── Template editor ── */
+    .tpl-section {
+      margin: 0 16px 16px; background: var(--surface); border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.07); overflow: hidden; display: none;
+    }
+    .tpl-hdr {
+      padding: 12px 16px; background: #f8fafc; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+    }
+    .tpl-hdr h3 { font-size: 14px; font-weight: 700; }
+    .tpl-body { padding: 16px; }
+    .tpl-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+    .tpl-tab {
+      padding: 6px 14px; border-radius: 7px; border: 1.5px solid var(--border);
+      background: #fff; font-size: 13px; color: var(--muted); font-weight: 500;
+    }
+    .tpl-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tpl-content { display: none; }
+    .tpl-content.active { display: block; }
+    .tpl-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 600; }
+    .tpl-input {
+      width: 100%; padding: 8px 12px; border: 1.5px solid var(--border);
+      border-radius: 7px; font-size: 13px; margin-bottom: 8px; outline: none;
+    }
+    .tpl-input:focus { border-color: var(--primary); }
+    textarea.tpl-input { resize: vertical; min-height: 160px; font-family: inherit; line-height: 1.6; }
+    .tpl-vars { font-size: 11px; color: var(--muted); background: #f8fafc; padding: 8px 12px; border-radius: 7px; margin-top: 4px; }
+    .tpl-vars code { background: #e2e8f0; padding: 1px 5px; border-radius: 3px; }
+
+    /* ── Email list ── */
+    .email-list { display: flex; flex-direction: column; gap: 10px; }
+    .email-item { border: 1.5px solid var(--border); border-radius: 9px; overflow: hidden; }
+    .email-item-hdr {
+      padding: 10px 14px; background: #f8fafc; display: flex;
+      align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .email-item-hdr .to { font-weight: 700; font-size: 13px; }
+    .email-item-hdr .subj { font-size: 12px; color: var(--muted); flex: 1; }
+    .email-item-body {
+      padding: 10px 14px; font-size: 12px; white-space: pre-wrap;
+      max-height: 150px; overflow-y: auto; background: #fff;
+      border-top: 1px solid var(--border);
+    }
+    .no-email { color: #dc2626; font-style: italic; font-size: 12px; }
+
+    /* ── Robert modal ── */
+    .rv-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 2000;
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .rv-overlay.open { display: flex; }
+    .rv-modal {
+      background: #fff; border-radius: 14px; max-width: 480px; width: 100%;
+      box-shadow: 0 24px 64px rgba(0,0,0,.3); padding: 24px;
+    }
+    .rv-modal h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 4px; }
+    .rv-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+    .rv-btns { display: flex; gap: 10px; margin-bottom: 14px; }
+    .rv-choice {
+      flex: 1; padding: 11px; border-radius: 9px; border: 2px solid var(--border);
+      background: var(--bg); font-size: 14px; font-weight: 700; transition: all .15s;
+    }
+    .rv-choice.sel-oui { background: #16a34a; color: #fff; border-color: #16a34a; }
+    .rv-choice.sel-non { background: #dc2626; color: #fff; border-color: #dc2626; }
+    .rv-modal textarea {
+      width: 100%; padding: 10px; border: 1.5px solid var(--border); border-radius: 9px;
+      font-size: 13px; font-family: inherit; resize: vertical; min-height: 90px;
+      outline: none; margin-bottom: 14px;
+    }
+    .rv-modal textarea:focus { border-color: var(--primary); }
+    .rv-footer { display: flex; gap: 8px; justify-content: flex-end; }
+
+    /* ── Email modal ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 1000;
+      display: none; align-items: center; justify-content: center; padding: 16px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 14px; max-width: 900px; width: 100%;
+      max-height: 92vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,.3);
+    }
+    .modal-hdr {
+      padding: 18px 22px 14px; border-bottom: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      position: sticky; top: 0; background: #fff; z-index: 1;
+    }
+    .modal-hdr h2 { font-size: 1.1rem; font-weight: 800; }
+    .modal-close {
+      width: 32px; height: 32px; border-radius: 50%; border: none;
+      background: var(--bg); font-size: 18px; color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-close:hover { background: #e2e8f0; }
+    .modal-body { padding: 20px 22px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .hdr-sub { display: none; }
+      .hdr-title { font-size: .85rem; }
+      .cards-grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
+      .action-bar select { flex: 1; min-width: 0; }
+      .docs-popup { left: auto; right: 0; }
+    }
+    @media (min-width: 1200px) {
+      .cards-grid { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="app-header">
+  <div class="hdr-left">
+    <div class="hdr-logo">M</div>
+    <div>
+      <div class="hdr-title">Projet Michaëlis</div>
+      <div class="hdr-sub">Enchères judiciaires — Sud-Ouest France · 26/03/2026 à 12:24</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="count-badge" id="cntBadge">61 annonces</span>
+  </div>
+</header>
+
+<!-- ===== QUICK FILTER BAR ===== -->
+<div class="qfbar">
+  <input class="qfbar-ctrl" type="text" id="q" placeholder="🔍 Recherche ville, avocat…" style="width:190px">
+  <select class="qfbar-ctrl" id="selType">
+    <option value="">Tous types</option>
+      <option value="Appartement">Appartement</option>
+      <option value="Bien immobilier">Bien immobilier</option>
+      <option value="Immeuble">Immeuble</option>
+      <option value="Local commercial">Local commercial</option>
+      <option value="Maison">Maison</option>
+      <option value="Studio">Studio</option>
+      <option value="Terrain">Terrain</option>
+  </select>
+  <select class="qfbar-ctrl" id="selDept">
+    <option value="">Tous dép.</option>
+      <option value="09">Dép. 09</option>
+      <option value="13">Dép. 13</option>
+      <option value="30">Dép. 30</option>
+      <option value="31">Dép. 31</option>
+      <option value="33">Dép. 33</option>
+      <option value="34">Dép. 34</option>
+      <option value="40">Dép. 40</option>
+      <option value="64">Dép. 64</option>
+      <option value="65">Dép. 65</option>
+      <option value="66">Dép. 66</option>
+      <option value="82">Dép. 82</option>
+  </select>
+  <input class="qfbar-ctrl" type="date" id="dFrom" title="Audience à partir du" style="width:138px">
+  <input class="qfbar-ctrl" type="date" id="dTo" title="Audience jusqu'au" style="width:138px">
+  <input class="qfbar-ctrl" type="number" id="fs" placeholder="Surf. min m²" style="width:110px">
+  <select class="qfbar-ctrl" id="selReview">
+    <option value="">Avis Robert</option>
+    <option value="oui">✓ Intéressant</option>
+    <option value="non">✘ Pas intéressant</option>
+    <option value="pending">Sans avis</option>
+  </select>
+  <div class="qfbar-sep"></div>
+  <span class="qfbar-lbl">Prix&nbsp;:</span>
+  <button class="chip active" id="pc-all" onclick="setPriceChip(this,'')">Tous</button>
+  <button class="chip" id="pc-50" onclick="setPriceChip(this,'50000')">&lt;50k</button>
+  <button class="chip" id="pc-100" onclick="setPriceChip(this,'100000')">&lt;100k</button>
+  <button class="chip" id="pc-200" onclick="setPriceChip(this,'200000')">&lt;200k</button>
+  <button class="chip" id="pc-300" onclick="setPriceChip(this,'300000')">&lt;300k</button>
+  <button class="chip" id="pc-500" onclick="setPriceChip(this,'500000')">&lt;500k</button>
+  <div class="qfbar-sep"></div>
+  <span class="qfbar-lbl">IA&nbsp;:</span>
+  <button class="chip active" id="ai-all" onclick="setAIChip(this,'')">Tous</button>
+  <button class="chip" id="ai-ti" onclick="setAIChip(this,'tres_interessant')" title="Très intéressant">★★ TI</button>
+  <button class="chip" id="ai-i" onclick="setAIChip(this,'interessant')" title="Intéressant">★ Int.</button>
+  <button class="chip" id="ai-c" onclick="setAIChip(this,'correct')" title="Correct">↔ Correct</button>
+  <button class="chip" id="ai-a" onclick="setAIChip(this,'attention')" title="Attention">⚠ Att.</button>
+  <button class="chip" id="ai-s" onclick="setAIChip(this,'survevalue')" title="Surévalué">✗ Surév.</button>
+  <button class="chip" id="ai-na" onclick="setAIChip(this,'na')" title="Sans analyse">— N/A</button>
+  <div style="flex:1 1 0"></div>
+  <select class="qfbar-ctrl" id="sortField" onchange="applyFilters()">
+    <option value="audience_date">↕ Date</option>
+    <option value="mise_a_prix">↕ Prix</option>
+    <option value="ville">↕ Ville</option>
+    <option value="department">↕ Dép.</option>
+    <option value="surface_m2">↕ Surface</option>
+    <option value="_i">↕ N° déf.</option>
+  </select>
+  <button class="qfbar-ctrl" id="sortDirBtn" onclick="toggleSortDir()" style="cursor:pointer;font-size:14px;white-space:nowrap">↑ Asc.</button>
+  <button class="btn btn-ghost" style="font-size:12px;padding:5px 11px" onclick="clearAll()">✕ Réinit.</button>
+  <!-- hidden inputs set by chips -->
+  <input type="hidden" id="fp" value="">
+  <input type="hidden" id="selAI" value="">
+</div>
+
+<!-- ===== ACTION BAR ===== -->
+<div class="action-bar">
+  <span class="sel-info" id="selInfo">0 bien sélectionné</span>
+  <button class="btn btn-ghost" style="font-size:12px" onclick="selectAll()">Tout sélect.</button>
+  <button class="btn btn-ghost" style="font-size:12px" onclick="clearSelection()">Désélect.</button>
+  <span style="flex:1"></span>
+  <select class="ctrl" id="emailType" style="font-size:13px">
+    <option value="1">Option 1 — Demande CCV &amp; PVD</option>
+    <option value="2">Option 2 — Enquête adjudication</option>
+  </select>
+  <button class="btn btn-primary" id="btnSend" onclick="openEmailModal()" disabled>
+    ✉ Préparer emails (0)
+  </button>
+  <button class="btn btn-dark" onclick="toggleTemplates()" style="font-size:12px">✏ Modèles</button>
+</div>
+
+<!-- ===== CARDS GRID ===== -->
+<div class="cards-grid" id="cardsGrid"></div>
+
+<!-- ===== PAGINATION ===== -->
+<div class="pagination" id="pagination"></div>
+
+<!-- ===== TEMPLATE EDITOR ===== -->
+<div class="tpl-section" id="tplSection">
+  <div class="tpl-hdr" onclick="toggleTemplates()">
+    <h3>✏ Modèles d’email</h3>
+    <span style="font-size:12px;color:var(--muted)">Cliquer pour réduire</span>
+  </div>
+  <div class="tpl-body">
+    <div class="tpl-tabs">
+      <button class="tpl-tab active" onclick="switchTab(1)">Option 1 — CCV &amp; PVD</button>
+      <button class="tpl-tab" onclick="switchTab(2)">Option 2 — Adjudication</button>
+    </div>
+    <div class="tpl-content active" id="tpl1">
+      <div class="tpl-label">Objet</div>
+      <input class="tpl-input" id="subj1" value="Demande de CCV et PVD — Vente judiciaire — {adresse}">
+      <div class="tpl-label" style="margin-top:8px">Corps</div>
+      <textarea class="tpl-input" id="body1" rows="10"></textarea>
+      <div class="tpl-vars">Variables : <code>{bien}</code> <code>{adresse}</code> <code>{ville}</code> <code>{mise_a_prix}</code> <code>{audience_date}</code> <code>{avocat}</code></div>
+    </div>
+    <div class="tpl-content" id="tpl2">
+      <div class="tpl-label">Objet</div>
+      <input class="tpl-input" id="subj2" value="Enquête adjudication — {bien} — {ville}">
+      <div class="tpl-label" style="margin-top:8px">Corps</div>
+      <textarea class="tpl-input" id="body2" rows="10"></textarea>
+      <div class="tpl-vars">Variables : <code>{bien}</code> <code>{adresse}</code> <code>{ville}</code> <code>{mise_a_prix}</code> <code>{audience_date}</code> <code>{avocat}</code></div>
+    </div>
+  </div>
+</div>
+
+<footer style="text-align:center;padding:20px 16px 32px;font-size:11px;color:var(--muted)">
+  Données issues d’enchères judiciaires publiques — Projet Michaëlis · 26/03/2026 à 12:24
+</footer>
+
+<!-- ===== AI ANALYSIS MODAL ===== -->
+<div class="rv-overlay" id="aiModal" onclick="closeAI(event)">
+  <div class="rv-modal" style="max-width:520px" onclick="event.stopPropagation()">
+    <h3>📊 Analyse IA — Marché DVF</h3>
+    <div class="rv-sub" id="aiSub"></div>
+    <div class="ai-modal-body" id="aiBody"></div>
+    <div style="text-align:right;margin-top:14px">
+      <button class="btn btn-ghost" onclick="closeAI()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ROBERT REVIEW MODAL ===== -->
+<div class="rv-overlay" id="rvModal" onclick="closeRvModal(event)">
+  <div class="rv-modal" onclick="event.stopPropagation()">
+    <h3 id="rvTitle">Avis de Robert</h3>
+    <div class="rv-sub" id="rvSub"></div>
+    <div class="rv-btns">
+      <button class="rv-choice" id="rvBtnOui" onclick="selectRv('oui')">✓ Intéressant</button>
+      <button class="rv-choice" id="rvBtnNon" onclick="selectRv('non')">✘ Pas intéressant</button>
+    </div>
+    <textarea id="rvComment" placeholder="Commentaire de Robert…"></textarea>
+    <div class="rv-footer">
+      <button class="btn btn-ghost" onclick="closeRvModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveRv()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EMAIL MODAL ===== -->
+<div class="modal-overlay" id="emailModal" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-hdr">
+      <h2 id="modalTitle">Emails à envoyer</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">
+        Vérifiez chaque email puis cliquez <strong>Ouvrir</strong> pour l’envoyer depuis votre messagerie.
+      </p>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="openAllEmails()">✉ Ouvrir tous</button>
+        <button class="btn btn-dark" onclick="copyAllEmails()">Copier tous</button>
+      </div>
+      <div class="email-list" id="emailList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ──────────── DATA ──────────── */
+const RAW = [{"url": "https://gazette-du-midi.fr/annonces-legales/annonces-legales/?reference=G2601126", "title": null, "published_at": "2026-03-26", "summary": "saisie immobilière du Tribunal Judiciaire de TOULOUSE, aux jours et heures prévus à cet effet, au cabinet de l’avocat poursuivant SELARL ALMUZARA-MUNCK - Avocat, 50 rue d’Alsace-Lorraine à TOULOUSE (31000) ou sur internet, sur le site info-encheres.com. Visite : LUNDI 11 MAI 2026 DE 11h00 A 12h00. Seuls les Avocats au Barreau de TOULOUSE peuvent soutenir les enchères. Fait à Toulouse, Le 24 mars 2026 Maître Nicolas MUNCK Avocat associé de la SELARL ALMUZARA-MUNCK Avocat signé Les Petites Affiches Matot Braine sont habilitées par arrêtés préfectoraux à publier les annonces judiciaires et légales dans les départements des Ardennes, de l’Aisne, de l’Aube et de la Marne. Les tarifs et modalités de publication des annonces judiciaires et légales sont fixés par l’arrêté des Ministères de la Culture et de l’Économie en date du 19 novembre 2021 : https://www.legifrance.gouv.fr/jorf/id/JO... L’intégralité des annonces légales parues depuis le 01.01.2010 dans la presse quotidienne et hebdomadaire habilitée est consultable en permanence et librement sur actulegales.fr Bas de page Le journal Contacter Matot Braine Mentions légales Politique de confidentialité Gestion des cookies Insertions judiciaires et légales Consultez les annonces légales Publier une annonce Ventes aux enchères Consultez les ventes aux enchères Publier une annonce © 2026 Les Petites Affiches Matot Braine Réalisation Alphamosa", "source_journal": "gazette-du-midi.fr", "department": "31", "property_type": "Bien immobilier", "mise_a_prix": 295900.0, "surface_m2": 93.93, "adresse": "6 rue Antoine Deville - 31000 TOULOUSE LE JEUDI 21 MAI 2026 A 14h00 IMMEUBLE SITUE A", "ville": "TOULOUSE", "audience_date": "2026-05-21", "avocat_nom": "SELARL ALMUZARA-MUNCK - Avocat", "avocat_contact": "da@cabinetalmuzara.fr"}, {"url": "https://gazette-du-midi.fr/annonces-legales/annonces-legales/?reference=G2600935&debut_annonces=140", "title": "VENTE AUX ENCHERES AU TRIBUNAL JUDICIAIRE DE MONTAUBAN - 5 Place du Coq LE JEUDI 16 AVRIL 2026 à 9 HEURES UNE MAISON AVEC", "published_at": "2026-03-06", "summary": "VENTE AUX ENCHERES AU TRIBUNAL JUDICIAIRE DE MONTAUBAN - 5 Place du Coq LE JEUDI 16 AVRIL 2026 à 9 HEURES UNE MAISON AVEC JARDIN à VERDUN SUR GARONNE (82), 131 avenue de Toulouse, cadastrée Section AM n° 11 pour une contenance totale de 09a 10ca MISE A PRIX : 35.000 € DESIGNATION DES BIENS A VENDRE : Une maison d’habitation partiellement rénovée de plein pied comprenant entrée avec couloir de dégagement, pièce principale avec salon et cuisine, trois chambres, salle d’eau, wc, garage attenant et séparés et terrain autour partiellement clôturé. Convecteurs électriques - raccordée partiellement au tout à l’égout. Le tout édifié sur une parcelle située une parcelle située 131 Avenue de Toulouse à VERDUN SUR GARONNE (82) cadastrée Section AM n° 11 pour une contenance totale de 09a 41ca OCCUPATION : Le bien est actuellement occupé par le propriétaire. RENSEIGNEMENTS : Les enchères ne pourront être portées que par un avocat inscrit au Barreau de TARN ET GARONNE, les frais étant supportés par l’adjudicataire en sus du prix d’adjudication, outre la TVA le cas échéant Le cahier des conditions de vente peut être consulté : - Au Greffe du Tribunal Judiciaire de Montauban, 5 Place du Coq - 82000 MONTAUBAN (RG 25/00845) - Au cabinet de Maîtres MOREL - NAUGES- GONZALEZ, - Sur le site www.info-enchères.com LES VISITES SERONT ORGANISEES LE MERCREDI 08 AVRIL 2026 à 17 HEURES PAR LA SCP MAUREL TOURON & JAUFFRET, Commissaire de justice, 6 Place de la Liberté - 82100 CASTELSARRASIN - :05.63.22.44.09 Les Petites Affiches Matot Braine sont habilitées par arrêtés préfectoraux à publier les annonces judiciaires et légales dans les départements des Ardennes, de l’Aisne, de l’Aube et de la Marne. Les tarifs et modalités de publication des annonces judiciaires et légales sont fixés par l’arrêté des Ministères de la Culture et de l’Économie en date du 19 novembre 2021 : https://www.legifrance.gouv.fr/jorf/id/JO... L’intégralité des annonces légales parues depuis le 01.01.2010 dans la presse quo", "source_journal": "gazette-du-midi.fr", "department": "82", "property_type": "Maison", "mise_a_prix": 35000.0, "surface_m2": null, "adresse": "5 Place du Coq LE JEUDI 16 AVRIL 2026 à 9 HEURES UNE MAISON AVEC JARDIN à VERDUN SUR GA, VERDUN SUR GARONNE", "ville": "VERDUN SUR GARONNE", "audience_date": "2026-04-16", "avocat_nom": "cabinet de Maîtres MOREL - NAUGES- GONZALEZ,", "avocat_contact": null}, {"url": "https://gazette-du-midi.fr/annonces-legales/annonces-legales/?reference=G2600934&debut_annonces=160", "title": "VENTE AUX ENCHERES PUBLIQUES AU TRIBUNAL JUDICIAIRE DE MONTAUBAN LE JEUDI 16 AVRIL 2026 à 9 HEURES De trois appartements", "published_at": "2026-03-06", "summary": "VENTE AUX ENCHERES PUBLIQUES AU TRIBUNAL JUDICIAIRE DE MONTAUBAN LE JEUDI 16 AVRIL 2026 à 9 HEURES De trois appartements à usage d’habitation situés 6-8-10 Impasse du Port - 82130 LAMOTHE CAPDEVILLE, cadastrés AA 126. MISE A PRIX : 74.800 € Sur les poursuites du POLE DE RECOUVREMENT SPECIALISE DE TARN-ET-GARONNE, situé 436 Rue Edouard Forestié - 82000 MONTAUBAN, agissant poursuites et diligences du Directeur Départemental des Finances Publiques et du Directeur Général des Finances Publiques Ayant pour avocats la SELARL LEVI - EGEA & Associés demeurant 20 Rue Michelet - 82000 MONTAUBAN. Les enchères ne peuvent être portées que par un avocat inscrit au Barreau de Tarn-et-Garonne. Les clauses et conditions de la vente sont stipulées dans le cahier des conditions de vente déposé au greffe du JUGE DE L’EXECUTION DU TRIBUNAL JUDICIAIRE de MONTAUBAN, et peuvent être consultées audit Greffe et au Cabinet de la SELARL LEVI-EGEA & Associés. POUR LES VISITES, S’ADRESSER A : SELARL JULIE CASTAGNE, COMMISSAIRE DE JUSTICE, 13 Rue Sadi Carnot - 82000 MONTAUBAN - : 05.63.63.04.62 Les Petites Affiches Matot Braine sont habilitées par arrêtés préfectoraux à publier les annonces judiciaires et légales dans les départements des Ardennes, de l’Aisne, de l’Aube et de la Marne. Les tarifs et modalités de publication des annonces judiciaires et légales sont fixés par l’arrêté des Ministères de la Culture et de l’Économie en date du 19 novembre 2021 : https://www.legifrance.gouv.fr/jorf/id/JO... L’intégralité des annonces légales parues depuis le 01.01.2010 dans la presse quotidienne et hebdomadaire habilitée est consultable en permanence et librement sur actulegales.fr Bas de page Le journal Contacter Matot Braine Mentions légales Politique de confidentialité Gestion des cookies Insertions judiciaires et légales Consultez les annonces légales Publier une annonce Ventes aux enchères Consultez les ventes aux enchères Publier une annonce © 2026 Les Petites Affiches Matot Braine Réalisation Al", "source_journal": "gazette-du-midi.fr", "department": "82", "property_type": "Appartement", "mise_a_prix": 74800.0, "surface_m2": null, "adresse": "6-8-10 Impasse du Port - 82130 LAMOTHE CAPDEVILLE", "ville": "LAMOTHE CAPDEVILLE", "audience_date": "2026-04-16", "avocat_nom": "SELARL JULIE CASTAGNE,", "avocat_contact": null, "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 82090", "lon": 1.37236, "lat": 44.07744}}, {"url": "https://gazette-du-midi.fr/annonces-legales/annonces-legales/?reference=G2600899&debut_annonces=160", "title": "VENTE AUX ENCHERES PUBLIQUES AU TRIBUNAL JUDICIAIRE DE TOULOUSE 2 Allées Jules Guesde Le jeudi 16 avril 2026 à 14 heures", "published_at": "2026-03-05", "summary": "VENTE AUX ENCHERES PUBLIQUES AU TRIBUNAL JUDICIAIRE DE TOULOUSE 2 Allées Jules Guesde Le jeudi 16 avril 2026 à 14 heures APPARTEMENT T4 RESIDENCE PY BATIMENT D - 3ème étage 10 rue Fontenay - 31500 TOULOUSE Mise à Prix : 10.000 €uros Il est particulièrement recommandé aux futurs enchérisseurs de consulter le cahier des conditions de la vente déposé au Greffe aux jours et heures prévus à cet effet (RG 25/00135), sur le site info-encheres.com et sur avoventes.fr ; visite par huissier le mercredi 8 avril 2026 de 12 h à 13 h. Les Petites Affiches Matot Braine sont habilitées par arrêtés préfectoraux à publier les annonces judiciaires et légales dans les départements des Ardennes, de l’Aisne, de l’Aube et de la Marne. Les tarifs et modalités de publication des annonces judiciaires et légales sont fixés par l’arrêté des Ministères de la Culture et de l’Économie en date du 19 novembre 2021 : https://www.legifrance.gouv.fr/jorf/id/JO... L’intégralité des annonces légales parues depuis le 01.01.2010 dans la presse quotidienne et hebdomadaire habilitée est consultable en permanence et librement sur actulegales.fr Bas de page Le journal Contacter Matot Braine Mentions légales Politique de confidentialité Gestion des cookies Insertions judiciaires et légales Consultez les annonces légales Publier une annonce Ventes aux enchères Consultez les ventes aux enchères Publier une annonce © 2026 Les Petites Affiches Matot Braine Réalisation Alphamosa", "source_journal": "gazette-du-midi.fr", "department": "31", "property_type": "Appartement", "mise_a_prix": 10000.0, "surface_m2": null, "adresse": "2 Allées Jules Guesde Le jeudi 16 avril 2026 à 14 heures APPARTEMENT T4 RESIDENCE PY BA, TOULOUSE", "ville": "TOULOUSE", "audience_date": "2026-04-16", "avocat_nom": "me étage 1", "avocat_contact": null}, {"url": "https://gazette-du-midi.fr/annonces-legales/annonces-legales/?reference=G2600772&debut_annonces=300", "title": "VENTE aux ENCHÈRES PUBLIQUES d’un appartement T5 avec terrasse, garage en sous-sol et emplacement de stationnement aérien", "published_at": "2026-02-24", "summary": "VENTE aux ENCHÈRES PUBLIQUES d’un appartement T5 avec terrasse, garage en sous-sol et emplacement de stationnement aérien à TOULOUSE (31300), 136 avenue de LOMBEZ, Résidence « Léonard de Vinci » Mise à Prix : 50.000 €uros (CINQUANTE MILLE EUROS) L’adjudication aura lieu le Jeudi 16 avril 2026 à 14h00 à l’audience des criées du TRIBUNAL JUDICIAIRE DE TOULOUSE, au Palais de Justice de ladite Ville, 2 Allées Jules Guesde - 31000 TOULOUSE. LA VENTE EST POURSUIVIE A LA REQUETE DE LA BANQUE POSTALE, Société Anonyme à Directoire et Conseil de Surveillance au capital de 6.585.350.218€, dont le siège social est situé 115 rue de Sèvres - 75275 PARIS (Cédex 06), immatriculée au Registre du Commerce et des Société de PARIS sous le numéro 421 100 645, poursuites et diligences de son représentant légal domicilié en cette qualité audit siège. Ayant pour Avocat Maître Christophe MORETTO, Avocat au Barreau de TOULOUSE. DESIGNATION Dans un ensemble immobilier en copropriété dénommé « RESIDENCE LEONARD DE VINCI », 134, 136 et 138 avenue de Lombez à TOULOUSE (31300), cadastré Section 844AN n°112, pour une contenance de 44a 34ca et plus précisément les lots de copropriété suivants : - Le lot de copropriété n°20 : Dans le Bâtiment B, au rez-de-chaussée, consistant en un appartement type T5 comprenant une entrée, un WC, une cuisine donnant accès à un cellier, un séjour donnant accès à une chambre, un dégagement qui mène à une salle de bains, trois chambres avec placard et salle d’eau ; Et le droit à la jouissance exclusive d’une terrasse située au Nord d’une superficie approximative de 5,23m². et les 216/10.000emes des parties communes générales ; - Le lot de copropriété n°74 : Dans le Bâtiment D, un garage clos numéroté G15, situé au sous-sol commun aux bâtiments A, B et C ; Et les 14/10.000èmes des parties communes générales ; - Le lot de copropriété n°114 : A l’extérieur, un emplacement de stationnement aérien numéroté P 15 ; Et les 4/10.000èmes des parties communes. Ces biens étaient ", "source_journal": "gazette-du-midi.fr", "department": "31", "property_type": "Appartement", "mise_a_prix": 50000.0, "surface_m2": null, "adresse": "115 rue de Sèvres - 75275 PARIS (Cédex 06)", "ville": "TOULOUSE", "audience_date": "2026-04-16", "avocat_nom": "me à Directoire et Conseil de Surveillance au capital de 6", "avocat_contact": null, "dvf_analysis": {"dvf_count": 1609, "dvf_median_pm2": 7818, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "1609 ventes 24 mois (surface inconnue)", "lon": 2.39538, "lat": 48.88546}}, {"url": "https://www.info-encheres.com/108114-d-vente-encheres-immobilieres-terrain-an-bactir-agde-34-ref-5895.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELAS IMPLID AVOCATS 04.78.95.81.20 Voir la fiche Voir le site Référence : 5895 Nature du bien : Terrain � b�tir Adresse : 9 rue Paul Isoir 34300 AGDE Superficie : 662.00 m² Mise à prix 200 000 € Avec faculté de baisse du prix du quart puis de la moitié en cas de défaut d'enchères Vente le : 17/03/2026 Au Tribunal Judiciaire de : Béziers 93 Avenue du Président Wilson - 34500 Béziers Date de visite : LE JEUDI 05 MARS 2026 DE 10H A 11H Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Renseignements d'urbanisme • Divers Description VENTE AUX ENCHERES PUBLIQUES : Dans un ensemble immobilier, situé à AGDE (Hérault", "source_journal": "info-encheres.com", "department": "34", "property_type": "Terrain", "mise_a_prix": 200000.0, "surface_m2": 662.0, "adresse": "9 rue Paul Isoir 34300 AGDE", "ville": "AGDE", "audience_date": "2026-03-17", "avocat_nom": "Cabinet de Maître Anne-Chloé MERCEY,", "avocat_contact": "0478958120", "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 34003", "lon": 3.44688, "lat": 43.28402}}, {"url": "https://www.info-encheres.com/108117-d-vente-encheres-immobilieres-appartement-et-parking-bagneres-de-luchon-31-ref-5898.html", "title": "Appartement et Parking à BAGNERES-DE-LUCHON (31) – Vente aux enchères réf. 5898", "published_at": null, "summary": "Appartement et Parking à BAGNERES-DE-LUCHON (31) – Vente aux enchères réf. 5898 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte CABINET MERCIE 05.34.45.54.01 Voir la fiche Voir le site Référence : 5898 Nature du bien : Appartement et Parking Adresse : 14, Rue dEtigny & 9 Rue de Superbagnères 31110 BAGNERES-DE-LUCHON Superficie : 35.40 m² Mise à prix 18 000 € Vente le : 20/03/2026 Au Tribunal Judiciaire de : Saint Gaudens Place du Palais de Justice - 31800 Saint Gaudens Date de visite : Par la SCP BARTHE LERISSON, Commissaires de justice à SAINT-GAUDENS, sur les lieux le JEUDI 5 MARS 2026 de 13 à 14 heures. Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verb", "source_journal": "info-encheres.com", "department": "31", "property_type": "Appartement", "mise_a_prix": 18000.0, "surface_m2": 35.4, "adresse": "14, Rue dEtigny & 9 Rue de Superbagnères 31110 BAGNERES-DE-LUCHON", "ville": "BAGNERES-DE-LUCHON", "audience_date": "2026-03-20", "avocat_nom": "CABINET MERCIE 05.", "avocat_contact": "c.benoidt@cabinetmercie.com", "dvf_analysis": {"dvf_count": 202, "dvf_median_pm2": 2467, "dvf_estimated_value": 87320, "dvf_max_offer": 74222, "verdict": "tres_interessant", "ratio": 0.21, "note": "202 ventes 24 mois", "lon": 0.5907, "lat": 42.78956}}, {"url": "https://www.info-encheres.com/108129-d-vente-encheres-immobilieres-2-appartements-t3-duplex-avec-celliers-et-parking-bagneres-de-luchon-31-ref-5910.html", "title": "2 APPARTEMENTS T3 DUPLEX AVEC CELLIERS ET PARKING à BAGNERES-DE-LUCHON (31) – Vente aux enchères réf. 5910", "published_at": null, "summary": "2 APPARTEMENTS T3 DUPLEX AVEC CELLIERS ET PARKING à BAGNERES-DE-LUCHON (31) – Vente aux enchères réf. 5910 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte CABINET MERCIE 05.34.45.54.01 Voir la fiche Voir le site Référence : 5910 Nature du bien : 2 APPARTEMENTS T3 DUPLEX AVEC CELLIERS ET PARKING Adresse : 8, Boulevard du Docteur Estradère 31110 BAGNERES-DE-LUCHON Mise à prix 60 000 € Vente le : 20/03/2026 Au Tribunal Judiciaire de : Saint Gaudens Place du Palais de Justice - 31800 Saint Gaudens Date de visite : SUR LES LIEUX LE JEUDI 5 MARS 2026 DE 10 À 11 HEURES. Géolocalisation cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseigneme", "source_journal": "info-encheres.com", "department": "31", "property_type": "Appartement", "mise_a_prix": 60000.0, "surface_m2": 48.5, "adresse": "8, Boulevard du Docteur Estradère 31110 BAGNERES-DE-LUCHON Mise à prix 60 000 € Vente", "ville": "BAGNERES-DE-LUCHON", "audience_date": "2026-03-20", "avocat_nom": "CABINET MERCIE 05.", "avocat_contact": "c.benoidt@cabinetmercie.com", "dvf_analysis": {"dvf_count": 202, "dvf_median_pm2": 2467, "dvf_estimated_value": 119633, "dvf_max_offer": 101688, "verdict": "interessant", "ratio": 0.5, "note": "202 ventes 24 mois", "lon": 0.59655, "lat": 42.78728}}, {"url": "https://www.info-encheres.com/108121-d-vente-encheres-immobilieres-maison-mitoyenne-avec-garage-et-terrain-attenant-pamiers-09-ref-5902.html", "title": "Maison mitoyenne avec garage et terrain attenant à PAMIERS (09) – Vente aux enchères réf. 5902", "published_at": null, "summary": "Maison mitoyenne avec garage et terrain attenant à PAMIERS (09) – Vente aux enchères réf. 5902 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte CAMILLE AVOCATS 05.61.65.17.15 Voir la fiche Voir le site Référence : 5902 Nature du bien : Maison mitoyenne avec garage et terrain attenant Adresse : Villa 4 - 11 Ter Chemin du Barriol 09100 PAMIERS Superficie : 136.42 m² Mise à prix 25 000 € Vente le : 24/03/2026 Au Tribunal Judiciaire de : Foix 14 Boulevard du Sud - 09000 Foix Date de visite : sur les lieux pour visiter le VENDREDI 13 MARS 2026 de 14 H 00 à 15 H 00. Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Plan cad", "source_journal": "info-encheres.com", "department": "09", "property_type": "Maison", "mise_a_prix": 25000.0, "surface_m2": 136.42, "adresse": "Villa 4 - 11 Ter Chemin du Barriol 09100 PAMIERS", "ville": "PAMIERS", "audience_date": "2026-03-24", "avocat_nom": "Cabinet CAMILLE AVOCATS,", "avocat_contact": "j.carles@scp-camille.com", "dvf_analysis": {"dvf_count": 137, "dvf_median_pm2": 1563, "dvf_estimated_value": 213228, "dvf_max_offer": 181244, "verdict": "tres_interessant", "ratio": 0.12, "note": "137 ventes 24 mois", "lon": 1.60624, "lat": 43.11193}}, {"url": "https://www.info-encheres.com/108102-d-vente-encheres-immobilieres-maison-avec-terrasse-et-garage-fonbeauzard-31-ref-5885.html", "title": "Maison avec terrasse et garage à FONBEAUZARD (31) – Vente aux enchères réf. 5885", "published_at": null, "summary": "Maison avec terrasse et garage à FONBEAUZARD (31) – Vente aux enchères réf. 5885 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL ARCANTHE 05.61.52.36.83 Voir la fiche Référence : 5885 Nature du bien : Maison avec terrasse et garage Adresse : 10 rue Guynemer 31140 FONBEAUZARD Superficie : 105.20 m² Mise à prix 77 000 € Vente le : 26/03/2026 Au Tribunal Judiciaire de : Toulouse 2, Allées Jules Guesde - 31000 Toulouse Date de visite : Le vendredi 13 mars 2026 à 11h00 par Commissaire de justice. Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseignements d'urbanisme • Plan cadastral • Etat hypothécaire • Dive", "source_journal": "info-encheres.com", "department": "31", "property_type": "Maison", "mise_a_prix": 77000.0, "surface_m2": 105.2, "adresse": "10 rue Guynemer 31140 FONBEAUZARD", "ville": "FONBEAUZARD", "audience_date": "2026-03-26", "avocat_nom": "SELARL ARCANTHE 05.", "avocat_contact": "accueil@arcanthe.fr", "dvf_analysis": {"dvf_count": 18, "dvf_median_pm2": 2616, "dvf_estimated_value": 275233, "dvf_max_offer": 233948, "verdict": "tres_interessant", "ratio": 0.28, "note": "18 ventes 24 mois", "lon": 1.43538, "lat": 43.68395}}, {"url": "https://www.info-encheres.com/108130-d-vente-encheres-immobilieres-maison-avec-piscine-et-dacpendance-layrac-sur-tarn-31-ref-5911.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte Maître ASSADI CAMELIA 0534665135 Voir la fiche Référence : 5911 Nature du bien : Maison avec piscine et d�pendance Adresse : LIEUDIT «LE ROUDIE » 669 CHEMIN DE ROUZET 31340 Layrac-sur-Tarn Superficie : 134.91 m² Mise à prix 307 000 € avec faculté de baisse du prix du quart puis de la moitié en cas de défaut d'enchères Vente le : 26/03/2026 Au Tribunal Judiciaire de : Toulouse 2, Allées Jules Guesde - 31000 Toulouse Date de visite : sur les lieux pour visiter le lundi 16 MARS 2026 de 10 H 00 à 11 H 00. Géolocalisation Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseignements d'urbanisme • Actes de la procédure Description Vente aux enc", "source_journal": "info-encheres.com", "department": "31", "property_type": "Maison", "mise_a_prix": 307000.0, "surface_m2": 134.91, "adresse": "LIEUDIT «LE ROUDIE » 669 CHEMIN DE ROUZET 31340 Layrac-sur-Tarn", "ville": "LAYRAC-SUR-TARN", "audience_date": "2026-03-26", "avocat_nom": "Maître ASSADI CAMELIA 0534665135 Voir", "avocat_contact": "assadi.avocat@wanadoo.fr", "dvf_analysis": {"dvf_count": 1, "dvf_median_pm2": 1773, "dvf_estimated_value": 239159, "dvf_max_offer": 203285, "verdict": "survevalue", "ratio": 1.28, "note": "1 ventes 24 mois", "lon": 1.55655, "lat": 43.82104}}, {"url": "https://www.info-encheres.com/108122-d-vente-encheres-immobilieres-maison-pia-66-ref-5903.html", "title": "Maison à PIA (66) – Vente aux enchères réf. 5903", "published_at": null, "summary": "Maison à PIA (66) – Vente aux enchères réf. 5903 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5903 Nature du bien : Maison Adresse : 5A Rue du Mourvedre 66380 PIA Superficie : 82.15 m² Mise à prix 86 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : JEUDI 12 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Divers Description VENTE AUX ENCHERES PUBLIQUES : COMMUNE DE PIA : Une maison située sur", "source_journal": "info-encheres.com", "department": "66", "property_type": "Maison", "mise_a_prix": 86000.0, "surface_m2": 82.15, "adresse": "5A Rue du Mourvedre 66380 PIA", "ville": "PIA", "audience_date": "2026-03-27", "avocat_nom": "Maître COPOVI,", "avocat_contact": "0468512229", "dvf_analysis": {"dvf_count": 133, "dvf_median_pm2": 2576, "dvf_estimated_value": 211598, "dvf_max_offer": 179859, "verdict": "tres_interessant", "ratio": 0.41, "note": "133 ventes 24 mois", "lon": 2.89705, "lat": 42.74303}}, {"url": "https://www.info-encheres.com/108123-d-vente-encheres-immobilieres-local-commercial-avec-caves-perpignan-66-ref-5904.html", "title": "Local commercial avec caves à PERPIGNAN (66) – Vente aux enchères réf. 5904", "published_at": null, "summary": "Local commercial avec caves à PERPIGNAN (66) – Vente aux enchères réf. 5904 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5904 Nature du bien : Local commercial avec caves Adresse : 24 Bis Avenue des Baléares 66000 PERPIGNAN Mise à prix 35 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : MERCREDI 11 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Divers Description VENTE AUX ENCHERES PUBLIQUE", "source_journal": "info-encheres.com", "department": "66", "property_type": "Local commercial", "mise_a_prix": 35000.0, "surface_m2": null, "adresse": "24 Bis Avenue des Baléares 66000 PERPIGNAN Mise à prix 35 000 € Vente", "ville": "PERPIGNAN", "audience_date": "2026-03-27", "avocat_nom": "me local commercial composé de deux pièces de 6,", "avocat_contact": "0468512229", "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 66136", "lon": 2.89285, "lat": 42.69386}}, {"url": "https://www.info-encheres.com/108126-d-vente-encheres-immobilieres-maison-le-soler-66-ref-5907.html", "title": "Maison à LE SOLER (66) – Vente aux enchères réf. 5907", "published_at": null, "summary": "Maison à LE SOLER (66) – Vente aux enchères réf. 5907 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5907 Nature du bien : Maison Adresse : 3 Rue des Cèdre 66270 LE SOLER Superficie : 84.25 m² Mise à prix 115 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : MERCREDI 18 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques Description VENTE AUX ENCHERES PUBLIQUES : COMMUNE DE LE SOLER : Une maison à us", "source_journal": "info-encheres.com", "department": "66", "property_type": "Maison", "mise_a_prix": 115000.0, "surface_m2": 84.25, "adresse": "3 Rue des Cèdre 66270 LE SOLER", "ville": "LE SOLER", "audience_date": "2026-03-27", "avocat_nom": "Maître HOOGLAND,", "avocat_contact": "0468512229", "dvf_analysis": {"dvf_count": 94, "dvf_median_pm2": 2551, "dvf_estimated_value": 214956, "dvf_max_offer": 182712, "verdict": "interessant", "ratio": 0.53, "note": "94 ventes 24 mois", "lon": 2.80494, "lat": 42.68249}}, {"url": "https://www.info-encheres.com/108133-d-vente-encheres-immobilieres-studio-ceret-66-ref-5913.html", "title": "Studio à CERET (66) – Vente aux enchères réf. 5913", "published_at": null, "summary": "Studio à CERET (66) – Vente aux enchères réf. 5913 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5913 Nature du bien : Studio Adresse : Résidence 66400 CERET Mise à prix 15 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : JEUDI 19 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Dires annexés Description Vente aux enchères publiques, 1er lot d'une vente en sept lots : Les parties divises et in", "source_journal": "info-encheres.com", "department": "66", "property_type": "Studio", "mise_a_prix": 15000.0, "surface_m2": null, "adresse": "Résidence 66400 CERET Mise à prix 15 000 € Vente", "ville": "CERET", "audience_date": "2026-03-27", "avocat_nom": "Maître SEGURET,", "avocat_contact": "0468512229", "dvf_analysis": {"dvf_count": 62, "dvf_median_pm2": 1964, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "62 ventes 24 mois (surface inconnue)", "lon": 2.75107, "lat": 42.48942}}, {"url": "https://www.info-encheres.com/108136-d-vente-encheres-immobilieres-appartement-ceret-66-ref-5916.html", "title": "Appartement à CERET (66) – Vente aux enchères réf. 5916", "published_at": null, "summary": "Appartement à CERET (66) – Vente aux enchères réf. 5916 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5916 Nature du bien : Appartement Adresse : Résidence 66400 CERET Mise à prix 25 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : JEUDI 19 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Dires annexés Description Vente aux enchères publiques, 4ème lot d'une vente en sept lots : Les parties di", "source_journal": "info-encheres.com", "department": "66", "property_type": "Appartement", "mise_a_prix": 25000.0, "surface_m2": null, "adresse": "Résidence 66400 CERET Mise à prix 25 000 € Vente", "ville": "CERET", "audience_date": "2026-03-27", "avocat_nom": "Maître SEGURET,", "avocat_contact": "0468512229", "dvf_analysis": {"dvf_count": 62, "dvf_median_pm2": 1964, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "62 ventes 24 mois (surface inconnue)", "lon": 2.75107, "lat": 42.48942}}, {"url": "https://www.info-encheres.com/108139-d-vente-encheres-immobilieres-parcelles-de-terre-ceret-66-ref-5919.html", "title": "Parcelles de terre à CERET (66) – Vente aux enchères réf. 5919", "published_at": null, "summary": "Parcelles de terre à CERET (66) – Vente aux enchères réf. 5919 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP VIAL - PECH DE LACLAUSE  ESCALE - KNOEPFFLER - HUOT  PIRET - JOUBES 04.68.51.22.29 Voir la fiche Voir le site Référence : 5919 Nature du bien : Parcelles de terre Adresse : lieudit « Sola den Companyo » 66400 CERET Mise à prix 5 000 € Vente le : 27/03/2026 Au Tribunal Judiciaire de : Perpignan 4 Rue André Bosch - 66000 Perpignan Date de visite : JEUDI 19 MARS 2026 de 09H00 à 10H00 Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif Description Vente aux enchères publiques, 7ème lot du'une vente en 7 lots : SEPTIEME LOT DE LA VENT", "source_journal": "info-encheres.com", "department": "66", "property_type": "Terrain", "mise_a_prix": 5000.0, "surface_m2": null, "adresse": "lieudit « Sola den Companyo » 66400 CERET Mise à prix 5 000 € Vente", "ville": "CERET", "audience_date": "2026-03-27", "avocat_nom": "SCP VIAL - PECH DE LACLAUSE – ESCALE - KNOEPFFLER - HUOT – PIRET - JOUBES", "avocat_contact": "0468512229"}, {"url": "https://www.info-encheres.com/108116-d-vente-encheres-immobilieres-maison-d-habitation-composace-de-deux-appartements-sailhan-65-ref-5897.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP BERNAL CHEVALLIER FILLASTRE LABAT LEPLAT 05.62.93.44.96 Voir la fiche Référence : 5897 Nature du bien : Maison d'habitation compos�e de deux appartements Adresse : Lieudit Aouta 65170 SAILHAN Mise à prix 80 000 € Vente le : 02/04/2026 Au Tribunal Judiciaire de : Tarbes 6 Bis rue du Maréchal Foch. - 65000 Tarbes Date de visite : Sadresser à létude de la SELARL MIQUEU-TOULOUSE, commissaires de Justice à TARBES, 20 rue Brauhauban  65000 TARBES (tél. 05.62.93.10.24) Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques Description Vente aux enchères publiques : UNE MAISON D’HABITATION (sé", "source_journal": "info-encheres.com", "department": "65", "property_type": "Maison", "mise_a_prix": 80000.0, "surface_m2": null, "adresse": "Lieudit Aouta 65170 SAILHAN Mise à prix 80 000 € Vente", "ville": "SAILHAN", "audience_date": "2026-04-02", "avocat_nom": "SCP BERNAL CHEVALLIER FILLASTRE LABAT LEPLAT 05.", "avocat_contact": "0562934496"}, {"url": "https://www.info-encheres.com/108120-d-vente-encheres-immobilieres-maison-d-habitation-avec-piscine-et-pool-house-dours-65-ref-5901.html", "title": "Maison d'habitation avec piscine et pool house à DOURS (65) – Vente aux enchères réf. 5901", "published_at": null, "summary": "Maison d'habitation avec piscine et pool house à DOURS (65) – Vente aux enchères réf. 5901 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP BERNAL CHEVALLIER FILLASTRE LABAT LEPLAT 05 62 93 44 96 Voir la fiche Référence : 5901 Nature du bien : Maison d'habitation avec piscine et pool house Adresse : 97 Rue des Pyrénées 65350 DOURS Superficie : 205.70 m² Mise à prix 120 000 € Vente le : 02/04/2026 Au Tribunal Judiciaire de : Tarbes 6 Bis rue du Maréchal Foch. - 65000 Tarbes Date de visite : Par lintermédiaire de SELAS GROUPE ALEXANDRE SUD OUEST, Commissaire(s) de Justice, Tél : 05.62.44.31.70, le vendredi 20 mars 2026 de 14h00 à 15h00 Rendez-vous sur place. Géolocalisation Photos Annexes au cahier des conditions de la", "source_journal": "info-encheres.com", "department": "65", "property_type": "Maison", "mise_a_prix": 120000.0, "surface_m2": 205.7, "adresse": "97 Rue des Pyrénées 65350 DOURS", "ville": "DOURS", "audience_date": "2026-04-02", "avocat_nom": "SCP BERNAL CHEVALLIER FILLASTRE LABAT LEPLAT 05", "avocat_contact": "0562934496", "dvf_analysis": {"dvf_count": 2, "dvf_median_pm2": 2294, "dvf_estimated_value": 471807, "dvf_max_offer": 401036, "verdict": "tres_interessant", "ratio": 0.25, "note": "2 ventes 24 mois", "lon": 0.13696, "lat": 43.30315}}, {"url": "https://www.info-encheres.com/108128-d-vente-encheres-immobilieres-appartement-et-parking-toulouse-31-ref-5909.html", "title": "Appartement et Parking à TOULOUSE (31) – Vente aux enchères réf. 5909", "published_at": null, "summary": "Appartement et Parking à TOULOUSE (31) – Vente aux enchères réf. 5909 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL DECKER 05.61.21.96.84 Voir la fiche Référence : 5909 Nature du bien : Appartement et Parking Adresse : 9 ALLEE GABRIELLE DE COIGNARD 31100 TOULOUSE Mise à prix 15 000 € Vente le : 02/04/2026 Au Tribunal Judiciaire de : Toulouse 2, Allées Jules Guesde - 31000 Toulouse Date de visite : Par huissier le mercredi 25 mars 2026 de 12 h à 13 h Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseignements d'urbanisme • Plan cadastral • Etat hypothécaire • Renseignements du Syndic Description Vente au", "source_journal": "info-encheres.com", "department": "31", "property_type": "Appartement", "mise_a_prix": 15000.0, "surface_m2": null, "adresse": "9 ALLEE GABRIELLE DE COIGNARD 31100 TOULOUSE Mise à prix 15 000 € Vente", "ville": "TOULOUSE", "audience_date": "2026-04-02", "avocat_nom": "SELARL DECKER 05.", "avocat_contact": "0561219684", "dvf_analysis": {"dvf_count": 7181, "dvf_median_pm2": 3185, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "7181 ventes 24 mois (surface inconnue)", "lon": 1.38138, "lat": 43.57814}}, {"url": "https://www.info-encheres.com/108147-d-vente-encheres-immobilieres-appartement-avec-parking-et-cellier-toulouse-31-ref-5924.html", "title": "Appartement avec parking et cellier à TOULOUSE (31) – Vente aux enchères réf. 5924", "published_at": null, "summary": "Appartement avec parking et cellier à TOULOUSE (31) – Vente aux enchères réf. 5924 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL DECKER 05.61.21.96.84 Voir la fiche Référence : 5924 Nature du bien : Appartement avec parking et cellier Adresse : 39 RUE BERNARD MULE 31400 TOULOUSE Superficie : 82.54 m² Mise à prix 30 000 € Vente le : 09/04/2026 Au Tribunal Judiciaire de : Toulouse 2, Allées Jules Guesde - 31000 Toulouse Date de visite : par huissier le mercredi 1er avril 2026 de 12 h à 13 h Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseignements d'urbanisme • Plan cadastral • Etat hypothécaire • Rense", "source_journal": "info-encheres.com", "department": "31", "property_type": "Appartement", "mise_a_prix": 30000.0, "surface_m2": 82.54, "adresse": "39 RUE BERNARD MULE 31400 TOULOUSE", "ville": "TOULOUSE", "audience_date": "2026-04-09", "avocat_nom": "SELARL DECKER 05.", "avocat_contact": "0561219684", "dvf_analysis": {"dvf_count": 7181, "dvf_median_pm2": 3185, "dvf_estimated_value": 262905, "dvf_max_offer": 223469, "verdict": "tres_interessant", "ratio": 0.11, "note": "7181 ventes 24 mois", "lon": 1.4575, "lat": 43.59777}}, {"url": "https://www.info-encheres.com/108131-d-vente-encheres-immobilieres-maison-d-habitation-amou-40-ref-5912.html", "title": "Maison d'habitation à AMOU (40) – Vente aux enchères réf. 5912", "published_at": null, "summary": "Maison d'habitation à AMOU (40) – Vente aux enchères réf. 5912 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL LANDAVOCATS 05.58.90.02.26 Voir la fiche Référence : 5912 Nature du bien : Maison d'habitation Adresse : 87 rue Moncade 40330 AMOU Superficie : 200.00 m² Mise à prix 180 000 € Vente le : 26/03/2026 Au Tribunal Judiciaire de : Dax Rue des Fusillés - 40100 Dax Date de visite : Mercredi 4 mars 2026 : De 9 heures 30 à 11 heures 30 Mercredi 11 mars 2026 : De 9 heures 30 à 11 heures 30 Mercredi 18 mars 2026 : De 9 heures 30 à 11 heures 30 Mercredi 25 mars 2026 : De 9 heures 30 à 11 heures 30 Géolocalisation Photos Annexes au cahier des conditions de la vente • Procès-verbal descriptif Description VENTE AUX ENCH", "source_journal": "info-encheres.com", "department": "40", "property_type": "Maison", "mise_a_prix": 180000.0, "surface_m2": 200.0, "adresse": "87 rue Moncade 40330 AMOU", "ville": "AMOU", "audience_date": "2026-03-26", "avocat_nom": "SELARL LANDAVOCATS 05.", "avocat_contact": "0558900226", "dvf_analysis": {"dvf_count": 25, "dvf_median_pm2": 958, "dvf_estimated_value": 191592, "dvf_max_offer": 162854, "verdict": "attention", "ratio": 0.94, "note": "25 ventes 24 mois", "lon": -0.74483, "lat": 43.59344}}, {"url": "https://www.info-encheres.com/108115-d-vente-encheres-immobilieres-immeuble-an-usage-d-habitation-assat-64-ref-5896.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL DLB Avocats Associés 05 59 27 20 17 Voir la fiche Référence : 5896 Nature du bien : Immeuble � usage d'habitation Adresse : 16 Quartier Lous Mats 64510 ASSAT Mise à prix 185 900 € Frais en sus Vente le : 03/04/2026 Au Tribunal Judiciaire de : Pau Site des Halles - Place Marguerite Laborde - 64000 Pau Date de visite : Sadresser à la SELAS AAP, commissaires de justice, 3, Rue Duplaa 64000 PAU téléphone n° 05.59.69.49.43. La visite aura lieu le mardi 24 MARS 2026 DE 10H A 11H Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Diagnostics techniques • Renseignements d'urbanisme Description VENTE AUX ENCHÈRE", "source_journal": "info-encheres.com", "department": "64", "property_type": "Immeuble", "mise_a_prix": 185900.0, "surface_m2": null, "adresse": "16 Quartier Lous Mats 64510 ASSAT Mise à prix 185 900 € Frais en sus Vente", "ville": "ASSAT", "audience_date": "2026-04-03", "avocat_nom": "SELARL DLB Avocats Associés 05", "avocat_contact": "0559272017", "dvf_analysis": {"dvf_count": 24, "dvf_median_pm2": 2188, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "24 ventes 24 mois (surface inconnue)", "lon": -0.29289, "lat": 43.26735}}, {"url": "https://www.info-encheres.com/108125-d-vente-encheres-immobilieres-grange-dacpendance-et-terres-autour-lagor-64-ref-5906.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte Selarl MALTERRE-CHAUVELIER 05.59.11.33.33 Voir la fiche Référence : 5906 Nature du bien : Grange, d�pendance et terres autour Adresse : 25 Chemin Benzy 64150 LAGOR Mise à prix 30 000 € Frais de poursuites en sus Vente le : 03/04/2026 Au Tribunal Judiciaire de : Pau Site des Halles - Place Marguerite Laborde - 64000 Pau Date de visite : Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif Description VENTE AUX ENCHERES Une grange une dépendance, et terres autour situées sur la commune de LAGOR (64150) 25 Chemin Benzy cadastrées section AK N° 411,413,417, 402 et 415 pour une contenance de 1 ha 38 a 00 ca Le cahier de", "source_journal": "info-encheres.com", "department": "64", "property_type": "Terrain", "mise_a_prix": 30000.0, "surface_m2": null, "adresse": "25 Chemin Benzy 64150 LAGOR Mise à prix 30 000 € Frais de poursuites en sus Vente", "ville": "LAGOR", "audience_date": "2026-04-03", "avocat_nom": "Selarl MALTERRE-CHAUVELIER 05.", "avocat_contact": "0559113333"}, {"url": "https://www.info-encheres.com/108142-d-vente-encheres-immobilieres-3-parcelles-de-terre-serres-castet-64-ref-5920.html", "title": "3 parcelles de terre à SERRES-CASTET (64) – Vente aux enchères réf. 5920", "published_at": null, "summary": "3 parcelles de terre à SERRES-CASTET (64) – Vente aux enchères réf. 5920 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SELARL DLB Avocats Associés 05 59 27 20 17 Voir la fiche Référence : 5920 Nature du bien : 3 parcelles de terre Adresse : Chemin Biray 64121 SERRES-CASTET Mise à prix 17 000 € Frais en sus Vente le : 03/04/2026 Au Tribunal Judiciaire de : Pau Site des Halles - Place Marguerite Laborde - 64000 Pau Date de visite : Sadresser à Maître Philippe LARTIGAU, commissaire de justice à PAU, 9 rue dOrléans 64000 PAU, tel : 05 59 98 52 90, contact@huissier-pau.fr, pour rendez-vous. Géolocalisation Photos cahier des conditions de la vente Annexes au cahier des conditions de la vente • Procès-verbal descriptif • Re", "source_journal": "info-encheres.com", "department": "64", "property_type": "Terrain", "mise_a_prix": 17000.0, "surface_m2": null, "adresse": "Chemin Biray 64121 SERRES-CASTET Mise à prix 17 000 € Frais en sus Vente", "ville": "SERRES-CASTET", "audience_date": "2026-04-03", "avocat_nom": "SELARL DLB Avocats Associés 05", "avocat_contact": "contact@huissier-pau.fr", "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 64519", "lon": -0.34327, "lat": 43.37899}}, {"url": "https://www.info-encheres.com/108151-d-vente-encheres-immobilieres-ensemble-immobilier-en-nature-da-airial-sabres-40-ref-5928.html", "title": "", "published_at": null, "summary": "Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte CFG AVOCAT 05.58.06.04.04 Voir la fiche Référence : 5928 Nature du bien : ENSEMBLE IMMOBILIER EN NATURE D�AIRIAL Adresse : 430 Chemin de Tauziet lieudit Airial de Tauziet 40630 SABRES Superficie : 124527.00 m² Mise à prix 200 000 € Vente le : 23/04/2026 Au Tribunal Judiciaire de : Mont de Marsan 249 Av. du Colonel Rozanoff - 40006 Mont de Marsan Date de visite : SUR PLACE Accès : En partant de SABRES, emprunter la départementale D77 et à lintersection de la Route du Mouliocq et de la D77, prendre à gauche la piste DFCI dénommée « Sabres 38 C ». Mardi 31 Mars 2026 de 10 heures à 12 heures Géolocalisation Description Vente aux enchères publiques : ENSEMBLE IMMOBILIER EN NATURE D’AIRIAL situ", "source_journal": "info-encheres.com", "department": "40", "property_type": "Immeuble", "mise_a_prix": 200000.0, "surface_m2": null, "adresse": "430 Chemin de Tauziet lieudit Airial de Tauziet 40630 SABRES", "ville": "SABRES", "audience_date": "2026-04-23", "avocat_nom": "CFG AVOCAT", "avocat_contact": "avocat@fournier-guinut.fr", "dvf_analysis": {"dvf_count": 13, "dvf_median_pm2": 1031, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "13 ventes 24 mois (surface inconnue)", "lon": -0.79607, "lat": 44.11452}}, {"url": "https://www.info-encheres.com/108159-d-vente-encheres-immobilieres-deux-appartements-independants-avec-jardin-a-usage-privatif-conjoint-aux-2-appartements-hendaye-64-ref-5935.html", "title": "Deux appartements independants avec jardin a usage privatif conjoint aux 2 appartements à HENDAYE (64) – Vente aux enchères réf. 5935", "published_at": null, "summary": "Deux appartements independants avec jardin a usage privatif conjoint aux 2 appartements à HENDAYE (64) – Vente aux enchères réf. 5935 | Info enchères Accueil Annonces Résultats Partenaires annonceurs Espace membre Espace pro Jeudi 26 Mars 2026 54 annonces en ligne enchères pratiques Guide Lexique Docs à fournir Recherche par critères : Toutes les régions Auvergne-Rhône-Alpes Bourgone Franche-Comté Bretagne Centre Val de Loire Corse Grand-Est Guadeloupe Guyane Hauts-de-France Ile-de-France Martinique Mayotte Monaco Normandie Nouvelle Aquitaine Nouvelle-Calédonie Occitanie Pays de la Loire Provence-Alpes-Côte d’Azur Réunion (la) Saint Pierre et Miquelon Tous les départements Tous les biens Villa Maison Appartement Studio Terrain Ensemble Immobilier Local commercial Garage Parking Divers Recherche par n° d'annonce : alerte mail Faites partie des premiers informés des nouveaux avis de vente dès leur publication sur le site Créez votre alerte SCP UHALDEBORDE-SALANNE GORGUET VERMOTE BERTIZBEREA 05.59.59.00.96 Voir la fiche Référence : 5935 Nature du bien : Deux appartements independants avec jardin a usage privatif conjoint aux 2 appartements Adresse : 3 Rue Pasteur 64700 HENDAYE Mise à prix 26 000 € Outre les charges et conditions figurant au Cahier des Conditions de Vente Vente le : 23/04/2026 Au Tribunal Judiciaire de : Bayonne 17 Avenue Légion Tchèque - 64100 Bayonne Date de visite : Une visite unique et collective est organisée par Maître UGOLINI, Commissaire de Justice associ", "source_journal": "info-encheres.com", "department": "64", "property_type": "Appartement", "mise_a_prix": 26000.0, "surface_m2": 66.33, "adresse": "3 Rue Pasteur 64700 HENDAYE Mise à prix 26 000 € Outre les charges et conditions figurant au Cahier des Conditions de Vente Vente", "ville": "HENDAYE", "audience_date": "2026-04-23", "avocat_nom": "SCP UHALDEBORDE-SALANNE GORGUET VERMOTE BERTIZBEREA 05.", "avocat_contact": "0559590096"}, {"url": "https://avoventes.fr/enchere/un-appartement-et-un-parking-exterieur-a-sete", "title": "UN APPARTEMENT et un parking extérieur À SÈTE", "published_at": null, "summary": "UN APPARTEMENT et un parking extérieur À SÈTE — 361 Bd Cerf Lurie, 34200 Sète, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 59000.0, "surface_m2": 32.64, "adresse": "361 Bd Cerf Lurie, 34200 Sète, France", "ville": "SÈTE", "audience_date": "2026-03-16", "avocat_nom": "AXIOJURIS - LEXIENS - Me Frédéric ALLEAUME", "avocat_contact": "accueil@axiojuris.fr", "docs": [{"type": "Document", "label": "AXIENS SETE (34) 2026 - AS.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/106/documents/6973bab408acfttt.pdf"}, {"type": "CCV", "label": "CCV Saisie immobilière.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/106/documents/6973bab4441a0ttt.pdf"}, {"type": "PVD", "label": "PVD 06.05.25. CAISSE D'EPARGNE ET DE PREVOYANCE RHONE ALPHES", "url": "https://avoventes.fr/public/uploads/cabinet/106/documents/6973bab48f444ttt.pdf"}], "dvf_analysis": {"dvf_count": 1079, "dvf_median_pm2": 3371, "dvf_estimated_value": 110043, "dvf_max_offer": 93537, "verdict": "interessant", "ratio": 0.54, "note": "1079 ventes 24 mois", "lon": 3.65684, "lat": 43.39805}}, {"url": "https://avoventes.fr/enchere/maison-a-cournonterral", "title": "MAISON à COURNONTERRAL", "published_at": null, "summary": "MAISON à COURNONTERRAL — 21 Rue du Jeu de Ballon, 34660 Cournonterral, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Maison", "mise_a_prix": 121000.0, "surface_m2": 307.11, "adresse": "21 Rue du Jeu de Ballon, 34660 Cournonterral, France", "ville": "COURNONTERRAL", "audience_date": "2026-03-16", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Affiche", "label": "affiche COURNONTERRAL.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69807b2db210dttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69807b2de1daettt.pdf"}, {"type": "PVD", "label": "pvd.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69807b2e2c11ettt.pdf"}, {"type": "Document", "label": "DDT_-_25059699_.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69807b3895fedttt.pdf"}], "dvf_analysis": {"dvf_count": 62, "dvf_median_pm2": 3244, "dvf_estimated_value": 996322, "dvf_max_offer": 846874, "verdict": "tres_interessant", "ratio": 0.12, "note": "62 ventes 24 mois", "lon": 3.71705, "lat": 43.55788}}, {"url": "https://avoventes.fr/enchere/maison-a-lodeve", "title": "MAISON à LODEVE", "published_at": null, "summary": "MAISON à LODEVE — 6 Imp. Châteaudun, 34700 Lodève, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Maison", "mise_a_prix": 7000.0, "surface_m2": 90.04, "adresse": "6 Imp. Châteaudun, 34700 Lodève, France", "ville": "LODÈVE", "audience_date": "2026-03-16", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Document", "label": "20260202184557.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/6980e41500808ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/6980e41530377ttt.pdf"}, {"type": "Document", "label": "DDT.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/6980e42756565ttt.pdf"}, {"type": "PVD", "label": "PVD du 22012025 (2).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69948fccc6b57ttt.pdf"}], "dvf_analysis": {"dvf_count": 50, "dvf_median_pm2": 1511, "dvf_estimated_value": 136050, "dvf_max_offer": 115643, "verdict": "tres_interessant", "ratio": 0.05, "note": "50 ventes 24 mois", "lon": 3.31872, "lat": 43.73105}}, {"url": "https://avoventes.fr/enchere/6-appartements-a-marseille", "title": "6 APPARTEMENTS à MARSEILLE", "published_at": null, "summary": "6 APPARTEMENTS à MARSEILLE — 6 Bd de la Rade, 13007 Marseille, France", "source_journal": "avoventes.fr", "department": "13", "property_type": "Appartement", "mise_a_prix": 490000.0, "surface_m2": 17.86, "adresse": "6 Bd de la Rade, 13007 Marseille, France", "ville": "MARSEILLE", "audience_date": "2026-03-25", "avocat_nom": "BARBIER PHILIPPE", "avocat_contact": "contact@barbier-avocat.com", "docs": [{"type": "Affiche", "label": "Affiche détaillée - MARSEILLE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb7814481ettt.pdf"}, {"type": "CCV", "label": "CCV - 2025 (Marseille).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb781792cbttt.pdf"}, {"type": "PVD", "label": "PVD - MARSEILLE 830 A 44 - Lots 1-2-3-4-6-7.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb781b590dttt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 1.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb7cb6ecb0ttt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 2.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb7e0c8b36ttt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 3.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb7eae90fdttt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 4.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb7f5d1398ttt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 6.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb800ed80ettt.pdf"}, {"type": "Document", "label": "DIAGS - Lot 7.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/699eb80fbdaaettt.pdf"}], "dvf_analysis": {"dvf_count": 779, "dvf_median_pm2": 4847, "dvf_estimated_value": 86573, "dvf_max_offer": 73587, "verdict": "survevalue", "ratio": 5.66, "note": "779 ventes 24 mois", "lon": 5.35231, "lat": 43.28688}}, {"url": "https://avoventes.fr/enchere/appartement-a-bordeaux-4", "title": "Appartement à BORDEAUX", "published_at": null, "summary": "Appartement à BORDEAUX — 46 Cr Victor Hugo, 33000 Bordeaux, France", "source_journal": "avoventes.fr", "department": "33", "property_type": "Appartement", "mise_a_prix": 44000.0, "surface_m2": 71.53, "adresse": "46 Cr Victor Hugo, 33000 Bordeaux, France", "ville": "BORDEAUX", "audience_date": "2026-03-26", "avocat_nom": "DYNAMIS AVOCATS", "avocat_contact": "contact@dynamis-avocats.com", "docs": [{"type": "Affiche", "label": "03 AVIS SIMPLIFIE SO ou VIE ECO+INTERNET .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/6979cb2a732cettt.pdf"}, {"type": "CCV", "label": "CCV ANONYMISE .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/6979cb2aad047ttt.pdf"}, {"type": "PVD", "label": "PVD 09.09.2025 ANONYMISE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/6979cb2b0aa00ttt.pdf"}], "dvf_analysis": {"dvf_count": 3868, "dvf_median_pm2": 4116, "dvf_estimated_value": 294432, "dvf_max_offer": 250267, "verdict": "tres_interessant", "ratio": 0.15, "note": "3868 ventes 24 mois", "lon": -0.5683, "lat": 44.83551}}, {"url": "https://avoventes.fr/enchere/maison-a-biganos", "title": "MAISON à BIGANOS", "published_at": null, "summary": "MAISON à BIGANOS — 23 Av. de la Côte d'Argent, 33380 Biganos, France", "source_journal": "avoventes.fr", "department": "33", "property_type": "Maison", "mise_a_prix": 162000.0, "surface_m2": 190.0, "adresse": "23 Av. de la Côte d'Argent, 33380 Biganos, France", "ville": "BIGANOS", "audience_date": "2026-03-26", "avocat_nom": "DYNAMIS AVOCATS", "avocat_contact": "contact@dynamis-avocats.com", "docs": [{"type": "Affiche", "label": "01 AFFICHE GREFFE A3.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/697cc7898537ettt.pdf"}, {"type": "CCV", "label": "03 CAHIER DES CONDITIONS DE VENTE SI.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/697cc789bfb6attt.pdf"}, {"type": "PVD", "label": "PVD ANONYMISE 22 07 2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/697cc78a14edettt.pdf"}], "dvf_analysis": {"dvf_count": 119, "dvf_median_pm2": 3382, "dvf_estimated_value": 642647, "dvf_max_offer": 546250, "verdict": "tres_interessant", "ratio": 0.25, "note": "119 ventes 24 mois", "lon": -0.97855, "lat": 44.6332}}, {"url": "https://avoventes.fr/enchere/appartement-parkings-a-saint-jean-de-vedas", "title": "APPARTEMENT + PARKINGS à SAINT JEAN DE VEDAS", "published_at": null, "summary": "APPARTEMENT + PARKINGS à SAINT JEAN DE VEDAS — Résidence Petra, 121 Rue Pauline Kergomard, 34430 Saint-Jean-de-Védas, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 67000.0, "surface_m2": 63.51, "adresse": "Résidence Petra, 121 Rue Pauline Kergomard, 34430 Saint-Jean-de-Védas, France", "ville": "SAINT-JEAN-DE-VÉDAS", "audience_date": "2026-03-30", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Affiche", "label": "affiche.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69a84fa21a1a9ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69a84fa249a52ttt.pdf"}, {"type": "PVD", "label": "PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69a84fa2812c9ttt.pdf"}, {"type": "Document", "label": "DDT_-.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69a84fb5a9dccttt.pdf"}], "dvf_analysis": {"dvf_count": 69, "dvf_median_pm2": 3956, "dvf_estimated_value": 251246, "dvf_max_offer": 213559, "verdict": "tres_interessant", "ratio": 0.27, "note": "69 ventes 24 mois", "lon": 3.83741, "lat": 43.57375}}, {"url": "https://avoventes.fr/enchere/une-maison-dhabitation-divisee-en-3-habitations-a-montpellier", "title": "UNE MAISON D’HABITATION divisée en 3 HABITATIONS à MONTPELLIER", "published_at": null, "summary": "UNE MAISON D’HABITATION divisée en 3 HABITATIONS à MONTPELLIER — 10 Rue de l'Yeuse, 34000 Montpellier, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Maison", "mise_a_prix": 90000.0, "surface_m2": 108.23, "adresse": "10 Rue de l'Yeuse, 34000 Montpellier, France", "ville": "MONTPELLIER", "audience_date": "2026-03-30", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Document", "label": "20260210102233.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/698c5d5d4df89ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/698c5d5d7a518ttt.pdf"}, {"type": "PVD", "label": "PVD_.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/698c5d5dbb17fttt.pdf"}, {"type": "Document", "label": "DDT_-_.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/698c5d6b881c9ttt.pdf"}], "dvf_analysis": {"dvf_count": 497, "dvf_median_pm2": 3874, "dvf_estimated_value": 419249, "dvf_max_offer": 356362, "verdict": "tres_interessant", "ratio": 0.21, "note": "497 ventes 24 mois", "lon": 3.85806, "lat": 43.61509}}, {"url": "https://avoventes.fr/enchere/appartement-cave-emplacement-de-voiture-exterieur-a-montpellier", "title": "APPARTEMENT + CAVE + EMPLACEMENT DE VOITURE EXTERIEUR à MONTPELLIER", "published_at": null, "summary": "APPARTEMENT + CAVE + EMPLACEMENT DE VOITURE EXTERIEUR à MONTPELLIER — 161 Rue Jacques Tati, 34070 Montpellier, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 20000.0, "surface_m2": 43.94, "adresse": "161 Rue Jacques Tati, 34070 Montpellier, France", "ville": "MONTPELLIER", "audience_date": "2026-03-30", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "PVD", "label": "Photos PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/photosttt.pdf"}, {"type": "Affiche", "label": "Affiche .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69980fdc65264ttt.pdf"}, {"type": "CCV", "label": "CAHIER DES CONDITIONS DE VENTE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69980fdcaa4cfttt.pdf"}, {"type": "PVD", "label": "PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69980fdd00fa5ttt.pdf"}, {"type": "Document", "label": "Diagnostics.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69980ff7c3241ttt.pdf"}], "dvf_analysis": {"dvf_count": 4607, "dvf_median_pm2": 3300, "dvf_estimated_value": 145002, "dvf_max_offer": 123252, "verdict": "tres_interessant", "ratio": 0.14, "note": "4607 ventes 24 mois", "lon": 3.8517, "lat": 43.59876}}, {"url": "https://avoventes.fr/enchere/pavillon-a-marseille", "title": "PAVILLON à MARSEILLE", "published_at": null, "summary": "PAVILLON à MARSEILLE — 6 All. des Fourmis, 13016 Marseille, France", "source_journal": "avoventes.fr", "department": "13", "property_type": "Maison", "mise_a_prix": 30000.0, "surface_m2": 75.24, "adresse": "6 All. des Fourmis, 13016 Marseille, France", "ville": "MARSEILLE", "audience_date": "2026-04-01", "avocat_nom": "CABINET ROUSSEL-CABAYÉ & Associés", "avocat_contact": null, "docs": [{"type": "Affiche", "label": "AFFICHE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebcea281ettt.pdf"}, {"type": "CCV", "label": "CCV DU 8 9 2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebcee43a8ttt.pdf"}, {"type": "PVD", "label": "PVD DU 24 6 2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebcf2ac25ttt.pdf"}, {"type": "CCV", "label": "EXTRAIT ADDITIF CCV DU 23 2 2026.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebf0662c0ttt.pdf"}, {"type": "CCV", "label": "EXTRAIT ANNEXES CCV.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebf0b2514ttt.pdf"}, {"type": "PVD", "label": "PVD AMPLIATIF DU 11 7 2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/193/documents/69aeebf0e3f20ttt.pdf"}], "dvf_analysis": {"dvf_count": 85, "dvf_median_pm2": 3500, "dvf_estimated_value": 263340, "dvf_max_offer": 223839, "verdict": "tres_interessant", "ratio": 0.11, "note": "85 ventes 24 mois", "lon": 5.33955, "lat": 43.36351}}, {"url": "https://avoventes.fr/enchere/un-appartement-et-deux-emplacements-de-parkings-a-marseille", "title": "UN APPARTEMENT ET DEUX EMPLACEMENTS DE PARKINGS à MARSEILLE", "published_at": null, "summary": "UN APPARTEMENT ET DEUX EMPLACEMENTS DE PARKINGS à MARSEILLE — 30 Rue Gabriel Audisio, 13014 Marseille, France", "source_journal": "avoventes.fr", "department": "13", "property_type": "Appartement", "mise_a_prix": 100000.0, "surface_m2": 61.47, "adresse": "30 Rue Gabriel Audisio, 13014 Marseille, France", "ville": "MARSEILLE", "audience_date": "2026-04-01", "avocat_nom": "PROVANSAL AVOCATS ASSOCIES", "avocat_contact": "cabinet@eklar.com", "docs": [{"type": "Affiche", "label": "AFFICHE (1).PDF", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/698ef8a520e46ttt.pdf"}, {"type": "CCV", "label": "CCV LICITATION (1).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/698ef8a55f5a4ttt.pdf"}, {"type": "PVD", "label": "157009 PV DESCRIPTIF.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/698ef8a5b4004ttt.pdf"}], "dvf_analysis": {"dvf_count": 551, "dvf_median_pm2": 1364, "dvf_estimated_value": 83823, "dvf_max_offer": 71249, "verdict": "survevalue", "ratio": 1.19, "note": "551 ventes 24 mois", "lon": 5.40222, "lat": 43.34297}}, {"url": "https://avoventes.fr/enchere/maison-dhabitation-en-cours-de-construction-non-achevee-a-saint-selve", "title": "MAISON D’HABITATION en cours de construction non achevée, à SAINT-SELVE", "published_at": null, "summary": "MAISON D’HABITATION en cours de construction non achevée, à SAINT-SELVE — 33650 Saint-Selve, France", "source_journal": "avoventes.fr", "department": "33", "property_type": "Maison", "mise_a_prix": 35000.0, "surface_m2": 146.56, "adresse": "33650 Saint-Selve, France", "ville": "SAINT-SELVE", "audience_date": "2026-04-02", "avocat_nom": "AHBL AVOCATS", "avocat_contact": null, "docs": [{"type": "Document", "label": "Publicité légale.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/400/documents/69821e12aa6f0ttt.pdf"}, {"type": "CCV", "label": "CCV .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/400/documents/69821e12ddab5ttt.pdf"}, {"type": "PVD", "label": "PV Descriptif.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/400/documents/69821e133512dttt.pdf"}], "dvf_analysis": {"dvf_count": 41, "dvf_median_pm2": 2488, "dvf_estimated_value": 364568, "dvf_max_offer": 309883, "verdict": "tres_interessant", "ratio": 0.1, "note": "41 ventes 24 mois", "lon": -0.4954, "lat": 44.65967}}, {"url": "https://avoventes.fr/enchere/maison-a-gujan-mestras", "title": "Maison à GUJAN-MESTRAS", "published_at": null, "summary": "Maison à GUJAN-MESTRAS — 12 Ter Av. Sainte-Marie, 33470 Gujan-Mestras, France", "source_journal": "avoventes.fr", "department": "33", "property_type": "Maison", "mise_a_prix": 430000.0, "surface_m2": 164.92, "adresse": "12 Ter Av. Sainte-Marie, 33470 Gujan-Mestras, France", "ville": "GUJAN-MESTRAS", "audience_date": "2026-04-02", "avocat_nom": "DYNAMIS AVOCATS", "avocat_contact": "contact@dynamis-avocats.com", "docs": [{"type": "Affiche", "label": "03 AVIS SIMPLIFIE SO ou VIE ECO+INTERNET .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69830d378416dttt.pdf"}, {"type": "CCV", "label": "CCV ANONYMISE .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69830d37cf476ttt.pdf"}, {"type": "PVD", "label": "PVD ANONYMISE 15.04.2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69830d3828a16ttt.pdf"}], "dvf_analysis": {"dvf_count": 288, "dvf_median_pm2": 4417, "dvf_estimated_value": 728397, "dvf_max_offer": 619137, "verdict": "interessant", "ratio": 0.59, "note": "288 ventes 24 mois", "lon": -1.1153, "lat": 44.63786}}, {"url": "https://avoventes.fr/enchere/appartement-cave-et-emplacement-de-parking-a-bagnols-sur-ceze-gard", "title": "Appartement, cave et emplacement de parking à BAGNOLS-SUR-CEZE (GARD)", "published_at": null, "summary": "Appartement, cave et emplacement de parking à BAGNOLS-SUR-CEZE (GARD) — Rue des Micocouliers, 30200 Bagnols-sur-Cèze, France", "source_journal": "avoventes.fr", "department": "30", "property_type": "Appartement", "mise_a_prix": 35000.0, "surface_m2": 76.22, "adresse": "Rue des Micocouliers, 30200 Bagnols-sur-Cèze, France", "ville": "BAGNOLS-SUR-CÈZE", "audience_date": "2026-04-09", "avocat_nom": "EYDOUX & ASSOCIES", "avocat_contact": null, "docs": [{"type": "Affiche", "label": "Avis de publicité simplifié.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568b353336ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568b396412ttt.pdf"}, {"type": "PVD", "label": "PVD", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568b3e8606ttt.pdf"}, {"type": "Document", "label": "D.P.E. COLLECTIF du 20_03_2023.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568de9dc27ttt.pdf"}, {"type": "Document", "label": "DIAGNOSTIC DTA (AMIANTE) du 26_01_2023.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568df9d9dettt.pdf"}, {"type": "Document", "label": "DIAGNOSTIC DTG INCLUS PPPT du 14_05_2024.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568dff06b4ttt.pdf"}, {"type": "Document", "label": "DIAGNOSTIC ETAT PARASITAIRE du 21_05_2024.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/184/documents/69a568e08d8c6ttt.pdf"}], "dvf_analysis": {"dvf_count": 122, "dvf_median_pm2": 1477, "dvf_estimated_value": 112598, "dvf_max_offer": 95708, "verdict": "tres_interessant", "ratio": 0.31, "note": "122 ventes 24 mois", "lon": 4.61633, "lat": 44.15723}}, {"url": "https://avoventes.fr/enchere/appartement-3-emplacements-de-stationnement-a-nimes", "title": "Appartement + 3 emplacements de stationnement à NIMES", "published_at": null, "summary": "Appartement + 3 emplacements de stationnement à NIMES — 21 Rue Fernand Pelloutier, 30900 Nîmes, France", "source_journal": "avoventes.fr", "department": "30", "property_type": "Appartement", "mise_a_prix": 140000.0, "surface_m2": 243.11, "adresse": "21 Rue Fernand Pelloutier, 30900 Nîmes, France", "ville": "NÎMES", "audience_date": "2026-04-09", "avocat_nom": "DEIXONNE", "avocat_contact": null, "docs": [{"type": "Affiche", "label": "AFFICHE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a5b20b2dea6ttt.pdf"}, {"type": "Document", "label": "CAHIER VENTE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a5b20b5c599ttt.pdf"}, {"type": "PVD", "label": "PVD_compressed (2).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a7e9687e3a9ttt.pdf"}], "dvf_analysis": {"dvf_count": 2033, "dvf_median_pm2": 2038, "dvf_estimated_value": 495368, "dvf_max_offer": 421063, "verdict": "tres_interessant", "ratio": 0.28, "note": "2033 ventes 24 mois", "lon": 4.35297, "lat": 43.83645}}, {"url": "https://avoventes.fr/enchere/studio-au-grau-du-roi", "title": "STUDIO au GRAU DU ROI", "published_at": null, "summary": "STUDIO au GRAU DU ROI — 36 Rue Michel Redares, 30240 Le Grau-du-Roi, France", "source_journal": "avoventes.fr", "department": "30", "property_type": "Studio", "mise_a_prix": 12000.0, "surface_m2": 16.09, "adresse": "36 Rue Michel Redares, 30240 Le Grau-du-Roi, France", "ville": "LE GRAU-DU-ROI", "audience_date": "2026-04-09", "avocat_nom": "DEIXONNE", "avocat_contact": null, "docs": [{"type": "Affiche", "label": "AFFICHE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a5b253bb789ttt.pdf"}, {"type": "Document", "label": "CAHIER VENTE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a5b253e4b48ttt.pdf"}, {"type": "PVD", "label": "pv description.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/573/documents/69a5b254375bettt.pdf"}], "dvf_analysis": {"dvf_count": 869, "dvf_median_pm2": 5025, "dvf_estimated_value": 80852, "dvf_max_offer": 68724, "verdict": "tres_interessant", "ratio": 0.15, "note": "869 ventes 24 mois", "lon": 4.13745, "lat": 43.53452}}, {"url": "https://avoventes.fr/enchere/appartement-p2-avec-loggia-en-rdc-de-3247-m2-et-cellier-et-garage-dans-residence-le-lagon-bleu-au-grau-du-roi", "title": "APPARTEMENT P2 avec loggia en RDC de 32,47 m² et CELLIER et GARAGE dans Résidence LE LAGON BLEU au GRAU DU ROI", "published_at": null, "summary": "APPARTEMENT P2 avec loggia en RDC de 32,47 m² et CELLIER et GARAGE dans Résidence LE LAGON BLEU au GRAU DU ROI — 199 Av. Jean Jaurès, 30240 Le Grau-du-Roi, France", "source_journal": "avoventes.fr", "department": "30", "property_type": "Appartement", "mise_a_prix": 160000.0, "surface_m2": 32.47, "adresse": "199 Av. Jean Jaurès, 30240 Le Grau-du-Roi, France", "ville": "LE GRAU-DU-ROI", "audience_date": "2026-04-09", "avocat_nom": "SARLIN-CHABAUD-MARCHAL & ASSOCIES", "avocat_contact": "csm2@ergaomnes.fr", "docs": [{"type": "Affiche", "label": "AFFICHE GRAU DU ROI.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/698e0b6466435ttt.pdf"}, {"type": "Document", "label": "GRAU DU ROI.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/698e0b70d4fe2ttt.pdf"}, {"type": "PVD", "label": "PVD GRAU DU ROI.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/698e0b7e9a7d5ttt.pdf"}], "dvf_analysis": {"dvf_count": 869, "dvf_median_pm2": 5025, "dvf_estimated_value": 163162, "dvf_max_offer": 138687, "verdict": "attention", "ratio": 0.98, "note": "869 ventes 24 mois", "lon": 4.14728, "lat": 43.52576}}, {"url": "https://avoventes.fr/enchere/batiment-a-usage-mixte-tertiaire-et-habitation-en-r2-a-bernis-30620", "title": "BATIMENT A USAGE MIXTE (TERTIAIRE et HABITATION) en R+2 à BERNIS (30620)", "published_at": null, "summary": "BATIMENT A USAGE MIXTE (TERTIAIRE et HABITATION) en R+2 à BERNIS (30620) — 31 Rte de Nîmes, 30620 Bernis, France", "source_journal": "avoventes.fr", "department": "30", "property_type": "Bien immobilier", "mise_a_prix": 434000.0, "surface_m2": 59.43, "adresse": "31 Rte de Nîmes, 30620 Bernis, France", "ville": "BERNIS", "audience_date": "2026-04-09", "avocat_nom": "SARLIN-CHABAUD-MARCHAL & ASSOCIES", "avocat_contact": "csm2@ergaomnes.fr", "docs": [{"type": "Affiche", "label": "AFFICHE BERNIS.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/6996e22201a3ettt.pdf"}, {"type": "CCV", "label": "CCV BERNIS.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/6996e2223ae73ttt.pdf"}, {"type": "PVD", "label": "PVD BERNIS.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/7/documents/6996e22274181ttt.pdf"}], "dvf_analysis": {"dvf_count": 42, "dvf_median_pm2": 2593, "dvf_estimated_value": 154078, "dvf_max_offer": 130966, "verdict": "survevalue", "ratio": 2.82, "note": "42 ventes 24 mois", "lon": 4.28995, "lat": 43.77679}}, {"url": "https://avoventes.fr/enchere/maison-de-village-avec-garage-a-thil", "title": "MAISON DE VILLAGE AVEC GARAGE A THIL", "published_at": null, "summary": "MAISON DE VILLAGE AVEC GARAGE A THIL — 31530 Thil, France", "source_journal": "avoventes.fr", "department": "31", "property_type": "Maison", "mise_a_prix": 100000.0, "surface_m2": 89.0, "adresse": "31530 Thil, France", "ville": "THIL", "audience_date": "2026-04-09", "avocat_nom": "CANTIN MARIE-JULIE", "avocat_contact": "mj.cantin.avocat@gmail.com", "docs": [{"type": "Document", "label": "PUBCOMPLETE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef0ec5baettt.pdf"}, {"type": "CCV", "label": "CCV TAMPONNE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef0f15a30ttt.pdf"}, {"type": "PVD", "label": "Procès-Verbal de Description-EXPEDITION.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef0f490ecttt.pdf"}, {"type": "Document", "label": "cui.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef1d27998ttt.pdf"}, {"type": "Document", "label": "rsu.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef2df32abttt.pdf"}, {"type": "Document", "label": "matrice.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef3b1b9d4ttt.pdf"}, {"type": "Document", "label": "diagnostics immobiliers.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/377/documents/698eef433c994ttt.pdf"}], "dvf_analysis": {"dvf_count": 13, "dvf_median_pm2": 1984, "dvf_estimated_value": 176553, "dvf_max_offer": 150070, "verdict": "interessant", "ratio": 0.57, "note": "13 ventes 24 mois", "lon": 1.16111, "lat": 43.71137}}, {"url": "https://avoventes.fr/enchere/appartement-dans-un-ensemble-immobilier-a-usage-dhotel-a-toulouse", "title": "APPARTEMENT DANS UN ENSEMBLE IMMOBILIER A USAGE D’HOTEL à TOULOUSE", "published_at": null, "summary": "APPARTEMENT DANS UN ENSEMBLE IMMOBILIER A USAGE D’HOTEL à TOULOUSE — 2 All. Antoine Osete, 31100 Toulouse, France", "source_journal": "avoventes.fr", "department": "31", "property_type": "Appartement", "mise_a_prix": 12000.0, "surface_m2": 34.64, "adresse": "2 All. Antoine Osete, 31100 Toulouse, France", "ville": "TOULOUSE", "audience_date": "2026-04-09", "avocat_nom": "Jérôme CARLES", "avocat_contact": "j.carles@scp-camille.com", "docs": [{"type": "Document", "label": "PLACARD - PLACARD POUR SAISIE IMMO.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c163c10e0ettt.pdf"}, {"type": "CCV", "label": "CONDVENT - Cahier des conditions de vente (conditions partic", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c163c4ec67ttt.pdf"}, {"type": "CCV", "label": "PVD 21-08-2025 CCV.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c163cb8af2ttt.pdf"}, {"type": "Document", "label": "13297 (DIAG DT) (2).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c165a3eb0fttt.pdf"}, {"type": "Document", "label": "Certificat d'urbanisme.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c1668e0781ttt.pdf"}, {"type": "Document", "label": "Réquis avant saisie immo.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c1674857e0ttt.pdf"}, {"type": "Document", "label": "Règlement de copropriété.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c1682b1f5cttt.pdf"}, {"type": "CCV", "label": "matrice cadastrale - CCV.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/409/documents/699c173bef534ttt.pdf"}], "dvf_analysis": {"dvf_count": 7181, "dvf_median_pm2": 3185, "dvf_estimated_value": 110335, "dvf_max_offer": 93785, "verdict": "tres_interessant", "ratio": 0.11, "note": "7181 ventes 24 mois", "lon": 1.40358, "lat": 43.59208}}, {"url": "https://avoventes.fr/enchere/batisse-a-banyuls-dels-aspres", "title": "Bâtisse à BANYULS-DELS-ASPRES", "published_at": null, "summary": "Bâtisse à BANYULS-DELS-ASPRES — 5 Rue des Pins, 66300 Banyuls-dels-Aspres, France", "source_journal": "avoventes.fr", "department": "66", "property_type": "Bien immobilier", "mise_a_prix": 100000.0, "surface_m2": 1081.11, "adresse": "5 Rue des Pins, 66300 Banyuls-dels-Aspres, France", "ville": "BANYULS-DELS-ASPRES", "audience_date": "2026-04-10", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Affiche", "label": "affiche.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699ecc7727f73ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699ecc7754922ttt.pdf"}, {"type": "PVD", "label": "Document dossier-pv descriptif+photos.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699ecc778bd28ttt.pdf"}, {"type": "Document", "label": "diagnostics.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699ecc91f0ab0ttt.pdf"}], "dvf_analysis": {"dvf_count": 29, "dvf_median_pm2": 2010, "dvf_estimated_value": 2173365, "dvf_max_offer": 1847361, "verdict": "tres_interessant", "ratio": 0.05, "note": "29 ventes 24 mois", "lon": 2.86445, "lat": 42.56732}}, {"url": "https://avoventes.fr/enchere/maison-a-perpignan", "title": "MAISON à PERPIGNAN", "published_at": null, "summary": "MAISON à PERPIGNAN — 5 Rue du Bastion Saint-Dominique, 66000 Perpignan, France", "source_journal": "avoventes.fr", "department": "66", "property_type": "Maison", "mise_a_prix": 50600.0, "surface_m2": 152.77, "adresse": "5 Rue du Bastion Saint-Dominique, 66000 Perpignan, France", "ville": "PERPIGNAN", "audience_date": "2026-04-10", "avocat_nom": "BARBIER PHILIPPE", "avocat_contact": "contact@barbier-avocat.com", "docs": [{"type": "Document", "label": "COMPL_BARBIER_CORDECH_MAISON_PERPIGNAN.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/693fda8c5333cttt.pdf"}, {"type": "CCV", "label": "CCV - JEX-SI PERPIGNAN.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/693fda8c88892ttt.pdf"}, {"type": "PVD", "label": "PV DESCRIPTIF.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/693fda8cc5b1fttt.pdf"}, {"type": "Document", "label": "DIAGS Maison PERPIGNAN.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/271/documents/693fdacd6e5fattt.pdf"}], "dvf_analysis": {"dvf_count": 629, "dvf_median_pm2": 2103, "dvf_estimated_value": 321222, "dvf_max_offer": 273038, "verdict": "tres_interessant", "ratio": 0.16, "note": "629 ventes 24 mois", "lon": 2.89807, "lat": 42.70017}}, {"url": "https://avoventes.fr/enchere/appartement-deux-places-de-parking-a-baillargues", "title": "APPARTEMENT + DEUX PLACES DE PARKING à BAILLARGUES", "published_at": null, "summary": "APPARTEMENT + DEUX PLACES DE PARKING à BAILLARGUES — 202 Rte Impériale, 34670 Baillargues, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 50000.0, "surface_m2": 62.53, "adresse": "202 Rte Impériale, 34670 Baillargues, France", "ville": "BAILLARGUES", "audience_date": "2026-04-13", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Document", "label": "DDT_-_.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/6998120d026bcttttt.pdf"}, {"type": "Document", "label": "20260220091210.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699818c8daadettt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699811f98ff4ettt.pdf"}, {"type": "PVD", "label": "PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/699811f9d4823ttt.pdf"}], "dvf_analysis": {"dvf_count": 37, "dvf_median_pm2": 3640, "dvf_estimated_value": 227580, "dvf_max_offer": 193443, "verdict": "tres_interessant", "ratio": 0.22, "note": "37 ventes 24 mois", "lon": 4.02323, "lat": 43.66148}}, {"url": "https://avoventes.fr/enchere/parcelle-de-terre-a-usage-agricole-a-castelmaurou", "title": "Parcelle de terre à usage agricole à CASTELMAUROU", "published_at": null, "summary": "Parcelle de terre à usage agricole à CASTELMAUROU — Bagis, 31180 Castelmaurou, France", "source_journal": "avoventes.fr", "department": "31", "property_type": "Terrain", "mise_a_prix": 35000.0, "surface_m2": 174.0, "adresse": "Bagis, 31180 Castelmaurou, France", "ville": "CASTELMAUROU", "audience_date": "2026-04-16", "avocat_nom": "ARCANTHE", "avocat_contact": "accueil@arcanthe.fr", "docs": [{"type": "Affiche", "label": "Avis complet 220154.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346824d7dcttt.pdf"}, {"type": "CCV", "label": "CCV.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/6993468ce42ffttt.pdf"}, {"type": "PVD", "label": "PVD 220154.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346b143f6cttt.pdf"}, {"type": "Document", "label": "220154 - Plan cadastral.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346c2915f5ttt.pdf"}, {"type": "Document", "label": "Diagnostics techniques CEFAA (Termites + ERNT).pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346cfdf690ttt.pdf"}, {"type": "Document", "label": "Matrice cadastrale.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346de204ccttt.pdf"}, {"type": "Document", "label": "RSU SPF Tlse du 16.05.24.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/286/documents/699346ea9d0e3ttt.pdf"}], "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 31117", "lon": 1.56217, "lat": 43.68824}}, {"url": "https://avoventes.fr/enchere/local-a-marseille", "title": "LOCAL à MARSEILLE", "published_at": null, "summary": "LOCAL à MARSEILLE — 183 Rue de Crimée, 13003 Marseille, France", "source_journal": "avoventes.fr", "department": "13", "property_type": "Bien immobilier", "mise_a_prix": 16000.0, "surface_m2": 30.84, "adresse": "183 Rue de Crimée, 13003 Marseille, France", "ville": "MARSEILLE", "audience_date": "2026-04-29", "avocat_nom": "GAZIELLO SARKISSIAN", "avocat_contact": "cabinet@gsfavocats.com", "docs": [{"type": "Affiche", "label": "AFFICHE VENTE 29.04.2026", "url": "https://avoventes.fr/public/uploads/cabinet/429/documents/69b1737083049ttt.pdf"}, {"type": "CCV", "label": "CCV déposé SDC 183 RUE DE CRIMEE", "url": "https://avoventes.fr/public/uploads/cabinet/429/documents/69b17370b4dbfttt.pdf"}, {"type": "PVD", "label": "PVD", "url": "https://avoventes.fr/public/uploads/cabinet/429/documents/69b17370ede75ttt.pdf"}], "dvf_analysis": {"dvf_count": 771, "dvf_median_pm2": 1667, "dvf_estimated_value": 51400, "dvf_max_offer": 43690, "verdict": "tres_interessant", "ratio": 0.31, "note": "771 ventes 24 mois", "lon": 5.37665, "lat": 43.31038}}, {"url": "https://avoventes.fr/enchere/maison-dhabitation-a-cenon", "title": "Maison d'habitation à CENON", "published_at": null, "summary": "Maison d'habitation à CENON — 60 Rue Charles de Foucauld, 33150 Cenon, France", "source_journal": "avoventes.fr", "department": "33", "property_type": "Maison", "mise_a_prix": 90000.0, "surface_m2": 124.41, "adresse": "60 Rue Charles de Foucauld, 33150 Cenon, France", "ville": "CENON", "audience_date": "2026-04-30", "avocat_nom": "DYNAMIS AVOCATS", "avocat_contact": "contact@dynamis-avocats.com", "docs": [{"type": "Affiche", "label": "03 AVIS SIMPLIFIE SO ou VIE ECO+INTERNET CENON.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69a7f87058206ttt.pdf"}, {"type": "CCV", "label": "CCV ANONYMISE CENON.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69a7f87093326ttt.pdf"}, {"type": "PVD", "label": "PVD ANONYMISE 13.05.2025.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69a7f870e080fttt.pdf"}, {"type": "PVD", "label": "AVENANT PVD ANONYMISE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/114/documents/69a7f8890f539ttt.pdf"}], "dvf_analysis": {"dvf_count": 115, "dvf_median_pm2": 3368, "dvf_estimated_value": 419065, "dvf_max_offer": 356205, "verdict": "tres_interessant", "ratio": 0.21, "note": "115 ventes 24 mois", "lon": -0.51591, "lat": 44.86136}}, {"url": "https://avoventes.fr/enchere/appartement-type-t3-et-cellier-a-montpellier", "title": "Appartement Type T3 et cellier à Montpellier", "published_at": null, "summary": "Appartement Type T3 et cellier à Montpellier — 170 Rue des Yuccas, 34070 Montpellier, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 30000.0, "surface_m2": 46.36, "adresse": "170 Rue des Yuccas, 34070 Montpellier, France", "ville": "MONTPELLIER", "audience_date": "2026-05-04", "avocat_nom": "CLAIRE LEFEBVRE", "avocat_contact": "claire@lefebvre-avocat.eu", "docs": [{"type": "Document", "label": "doc13710020260309153103.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/93/documents/69afe5c25cca4ttt.pdf"}, {"type": "CCV", "label": "CAHIER DES CONDITIONS DE LA VENTE.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/93/documents/69afe5c2a55acttt.pdf"}, {"type": "PVD", "label": "PVD .pdf", "url": "https://avoventes.fr/public/uploads/cabinet/93/documents/69afe5c2ed198ttt.pdf"}, {"type": "Document", "label": "DDT_-.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/93/documents/69afe5ebc7fe4ttt.pdf"}, {"type": "Document", "label": "CU.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/93/documents/69afe6015622ettt.pdf"}], "dvf_analysis": {"dvf_count": 4607, "dvf_median_pm2": 3300, "dvf_estimated_value": 152988, "dvf_max_offer": 130040, "verdict": "tres_interessant", "ratio": 0.2, "note": "4607 ventes 24 mois", "lon": 3.88513, "lat": 43.59139}}, {"url": "https://avoventes.fr/enchere/une-maison-dhabitation-a-meze", "title": "UNE MAISON D’HABITATION à MEZE", "published_at": null, "summary": "UNE MAISON D’HABITATION à MEZE — 46 Rue Des Amandiers, 34140 Mèze, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Maison", "mise_a_prix": 200000.0, "surface_m2": 149.54, "adresse": "46 Rue Des Amandiers, 34140 Mèze, France", "ville": "MÈZE", "audience_date": "2026-05-04", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Document", "label": "20260316171224.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b835819edbfttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b83581ccc3dttt.pdf"}, {"type": "PVD", "label": "Pvd.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b8358219005ttt.pdf"}, {"type": "Document", "label": "DDT.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b8359b17bfdttt.pdf"}], "dvf_analysis": {"dvf_count": 149, "dvf_median_pm2": 3438, "dvf_estimated_value": 514044, "dvf_max_offer": 436937, "verdict": "tres_interessant", "ratio": 0.39, "note": "149 ventes 24 mois", "lon": 3.58252, "lat": 43.44043}}, {"url": "https://avoventes.fr/enchere/appartement-cave-parking-a-montpellier", "title": "APPARTEMENT + CAVE + PARKING à MONTPELLIER", "published_at": null, "summary": "APPARTEMENT + CAVE + PARKING à MONTPELLIER — 419 Le Grand Mail, 34080 Montpellier, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 15000.0, "surface_m2": 65.49, "adresse": "419 Le Grand Mail, 34080 Montpellier, France", "ville": "MONTPELLIER", "audience_date": "2026-05-04", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Affiche", "label": "Affiche MONTPELLIER.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b93f2f3c302ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b93f2f76e36ttt.pdf"}, {"type": "PVD", "label": "PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b93f2fb656bttt.pdf"}, {"type": "Document", "label": "DDT_-.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b93f3dd4302ttt.pdf"}], "dvf_analysis": {"dvf_count": 4607, "dvf_median_pm2": 3300, "dvf_estimated_value": 216117, "dvf_max_offer": 183699, "verdict": "tres_interessant", "ratio": 0.07, "note": "4607 ventes 24 mois", "lon": 3.81647, "lat": 43.62454}}, {"url": "https://avoventes.fr/enchere/appartement-avec-jardin-a-frontignan", "title": "APPARTEMENT AVEC JARDIN à FRONTIGNAN", "published_at": null, "summary": "APPARTEMENT AVEC JARDIN à FRONTIGNAN — 14 Rue du Chasselas, 34110 Frontignan, France", "source_journal": "avoventes.fr", "department": "34", "property_type": "Appartement", "mise_a_prix": 120000.0, "surface_m2": 87.42, "adresse": "14 Rue du Chasselas, 34110 Frontignan, France", "ville": "FRONTIGNAN", "audience_date": "2026-05-04", "avocat_nom": "DORIA AVOCATS", "avocat_contact": "secretariat@doria-avocats.fr", "docs": [{"type": "Affiche", "label": "Affiche FRONTIGNAN.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b940ab620f6ttt.pdf"}, {"type": "CCV", "label": "Cahier des conditions de vente.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b940ab99d55ttt.pdf"}, {"type": "Document", "label": "18.07.25 Etat descriptif.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b940abd16edttt.pdf"}, {"type": "Document", "label": "ddt.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/141/documents/69b940ed1fec2ttt.pdf"}], "dvf_analysis": {"dvf_count": 251, "dvf_median_pm2": 3382, "dvf_estimated_value": 295685, "dvf_max_offer": 251332, "verdict": "tres_interessant", "ratio": 0.41, "note": "251 ventes 24 mois", "lon": 3.74812, "lat": 43.44449}}, {"url": "https://avoventes.fr/enchere/local-a-marseille-1", "title": "LOCAL à Marseille", "published_at": null, "summary": "LOCAL à Marseille — 9 Av. de Saint-Antoine, 13015 Marseille, France", "source_journal": "avoventes.fr", "department": "13", "property_type": "Local commercial", "mise_a_prix": 80000.0, "surface_m2": 157.73, "adresse": "9 Av. de Saint-Antoine, 13015 Marseille, France", "ville": "MARSEILLE", "audience_date": "2026-05-06", "avocat_nom": "PROVANSAL AVOCATS ASSOCIES", "avocat_contact": "cabinet@eklar.com", "docs": [{"type": "Affiche", "label": "AFFICHE COMPLETE D'JOURNO LOCAL SAINT ANTOINE 06-05-26.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/69c402594c0ccttt.pdf"}, {"type": "CCV", "label": "CCV.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/69c4025982679ttt.pdf"}, {"type": "PVD", "label": "PVD.pdf", "url": "https://avoventes.fr/public/uploads/cabinet/104/documents/69c40259c8f74ttt.pdf"}], "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 13215", "lon": 5.35665, "lat": 43.36646}}, {"url": "https://www.encheresimmobilieres.fr/ventes/8838-un-appartement-t4-avec-cellier-a-toulouse-31", "title": "Un appartement t4 avec cellier a toulouse 31", "published_at": "2026-03-18", "summary": "Un appartement t4 avec cellier a toulouse 31. TOULOUSE (31), 4 et 8 rue de l’Ukraine et 51 rue de la Faourette, RESIDENCE DE FLORE II. Mise a prix : 24 000 EUR. Audience : 2026-05-07", "source_journal": "lopinion.com", "department": "31", "property_type": "Appartement", "mise_a_prix": 24000.0, "surface_m2": null, "adresse": "TOULOUSE (31), 4 et 8 rue de l’Ukraine et 51 rue de la Faourette, RESIDENCE DE FLORE II", "ville": "TOULOUSE", "audience_date": "2026-05-07", "avocat_nom": "Me Colette FALQUET", "avocat_contact": "avocats@falquet-co.fr", "dvf_analysis": {"dvf_count": 7181, "dvf_median_pm2": 3185, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "7181 ventes 24 mois (surface inconnue)", "lon": 1.42174, "lat": 43.57838}}, {"url": "https://www.encheresimmobilieres.fr/ventes/8806-une-maison-a-usage-dhabitation-avec-garage-et-parcelle-de-terre-attenant", "title": "Une maison a usage dhabitation avec garage et parcelle de terre attenant", "published_at": null, "summary": "Une maison a usage dhabitation avec garage et parcelle de terre attenant. LALOURET-LAFFITEAU (31), 265 route de Cardeilhac. Mise a prix : 30 000 EUR. Audience : 2026-04-17", "source_journal": "Le Petit Journal", "department": "31", "property_type": "Maison", "mise_a_prix": 30000.0, "surface_m2": null, "adresse": "LALOURET-LAFFITEAU (31), 265 route de Cardeilhac", "ville": "LALOURET-LAFFITEAU", "audience_date": "2026-04-17", "avocat_nom": "Me Marie-Christine PUJOL REVERSAT", "avocat_contact": null, "dvf_analysis": {"dvf_count": 4, "dvf_median_pm2": 1358, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "4 ventes 24 mois (surface inconnue)", "lon": 0.70414, "lat": 43.18619}}, {"url": "https://www.encheresimmobilieres.fr/ventes/8837-un-local-commercial-et-dependance-a-lisle-en-dodon-31", "title": "Un local commercial et dependance a lisle en dodon 31", "published_at": null, "summary": "Un local commercial et dependance a lisle en dodon 31. L'ISLE-EN-DODON (31), 26 boulevard des Martyrs de Meilhan. Mise a prix : 20 000 EUR. Audience : 2026-04-17", "source_journal": "Le Petit Journal", "department": "31", "property_type": "Local commercial", "mise_a_prix": 20000.0, "surface_m2": null, "adresse": "L'ISLE-EN-DODON (31), 26 boulevard des Martyrs de Meilhan", "ville": "L'ISLE-EN-DODON", "audience_date": "2026-04-17", "avocat_nom": "Me Marie-Christine PUJOL REVERSAT", "avocat_contact": null, "dvf_analysis": {"dvf_count": 0, "dvf_median_pm2": null, "dvf_estimated_value": null, "dvf_max_offer": null, "verdict": null, "ratio": null, "note": "Commune 31239", "lon": 0.8374, "lat": 43.38132}}];
+const DATA = RAW.map((r,i)=>Object.assign({_i:i+1},r));
+const PAGE_SIZE = 12;
+
+/* ──────────── EMAIL STORE ──────────── */
+const EK='michaelis_emails';
+let ES={};
+try{ES=JSON.parse(localStorage.getItem(EK)||'{}');}catch(e){}
+function saveEmail(k,v){ES[k]=v;try{localStorage.setItem(EK,JSON.stringify(ES));}catch(e){}}
+function getEmail(r){const k=r.url||String(r._i);return ES[k]||(r.avocat_contact&&r.avocat_contact.includes('@')?r.avocat_contact:'');}
+
+/* ──────────── REVIEW STORE ──────────── */
+const RK='michaelis_reviews';
+let RS={};
+try{RS=JSON.parse(localStorage.getItem(RK)||'{}');}catch(e){}
+let _rvKey=null,_rvAvis=null;
+
+function openRv(key){
+  _rvKey=key;const rv=RS[key]||{};_rvAvis=rv.avis||null;
+  const r=DATA.find(x=>(x.url||String(x._i))===key)||{};
+  g('rvTitle').textContent='Avis de Robert';
+  g('rvSub').textContent=(r.property_type||'')+' — '+(r.ville||'')+' — '+fDate(r.audience_date);
+  g('rvComment').value=rv.comment||'';
+  g('rvBtnOui').className='rv-choice'+(rv.avis==='oui'?' sel-oui':'');
+  g('rvBtnNon').className='rv-choice'+(rv.avis==='non'?' sel-non':'');
+  g('rvModal').classList.add('open');
+  setTimeout(()=>g('rvComment').focus(),80);
+}
+function selectRv(c){
+  _rvAvis=c;
+  g('rvBtnOui').className='rv-choice'+(c==='oui'?' sel-oui':'');
+  g('rvBtnNon').className='rv-choice'+(c==='non'?' sel-non':'');
+}
+function saveRv(){
+  if(!_rvKey)return;
+  const cmt=g('rvComment').value.trim();
+  if(_rvAvis||cmt)RS[_rvKey]={avis:_rvAvis||'pending',comment:cmt};
+  else delete RS[_rvKey];
+  try{localStorage.setItem(RK,JSON.stringify(RS));}catch(e){}
+  closeRvModal();render();
+}
+function closeRvModal(evt){
+  if(!evt||evt.target===g('rvModal'))g('rvModal').classList.remove('open');
+  _rvKey=null;_rvAvis=null;
+}
+
+/* ──────────── AI MODAL ──────────── */
+function openAI(key){
+  const r=DATA.find(x=>(x.url||String(x._i))===key)||{};
+  const a=r.dvf_analysis||{};
+  g('aiSub').textContent=(r.property_type||'')+' — '+(r.ville||'')+' — '+fDate(r.audience_date);
+  const cls=a.verdict?`ai-${a.verdict}`:'ai-na';
+  const lbl=VL[a.verdict]||'— Verdict non disponible';
+  let html=`<div class="ai-stat"><span class="ai-verdict ${cls}">${lbl}</span>`;
+  if(a.ratio!=null)html+=` <span style="font-size:13px;color:var(--muted)">— Mise à prix = ${Math.round(a.ratio*100)}% de la valeur marché</span>`;
+  html+='</div>';
+  if(a.dvf_max_offer)html+=`<div class="ai-max-offer">Offre maximale recommandée : ${fPrice(a.dvf_max_offer)}</div>`;
+  if(a.dvf_estimated_value)html+=`<div class="ai-stat"><b>Valeur estimée (DVF) :</b> ${fPrice(a.dvf_estimated_value)}</div>`;
+  if(a.dvf_median_pm2)html+=`<div class="ai-stat"><b>Médiane du marché :</b> ${fPrice(a.dvf_median_pm2)} /m²</div>`;
+  if(r.mise_a_prix&&r.surface_m2)html+=`<div class="ai-stat"><b>Mise à prix :</b> ${fPrice(Math.round(r.mise_a_prix/r.surface_m2))} /m²</div>`;
+  if(a.dvf_count)html+=`<div class="ai-stat" style="font-size:12px;color:var(--muted)">${a.dvf_count} ventes comparables analysées (${a.note||'24 mois'})</div>`;
+  if(a.lon&&a.lat)html+=`<div style="margin-top:12px"><a href="https://app.dvf.etalab.gouv.fr/?lon=${a.lon}&lat=${a.lat}&zoom=15" target="_blank" style="font-weight:600">↗ Voir toutes les transactions DVF sur cette commune</a></div>`;
+  if(!a.dvf_median_pm2)html+='<div style="color:var(--muted);font-style:italic">Pas de données DVF disponibles pour cette commune.</div>';
+  g('aiBody').innerHTML=html;
+  g('aiModal').classList.add('open');
+}
+function closeAI(evt){if(!evt||evt.target===g('aiModal'))g('aiModal').classList.remove('open');}
+
+/* ──────────── EMAIL SENT STORE ──────────── */
+const SK='michaelis_sent';
+let SENT={};
+try{SENT=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
+function markSent(key){
+  SENT[key]=new Date().toISOString();
+  try{localStorage.setItem(SK,JSON.stringify(SENT));}catch(e){}
+}
+function sentBadge(key){
+  if(!SENT[key])return'';
+  const d=new Date(SENT[key]);
+  const fmt=d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  return`<span class="sent-badge">✓ Email ${fmt}</span>`;
+}
+
+/* ──────────── UTILS ──────────── */
+function fPrice(v){if(v==null)return'—';return new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);}
+function fSurf(v){if(v==null)return'';return new Intl.NumberFormat('fr-FR').format(v)+' m²';}
+function fDate(v){if(!v)return'—';const p=v.split('-');return p.length===3?`${p[2]}/${p[1]}/${p[0]}`:v;}
+function badge(t){if(!t)return'<span class="badge b-default">—</span>';const k=t.split('/')[0].split(' ')[0];return`<span class="badge b-${k}">${t}</span>`;}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function escA(s){return(s||'').replace(/'/g,'&apos;').replace(/"/g,'&quot;');}
+function g(id){return document.getElementById(id);}
+
+/* ──────────── DOCS POPUP ──────────── */
+function toggleDocs(pid){
+  const el=g(pid);if(!el)return;
+  const wasOpen=el.classList.contains('open');
+  document.querySelectorAll('.docs-popup.open').forEach(p=>p.classList.remove('open'));
+  if(!wasOpen)el.classList.add('open');
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.docs-wrap'))
+    document.querySelectorAll('.docs-popup.open').forEach(p=>p.classList.remove('open'));
+});
+
+/* ──────────── EMAIL EDIT ──────────── */
+function editEmail(key,btn){
+  const wrap=btn.closest('.ew');
+  const cur=ES[key]||'';
+  wrap.innerHTML=`<div class="email-input-wrap">
+    <input class="email-input" id="ei_${escA(key)}" type="email" value="${escA(cur)}" placeholder="email@cabinet.fr"
+      onkeydown="if(event.key==='Enter')saveEI('${escA(key)}');if(event.key==='Escape')render();">
+    <button class="email-save" onclick="saveEI('${escA(key)}')">✓</button>
+    <button class="email-cancel" onclick="render()">✕</button>
+  </div>`;
+  const inp=document.getElementById('ei_'+key);
+  if(inp){inp.focus();inp.select();}
+}
+function saveEI(key){
+  const inp=document.getElementById('ei_'+key);if(!inp)return;
+  const v=inp.value.trim();
+  if(v)saveEmail(key,v);else delete ES[key];
+  try{localStorage.setItem(EK,JSON.stringify(ES));}catch(e){}
+  render();
+}
+
+/* ──────────── STATE ──────────── */
+let SC='audience_date',SD=1,filtered=[],currentPage=1,selectedUrls=new Set();
+
+/* ──────────── TEMPLATES ──────────── */
+const DB1="Bonjour,\\n\\nJe me pr\u00e9sente, je suis Rebecca CARVALHO et je suis vivement int\u00e9ress\u00e9e par le bien suivant actuellement mis en vente aux ench\u00e8res judiciaires :\\n\\n\u2022 Type de bien : {bien}\\n\u2022 Adresse : {adresse}\\n\u2022 Mise \u00e0 prix : {mise_a_prix}\\n\u2022 Date d'audience : {audience_date}\\n\\nJe vous serais tr\u00e8s reconnaissante de bien vouloir me faire parvenir le Cahier des Conditions de Vente (CCV) ainsi que le Proc\u00e8s-Verbal de D\u00e9signation (PVD) afin que je puisse appr\u00e9cier le bien et \u00e9tudier ce dossier en d\u00e9tail.\\n\\nDans l'attente de votre retour, je vous adresse mes cordiales salutations.\\n\\nRebecca CARVALHO\\nrebecatimoteojb@gmail.com";
+const DB2="Bonjour,\\n\\nJe me pr\u00e9sente, je suis Rebecca CARVALHO. Je m'int\u00e9resse au bien immobilier suivant qui devait \u00eatre mis aux ench\u00e8res judiciaires :\\n\\n\u2022 Type de bien : {bien}\\n\u2022 Adresse : {adresse}\\n\u2022 Mise \u00e0 prix initiale : {mise_a_prix}\\n\u2022 Date d'audience pr\u00e9vue : {audience_date}\\n\\nPourriez-vous me confirmer si ce bien a bien \u00e9t\u00e9 adjug\u00e9, et le cas \u00e9ch\u00e9ant, pour quel montant ? Dans l'hypoth\u00e8se o\u00f9 il n'aurait pas \u00e9t\u00e9 adjug\u00e9, je serais int\u00e9ress\u00e9e \u00e0 faire une offre de gr\u00e9 \u00e0 gr\u00e9.\\n\\nDans l'attente de votre retour, je vous adresse mes cordiales salutations.\\n\\nRebecca CARVALHO\\nrebecatimoteojb@gmail.com";
+function initTemplates(){
+  const b1=g('body1'),b2=g('body2');
+  if(b1&&!b1.value)b1.value=DB1.replace(/\\n/g,'\n');
+  if(b2&&!b2.value)b2.value=DB2.replace(/\\n/g,'\n');
+}
+function switchTab(n){
+  document.querySelectorAll('.tpl-tab').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+  document.querySelectorAll('.tpl-content').forEach((t,i)=>t.classList.toggle('active',i===n-1));
+}
+function toggleTemplates(){
+  const s=g('tplSection');s.style.display=s.style.display==='block'?'none':'block';
+}
+
+/* ──────────── QUICK FILTER CHIPS ──────────── */
+function setPriceChip(btn,val){
+  document.querySelectorAll('[id^="pc-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  g('fp').value=val;
+  applyFilters();
+}
+function setAIChip(btn,val){
+  document.querySelectorAll('[id^="ai-"]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  g('selAI').value=val;
+  applyFilters();
+}
+function updateFC(){
+  // no-op: filter panel replaced by always-visible qfbar
+}
+
+/* ──────────── SORT ──────────── */
+function toggleSortDir(){
+  SD*=-1;
+  g('sortDirBtn').textContent=SD===1?'↑ Croissant':'↓ Décroissant';
+  doSort();
+}
+
+/* ──────────── FILTER + SORT ──────────── */
+function applyFilters(){
+  const q=(g('q').value||'').toLowerCase();
+  const sT=g('selType').value,sD=g('selDept').value;
+  const dF=g('dFrom').value,dT=g('dTo').value;
+  const fp=parseFloat(g('fp').value)||null;
+  const fs=parseFloat(g('fs').value)||null;
+  const sAI=g('selAI').value,sRv=g('selReview').value;
+  SC=g('sortField').value;
+
+  filtered=DATA.filter(r=>{
+    if(q&&!JSON.stringify(r).toLowerCase().includes(q))return false;
+    if(sT&&(r.property_type||'')!==sT)return false;
+    if(sD&&(r.department||'')!==sD)return false;
+    if(dF&&r.audience_date&&r.audience_date<dF)return false;
+    if(dT&&r.audience_date&&r.audience_date>dT)return false;
+    if(fp!=null&&r.mise_a_prix!=null&&r.mise_a_prix>fp)return false;
+    if(fs!=null&&r.surface_m2!=null&&r.surface_m2<fs)return false;
+    if(sAI){
+      const v=(r.dvf_analysis&&r.dvf_analysis.verdict)||null;
+      if(sAI==='na'&&v)return false;
+      if(sAI!=='na'&&v!==sAI)return false;
+    }
+    if(sRv){
+      const rv=(RS[r.url||String(r._i)]||{}).avis||'pending';
+      if(sRv==='pending'&&rv!=='pending')return false;
+      if(sRv==='oui'&&rv!=='oui')return false;
+      if(sRv==='non'&&rv!=='non')return false;
+    }
+    return true;
+  });
+  currentPage=1;updateFC();doSort();
+}
+
+function doSort(){
+  filtered.sort((a,b)=>{
+    let av=a[SC]??'',bv=b[SC]??'';
+    if(av===''&&bv==='')return 0;
+    if(av==='')return 1;if(bv==='')return -1;
+    if(typeof av==='number'&&typeof bv==='number')return(av-bv)*SD;
+    return String(av).localeCompare(String(bv),'fr')*SD;
+  });
+  render();
+}
+
+function clearAll(){
+  ['q','fp','fs','dFrom','dTo','selAI'].forEach(id=>g(id).value='');
+  ['selType','selDept','selReview'].forEach(id=>g(id).selectedIndex=0);
+  document.querySelectorAll('[id^="pc-"]').forEach(b=>b.classList.remove('active'));
+  g('pc-all').classList.add('active');
+  document.querySelectorAll('[id^="ai-"]').forEach(b=>b.classList.remove('active'));
+  g('ai-all').classList.add('active');
+  applyFilters();
+}
+
+/* ──────────── CARD BUILDERS ──────────── */
+const VL={
+  'tres_interessant':'★★ Très intéressant',
+  'interessant':'★ Intéressant',
+  'correct':'↔ Correct',
+  'attention':'⚠ Attention',
+  'survevalue':'✗ Surévalué',
+};
+
+function aiSection(r){
+  const a=r.dvf_analysis;
+  if(!a||(!a.verdict&&!a.dvf_median_pm2))return'';
+  const cls=a.verdict?`ai-${a.verdict}`:'ai-na';
+  const lbl=VL[a.verdict]||'—';
+  let hdr=`<span class="ai-verdict ${cls}">${lbl}</span>`;
+  if(a.ratio!=null)hdr+=`<span class="ai-pct"> · ${Math.round(a.ratio*100)}% marché</span>`;
+  let body='';
+  if(a.dvf_estimated_value)body+=`<div>Valeur estimée : ${fPrice(a.dvf_estimated_value)}</div>`;
+  if(a.dvf_max_offer)body+=`<div class="ai-max">Offre max : ${fPrice(a.dvf_max_offer)}</div>`;
+  if(a.dvf_median_pm2)body+=`<div>Médiane : ${fPrice(a.dvf_median_pm2)}/m² · ${a.note||''}</div>`;
+  if(a.lon&&a.lat)body+=`<div><a href="https://app.dvf.etalab.gouv.fr/?lon=${a.lon}&lat=${a.lat}&zoom=15" target="_blank">Voir sur DVF ↗</a></div>`;
+  return`<div class="ai-section" onclick="this.classList.toggle('open')">
+  <div class="ai-header">${hdr}<span class="ai-chev">▾</span></div>
+  <div class="ai-body">${body}</div>
+</div>`;
+}
+
+function docsSection(r,key){
+  const docs=r.docs||[];
+  if(!docs.length)return'';
+  const pid=`dp_${encodeURIComponent(key).replace(/%/g,'_')}`;
+  const items=docs.map(d=>`<a class="doc-item" href="${d.url}" target="_blank">
+    <span class="doc-tag tag-${d.type}">${d.type}</span>
+    <span class="doc-label" title="${escA(d.label)}">${esc(d.label.slice(0,48))}</span>
+  </a>`).join('');
+  return`<div class="docs-wrap">
+  <button class="docs-btn" onclick="event.stopPropagation();toggleDocs('${pid}')">Doc${docs.length>1?'s':''} (${docs.length})</button>
+  <div class="docs-popup" id="${pid}">
+    <div class="docs-popup-title">${docs.length} document${docs.length>1?'s':''} disponibles</div>
+    ${items}
+  </div>
+</div>`;
+}
+
+function avoSection(r,key){
+  if(!r.avocat_nom&&!getEmail(r))return'';
+  const email=getEmail(r);
+  const emailHtml=email
+    ?`<a class="c-avo-email" href="mailto:${email}">${email}</a>
+      <span class="c-avo-add" onclick="editEmail('${escA(key)}',this)" title="Modifier">✎</span>`
+    :`<span class="c-avo-add" onclick="editEmail('${escA(key)}',this)">+ email</span>`;
+  return`<div class="c-avocat">
+  ${r.avocat_nom?`<span class="c-avo-name">${esc(r.avocat_nom)}</span>`:''}<div class="ew">${emailHtml}</div>
+</div>`;
+}
+
+function rvBtn(key,rv){
+  const avis=(rv&&rv.avis)||'pending';
+  if(avis==='oui')return`<button class="rv-btn rv-oui" onclick="openRv('${escA(key)}')">✔ Intéressant</button>`;
+  if(avis==='non')return`<button class="rv-btn rv-non" onclick="openRv('${escA(key)}')">✘ Pas int.</button>`;
+  return`<button class="rv-btn rv-pending" onclick="openRv('${escA(key)}')">★ Avis Robert</button>`;
+}
+
+function aiBtn(key,r){
+  const a=r.dvf_analysis;
+  if(!a||(!a.verdict&&!a.dvf_median_pm2))
+    return`<button class="ai-foot-btn ai-na" onclick="openAI('${escA(key)}')">📊 IA</button>`;
+  const cls=a.verdict?`ai-${a.verdict}`:'ai-na';
+  const lbl=VL[a.verdict]||'IA';
+  return`<button class="ai-foot-btn ${cls}" onclick="openAI('${escA(key)}')">📊 ${lbl}</button>`;
+}
+
+function aiVerdictLine(r){
+  const a=r.dvf_analysis;
+  if(!a||!a.verdict)return'';
+  const lbl=VL[a.verdict]||a.verdict;
+  const cls=`ai-verdict ai-${a.verdict}`;
+  const maxTxt=a.dvf_max_offer?` · max ${fPrice(a.dvf_max_offer)}`:'';
+  const pctTxt=a.ratio?` · ${Math.round(a.ratio*100)} % marché`:'';
+  return`<div class="c-ai-line"><span class="${cls}">${lbl}</span><span class="c-ai-pct">${pctTxt}${maxTxt}</span></div>`;
+}
+
+function renderCard(r){
+  const key=r.url||String(r._i);
+  const rv=RS[key]||{};
+  const isSel=selectedUrls.has(key);
+  const rvCls=rv.avis==='oui'?'rv-oui-card':rv.avis==='non'?'rv-non-card':'';
+  const ppm2=r.mise_a_prix&&r.surface_m2?Math.round(r.mise_a_prix/r.surface_m2):null;
+  const lienBtn=r.url?`<a class="btn-lien" href="${r.url}" target="_blank">Lien annonce ↗</a>`:'';
+  const rvCmt=rv.comment?`<div style="font-size:11px;color:var(--muted);font-style:italic;padding:0 4px 2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%" title="${escA(rv.comment)}">${esc(rv.comment)}</div>`:'';
+  return`<div class="card ${isSel?'selected':''} ${rvCls}">
+  <div class="card-inner">
+    <div class="c-top">
+      ${badge(r.property_type)}
+      <div class="c-meta"><span class="c-dept">${r.department||'?'}</span><span class="c-date">${fDate(r.audience_date)}</span></div>
+    </div>
+    <div>
+      <div class="c-city">${r.ville||'—'}</div>
+      ${r.adresse?`<div class="c-addr" title="${escA(r.adresse)}">${esc(r.adresse)}</div>`:''}
+    </div>
+    <div class="c-price-row">
+      <div class="c-price">${fPrice(r.mise_a_prix)}</div>
+      ${r.surface_m2?`<div class="c-surface">${fSurf(r.surface_m2)}</div>`:''}${ppm2?`<div class="c-ppm2">· ${fPrice(ppm2)}/m²</div>`:''}
+    </div>
+    ${aiVerdictLine(r)}
+    ${avoSection(r,key)}
+  </div>
+  <div class="c-footer">
+    <label class="c-check"><input type="checkbox" data-url="${escA(key)}" ${isSel?'checked':''} onchange="toggleRow(this)"><span>Sél.</span></label>
+    ${docsSection(r,key)}
+    ${aiBtn(key,r)}
+    ${rvBtn(key,rv)}
+    ${lienBtn}
+    ${sentBadge(key)}
+  </div>
+  ${rvCmt}
+</div>`;
+}
+
+/* ──────────── RENDER ──────────── */
+function render(){
+  const total=filtered.length;
+  const totalPages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+  if(currentPage>totalPages)currentPage=totalPages;
+  g('cntBadge').textContent=`${total} / ${DATA.length} annonces`;
+  const start=(currentPage-1)*PAGE_SIZE;
+  const end=Math.min(start+PAGE_SIZE,total);
+  const grid=g('cardsGrid');
+  if(!total){
+    grid.innerHTML='<div class="empty-state">Aucune annonce ne correspond aux filtres.</div>';
+  }else{
+    grid.innerHTML=filtered.slice(start,end).map(r=>renderCard(r)).join('');
+  }
+  renderPagination(totalPages,total,start,end);
+  updateSelInfo();
+}
+
+/* ──────────── PAGINATION ──────────── */
+function renderPagination(totalPages,total,start,end){
+  const el=g('pagination');
+  if(totalPages<=1){el.innerHTML=`<span class="page-info">${total} annonce${total!==1?'s':''}</span>`;return;}
+  let pages=[];
+  if(totalPages<=7)pages=Array.from({length:totalPages},(_,i)=>i+1);
+  else{
+    pages=[1];
+    const lo=Math.max(2,currentPage-2),hi=Math.min(totalPages-1,currentPage+2);
+    if(lo>2)pages.push('...');
+    for(let i=lo;i<=hi;i++)pages.push(i);
+    if(hi<totalPages-1)pages.push('...');
+    pages.push(totalPages);
+  }
+  el.innerHTML=`
+    <span class="page-info">${start+1}–${Math.min(end,total)} sur ${total}</span>
+    <button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>&#8249;</button>
+    ${pages.map(p=>p==='...'?`<span class="pg-dots">…</span>`:`<button class="pg-btn ${p===currentPage?'active':''}" onclick="goPage(${p})">${p}</button>`).join('')}
+    <button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>&#8250;</button>
+  `;
+}
+function goPage(p){
+  const tp=Math.max(1,Math.ceil(filtered.length/PAGE_SIZE));
+  if(p<1||p>tp)return;
+  currentPage=p;render();window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ──────────── SELECTION ──────────── */
+function toggleRow(cb){
+  const url=cb.dataset.url;
+  if(cb.checked)selectedUrls.add(url);else selectedUrls.delete(url);
+  cb.closest('.card').classList.toggle('selected',cb.checked);
+  updateSelInfo();
+}
+function toggleAll(v){filtered.forEach(r=>{const k=r.url||String(r._i);if(v)selectedUrls.add(k);else selectedUrls.delete(k);});render();}
+function selectAll(){toggleAll(true);}
+function clearSelection(){toggleAll(false);}
+function updateSelInfo(){
+  const n=selectedUrls.size;
+  g('selInfo').textContent=`${n} bien${n!==1?'s':''} sélectionné${n!==1?'s':''}`;
+  const btn=g('btnSend');btn.disabled=n===0;
+  btn.textContent=`✉ Préparer emails (${n})`;
+}
+
+/* ──────────── EMAIL ──────────── */
+function fill(tpl,r){
+  const addr=[r.adresse,r.ville].filter(Boolean).join(', ')||'N/A';
+  return tpl
+    .replace(/{bien}/g,r.property_type||'bien immobilier')
+    .replace(/{adresse}/g,addr)
+    .replace(/{ville}/g,r.ville||'N/A')
+    .replace(/{mise_a_prix}/g,r.mise_a_prix?fPrice(r.mise_a_prix):'N/A')
+    .replace(/{audience_date}/g,fDate(r.audience_date))
+    .replace(/{avocat}/g,r.avocat_nom||'Maître');
+}
+function openEmailModal(){
+  const tn=g('emailType').value;
+  const sT=g('subj'+tn).value||'Vente judiciaire';
+  const bT=g('body'+tn).value||'';
+  const recs=DATA.filter(r=>selectedUrls.has(r.url||String(r._i)));
+  const emails=recs.map(r=>{const to=getEmail(r);return{to,subj:fill(sT,r),body:fill(bT,r),r};});
+  g('modalTitle').textContent=`${recs.length} email${recs.length!==1?'s':''} à envoyer`;
+  window._pe=emails;
+  g('emailList').innerHTML=emails.map((e,i)=>{
+    const wasSent=!!SENT[e.r.url||String(e.r._i)];
+    return`<div class="email-item">
+  <div class="email-item-hdr">
+    <span class="to">À : ${e.to?`<a href="mailto:${e.to}">${e.to}</a>`:`<span class="no-email">⚠ Pas d’email — ${esc(e.r.avocat_nom||'?')}</span>`}</span>
+    <span class="subj">${esc(e.subj)}</span>
+    <span class="sent-modal sent-badge" style="${wasSent?'':'display:none'}">✓ Déjà envoyé</span>
+    <button class="btn btn-ghost" style="font-size:11px;padding:3px 8px" onclick="openOne(${i})">Ouvrir ›</button>
+  </div>
+  <div class="email-item-body">${esc(e.body)}</div>
+</div>`;
+  }).join('');
+  g('emailModal').classList.add('open');
+}
+function openOne(i){
+  const e=window._pe[i];
+  if(!e.to){alert('Pas d\'adresse email.');return;}
+  markSent(e.r.url||String(e.r._i));
+  render();
+  // Update sent status in modal list
+  const badge=document.querySelector(`#emailList .email-item:nth-child(${i+1}) .sent-modal`);
+  if(badge)badge.style.display='inline';
+  window.open(`mailto:${encodeURIComponent(e.to)}?subject=${encodeURIComponent(e.subj)}&body=${encodeURIComponent(e.body)}`,'_blank');
+}
+function openAllEmails(){
+  const w=window._pe.filter(e=>e.to),no=window._pe.filter(e=>!e.to);
+  if(!w.length){alert('Aucun email disponible.');return;}
+  w.forEach((e,i)=>{
+    setTimeout(()=>{
+      markSent(e.r.url||String(e.r._i));
+      window.open(`mailto:${encodeURIComponent(e.to)}?subject=${encodeURIComponent(e.subj)}&body=${encodeURIComponent(e.body)}`,'_blank');
+    },i*1200);
+  });
+  setTimeout(()=>render(),w.length*1200+400);
+  if(no.length)setTimeout(()=>alert(`⚠ ${no.length} bien(s) sans email ignorés.`),w.length*1200+200);
+}
+function copyAllEmails(){
+  const txt=window._pe.map(e=>`À : ${e.to||'(pas d\'email)'}
+Objet : ${e.subj}
+
+${e.body}
+
+---`).join('\n\n');
+  navigator.clipboard.writeText(txt).then(()=>alert('Copié !'));
+}
+function closeModal(evt){if(!evt||evt.target===g('emailModal'))g('emailModal').classList.remove('open');}
+
+/* ──────────── INIT ──────────── */
+['q','selType','selDept','selReview','dFrom','dTo','fs'].forEach(id=>{
+  const el=g(id);if(!el)return;
+  el.addEventListener('input',applyFilters);
+  el.addEventListener('change',applyFilters);
+});
+initTemplates();
+applyFilters();
+</script>
+</body>
+</html>
