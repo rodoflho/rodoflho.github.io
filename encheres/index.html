@@ -810,15 +810,20 @@ function closeAI(evt){if(!evt||evt.target===g('aiModal'))g('aiModal').classList.
 
 /* ──────────── EMAIL SENT STORE ──────────── */
 const SK='michaelis_sent';
+const RK='michaelis_resp';
 let SENT={};
+let EMAIL_RESP={};
 try{SENT=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
-let EMAIL_RESP={};  // url → {sent_at, response}
+try{EMAIL_RESP=JSON.parse(localStorage.getItem(RK)||'{}');}catch(e){}
 
 function markSent(key){
   SENT[key]=new Date().toISOString();
   try{localStorage.setItem(SK,JSON.stringify(SENT));}catch(e){}
-  // Also write to Supabase
   SB.from('biens').update({email_sent_at: SENT[key]}).eq('url', key).then(()=>{});
+}
+function saveResp(key,code){
+  EMAIL_RESP[key]=code;
+  try{localStorage.setItem(RK,JSON.stringify(EMAIL_RESP));}catch(e){}
 }
 
 const REP_LABELS={
@@ -852,20 +857,21 @@ function closeRepModal(evt){if(!evt||evt.target===g('repModal'))g('repModal').st
 
 async function selectRep(code){
   const key=g('repModalUrl').value;
-  EMAIL_RESP[key]=code;
+  saveResp(key,code);
   document.querySelectorAll('.rep-choice').forEach(b=>b.classList.toggle('active',b.dataset.rep===code));
-  await SB.from('biens').update({email_response: code}).eq('url', key);
+  SB.from('biens').update({email_response: code}).eq('url', key).then(()=>{});
   g('repModal').style.display='none';
   render();
 }
 
 async function loadEmailResponses(){
-  const {data}=await SB.from('biens').select('url,email_sent_at,email_response').not('email_sent_at','is',null);
+  const {data}=await SB.from('biens').select('url,email_sent_at,email_response')
+    .or('email_sent_at.not.is.null,email_response.not.is.null');
   if(!data)return;
   data.forEach(r=>{
     if(r.url){
-      if(r.email_sent_at && !SENT[r.url]) SENT[r.url]=r.email_sent_at;
-      if(r.email_response) EMAIL_RESP[r.url]=r.email_response;
+      if(r.email_sent_at) SENT[r.url]=r.email_sent_at;
+      if(r.email_response) saveResp(r.url, r.email_response);
     }
   });
 }
