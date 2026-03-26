@@ -811,10 +811,13 @@ function closeAI(evt){if(!evt||evt.target===g('aiModal'))g('aiModal').classList.
 /* ──────────── EMAIL SENT STORE ──────────── */
 const SK='michaelis_sent';
 const RESP_KEY='michaelis_resp';
+const MSG_KEY='michaelis_msg';
 let SENT={};
 let EMAIL_RESP={};
+let EMAIL_MSG={};
 try{SENT=JSON.parse(localStorage.getItem(SK)||'{}');}catch(e){}
 try{EMAIL_RESP=JSON.parse(localStorage.getItem(RESP_KEY)||'{}');}catch(e){}
+try{EMAIL_MSG=JSON.parse(localStorage.getItem(MSG_KEY)||'{}');}catch(e){}
 
 function markSent(key){
   SENT[key]=new Date().toISOString();
@@ -851,6 +854,9 @@ function openRepModal(key){
   });
   const d=new Date(SENT[key]);
   g('repSentDate').textContent=SENT[key]?'Envoyé le '+d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'2-digit'}):'';
+  const showMsg=cur==='repondu'||cur==='docs';
+  g('repMsgBox').style.display=showMsg?'block':'none';
+  if(showMsg) g('repMsgText').value=EMAIL_MSG[key]||'';
   g('repModal').style.display='flex';
 }
 function closeRepModal(evt){if(!evt||evt.target===g('repModal'))g('repModal').style.display='none';}
@@ -860,6 +866,22 @@ async function selectRep(code){
   saveResp(key,code);
   document.querySelectorAll('.rep-choice').forEach(b=>b.classList.toggle('active',b.dataset.rep===code));
   SB.from('biens').update({email_response: code}).eq('url', key).then(()=>{});
+  if(code==='repondu'||code==='docs'){
+    g('repMsgBox').style.display='block';
+    g('repMsgText').value=EMAIL_MSG[key]||'';
+    g('repMsgText').focus();
+  } else {
+    g('repMsgBox').style.display='none';
+    g('repModal').style.display='none';
+    render();
+  }
+}
+
+function saveRepMsg(){
+  const key=g('repModalUrl').value;
+  const txt=g('repMsgText').value.trim();
+  EMAIL_MSG[key]=txt;
+  try{localStorage.setItem(MSG_KEY,JSON.stringify(EMAIL_MSG));}catch(e){}
   g('repModal').style.display='none';
   render();
 }
@@ -1593,6 +1615,12 @@ async function submitBien(e){
       style="padding:10px 14px;border-radius:9px;border:2px solid #f1f5f9;background:#f1f5f9;color:#475569;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">🔇 Pas de réponse</button>
     <button class="rep-choice" data-rep="refuse" onclick="selectRep('refuse')"
       style="padding:10px 14px;border-radius:9px;border:2px solid #fee2e2;background:#fee2e2;color:#991b1b;font-weight:700;font-size:13px;cursor:pointer;text-align:left;">✗ Refusé</button>
+  </div>
+  <div id="repMsgBox" style="display:none;margin-top:14px;">
+    <p style="font-size:11px;color:#64748b;margin:0 0 6px;font-weight:600;">MESSAGE REÇU</p>
+    <textarea id="repMsgText" rows="6" placeholder="Coller le message de réponse ici..."
+      style="width:100%;border:1.5px solid #dbeafe;border-radius:8px;padding:10px;font-size:12px;resize:vertical;box-sizing:border-box;font-family:inherit;line-height:1.5;"></textarea>
+    <button onclick="saveRepMsg()" style="margin-top:8px;width:100%;background:#1d4ed8;color:#fff;border:none;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">💾 Sauvegarder</button>
   </div>
 </div>
 </div>
