@@ -988,18 +988,20 @@ function saveRepMsg(){
   const txt=g('repMsgText').value.trim();
   EMAIL_MSG[key]=txt;
   try{localStorage.setItem(MSG_KEY,JSON.stringify(EMAIL_MSG));}catch(e){}
+  SB.from('biens').update({email_message: txt}).eq('url', key).then(()=>{});
   g('repModal').style.display='none';
   render();
 }
 
 async function loadEmailResponses(){
-  const {data}=await SB.from('biens').select('url,email_sent_at,email_response')
+  const {data}=await SB.from('biens').select('url,email_sent_at,email_response,email_message')
     .or('email_sent_at.not.is.null,email_response.not.is.null');
   if(!data)return;
   data.forEach(r=>{
     if(r.url){
       if(r.email_sent_at) SENT[r.url]=r.email_sent_at;
       if(r.email_response) saveResp(r.url, r.email_response);
+      if(r.email_message){ EMAIL_MSG[r.url]=r.email_message; }
     }
   });
   render();
