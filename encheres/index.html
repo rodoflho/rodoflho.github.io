@@ -368,6 +368,17 @@
       border-radius: 7px; font-size: 12px; font-weight: 600;
     }
     .marche-section-hdr .btn-ghost-sm:hover { background: rgba(255,255,255,.2); }
+    .marche-sources-banner {
+      background: #0f172a; color: #94a3b8;
+      padding: 7px 16px; font-size: 11.5px; line-height: 1.5;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+    }
+    .marche-sources-ok { color: #86efac; }
+    .marche-sources-ok strong { color: #fff; }
+    .marche-sources-sep { color: #334155; }
+    .marche-sources-blocked { color: #94a3b8; }
+    .marche-sources-blocked strong { color: #fca5a5; }
 
     /* ── Pagination ── */
     .pagination {
@@ -650,6 +661,11 @@
     <span style="background:#fff"></span><span style="background:#fff"></span><span style="background:#fff"></span>
   </button>
   <button class="btn-ghost-sm" id="marcheResetBtn" onclick="clearAllM()">✕ Réinit. filtres</button>
+</div>
+<div class="marche-sources-banner">
+  <span class="marche-sources-ok">✅ Sources actives : <strong>Bienici</strong> (150k–400k€) · <strong>EntreparticulierS</strong> · <strong>Vivastreet</strong> (8k–150k€)</span>
+  <span class="marche-sources-sep">·</span>
+  <span class="marche-sources-blocked">⚠️ Sites non accessibles : <strong>Leboncoin</strong> (bloqué par DataDome même avec VPN) · <strong>SeLoger / Logic-immo</strong> (API Cloudflare protégée) · <strong>PAP.fr</strong> (filtres géo ignorés côté serveur)</span>
 </div>
 <div class="qfbar" id="qfbarMarche" style="top:56px">
   <input class="qfbar-ctrl" type="text" id="qM" placeholder="🔍 Recherche ville…" style="width:190px">
