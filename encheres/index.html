@@ -1002,6 +1002,8 @@ async function loadEmailResponses(){
       if(r.email_response) saveResp(r.url, r.email_response);
     }
   });
+  render();
+  renderM();
 }
 
 /* ──────────── UTILS ──────────── */
