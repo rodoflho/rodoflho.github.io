@@ -521,7 +521,7 @@
       .hdr-title { font-size: .9rem; }
       .cards-grid { grid-template-columns: 1fr; gap: 10px; padding: 10px; }
       .action-bar select { flex: 1; min-width: 0; }
-      .docs-popup { left: auto; right: 0; }
+      .docs-popup { position: fixed; left: 50%; right: auto; bottom: auto; top: 50%; transform: translate(-50%, -50%); width: calc(100vw - 32px); max-width: 340px; }
       .qfbar-toggle { display: flex; top: 0; }
       .qfbar { display: none !important; position: static; }
       .qfbar.mobile-open { display: flex !important; position: sticky; top: 0; }
