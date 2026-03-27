@@ -1464,7 +1464,8 @@ function openEmailModal(){
   const tn=g('emailType').value;
   const sT=g('subj'+tn).value||'Vente judiciaire';
   const bT=g('body'+tn).value||'';
-  const recs=DATA.filter(r=>selectedUrls.has(r.url||String(r._i)));
+  const BASE=SCRAPED_FROM_SB.length>0?SCRAPED_FROM_SB:DATA;
+  const recs=BASE.filter(r=>selectedUrls.has(r.url||String(r._i)));
   const emails=recs.map(r=>{const to=getEmail(r);return{to,subj:fill(sT,r),body:fill(bT,r),r};});
   g('modalTitle').textContent=`${recs.length} email${recs.length!==1?'s':''} à envoyer`;
   window._pe=emails;
